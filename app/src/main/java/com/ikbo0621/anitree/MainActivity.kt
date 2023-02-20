@@ -10,5 +10,7 @@ class MainActivity : AppCompatActivity() {
 
         // Alex commit in backend branch
         // Structures added
+
+        // doing some stuff in backend (test)
     }
 }
