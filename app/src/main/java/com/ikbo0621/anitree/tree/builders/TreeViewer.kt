@@ -53,7 +53,7 @@ open class TreeViewer(treeView: TreeView, protected var treeData: TreeData? = nu
 
     protected fun addScheme() {
         if (mainIcon == null) {
-            mainIcon = Circle(mainIconPos, RValue(0.1f, RValue.Type.Y))
+            mainIcon = Circle(mainIconPos, mainIconRadius)
             mainIcon!!.index = intArrayOf(0)
         }
 
@@ -64,6 +64,6 @@ open class TreeViewer(treeView: TreeView, protected var treeData: TreeData? = nu
             else -> null
         } ?: return
 
-        subIcons.add(Circle(iconPos, RValue(0.07f, RValue.Type.Y)))
+        subIcons.add(Circle(iconPos, subIconRadius))
     }
 }

@@ -1,12 +1,6 @@
 package com.ikbo0621.anitree.tree.elements
 
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffXfermode
-import android.graphics.Rect
-import android.graphics.RectF
+import android.graphics.*
 import com.ikbo0621.anitree.tree.positioning.RPosition
 import com.ikbo0621.anitree.tree.positioning.RValue
 
@@ -15,7 +9,7 @@ class Icon(
     radius: RValue,
     bitmap: Bitmap
 ) : Circle(relativePos, radius) {
-    private val cropBitmap = cropBitmapToCircle(bitmap)
+    private var resultBitmap = bitmap
 
     override fun draw(canvas: Canvas) {
         val absoluteRadius = radius.getAbsolute(screenSize.x, screenSize.y)
@@ -25,29 +19,43 @@ class Icon(
             absolutePos.y - absoluteRadius,
             absolutePos.x + absoluteRadius,
             absolutePos.y + absoluteRadius)
-        canvas.drawBitmap(cropBitmap, null, bitmapArea, paint)
-    }
-
-    private fun cropBitmapToCircle(bitmap: Bitmap) : Bitmap {
-        val dest = Bitmap.createBitmap(bitmap.width, bitmap.height, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(dest)
-        val paint = Paint()
-        canvas.drawARGB(0, 0, 0, 0) // Fill with transparency
-        canvas.drawCircle(
-            bitmap.width * 0.5f,
-            bitmap.height * 0.5f,
-            bitmap.width.toFloat() * 0.5f,
-            paint
-        ) // Draw the area where the bitmap will be displayed
-
-        paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
-        canvas.drawBitmap(bitmap, null, Rect(0, 0, bitmap.width, bitmap.height), paint)
-
-        return dest
+        canvas.drawBitmap(resultBitmap, null, bitmapArea, paint)
     }
 
     override fun correctPos(w: Int, h: Int) {
         super.correctPos(w, h)
         absolutePos = relativePos.getAbsolute(w, h)
+        resultBitmap = cropBitmapToCircle(resultBitmap, radius.getAbsolute(w, h))
+    }
+
+    private fun cropBitmapToCircle(bitmap: Bitmap, absoluteRadius: Float) : Bitmap {
+        val scaledBitmap = scaleBitmap(bitmap, absoluteRadius)
+        val dest = Bitmap.createBitmap(scaledBitmap.width, scaledBitmap.height, Bitmap.Config.ARGB_8888)
+
+        val canvas = Canvas(dest)
+        val paint = Paint().apply {
+            isAntiAlias = true
+        }
+        canvas.drawARGB(0, 0, 0, 0) // Fill with transparency
+        canvas.drawCircle(
+            scaledBitmap.width * 0.5f,
+            scaledBitmap.height * 0.5f,
+            scaledBitmap.width.toFloat() * 0.5f,
+            paint
+        ) // Draw the area where the bitmap will be displayed
+
+        paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
+        canvas.drawBitmap(scaledBitmap, null, Rect(0, 0, scaledBitmap.width, scaledBitmap.height), paint)
+
+        return dest
+    }
+
+    // The size of the bitmap must be equal to the size of the icon on the screen
+    private fun scaleBitmap(bitmap: Bitmap, absoluteRadius: Float) : Bitmap {
+        val matrix = Matrix()
+        val factor = (2f * absoluteRadius) / bitmap.width
+        matrix.postScale(factor, factor)
+
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
     }
 }

@@ -7,7 +7,8 @@ import com.ikbo0621.anitree.tree.positioning.RValue
 
 class Curve(
     relativePath: Array<Line.LinePoint>,
-    curveWidth: Float = 15f,
+    //curveWidth: Float = 15f,
+    private val width: RValue,
     curveColor: Int = Color.BLACK,
     cap: Paint.Cap = Paint.Cap.ROUND
 ) : TreeElement() {
@@ -16,7 +17,7 @@ class Curve(
     override var paint: Paint = Paint().apply {
         isAntiAlias = true
         style = Style.STROKE
-        strokeWidth = curveWidth
+        //strokeWidth = curveWidth
         color = curveColor
         strokeCap = cap
     }
@@ -34,6 +35,7 @@ class Curve(
         super.correctPos(w, h)
 
         //screenSize = Point(w.toFloat(), h.toFloat())
+        paint.strokeWidth = width.getAbsolute(w, h)
         line.correctPos(absolutePos, screenSize)
     }
 

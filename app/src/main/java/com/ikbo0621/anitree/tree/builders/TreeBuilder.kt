@@ -11,29 +11,31 @@ open class TreeBuilder(protected val treeView: TreeView) {
     protected var mainIcon: Circle? = null
     protected var subIcons = ArrayList<Circle>()
 
-    protected val mainIconPos = RPosition(
-        RValue(0.2f, Type.SmallSide), RValue(0.2f, Type.SmallSide)
-    )
+    protected val mainIconRadius = RValue(0.12f, Type.Y)
+    protected val subIconRadius = RValue(0.08f, Type.Y)
+    protected val mainIconPos = RPosition().apply {
+        add(RValue(0.15f, Type.Y), RValue(0.15f, Type.Y))
+    }
     protected val subIconPos1 = RPosition(
         RValue(1.0f, Type.X), RValue(0.6f, Type.Y)
     ).apply {
-        add(RValue(-0.2f, Type.SmallSide), RValue(-0.2f, Type.SmallSide))
+        add(RValue(-0.11f, Type.Y), RValue(-0.11f, Type.Y))
     }
     protected val subIconPos2 = RPosition(
         RValue(1.0f, Type.X), RValue(0.8f, Type.Y)
     ).apply {
-        add(RValue(-0.2f, Type.SmallSide), RValue(-0.2f, Type.SmallSide))
+        add(RValue(-0.11f, Type.Y), RValue(-0.11f, Type.Y))
     }
     protected val subIconPos3 = RPosition(
         RValue(1.0f, Type.X), RValue(1.0f, Type.Y)
     ).apply {
-        add(RValue(-0.2f, Type.SmallSide), RValue(-0.2f, Type.SmallSide))
+        add(RValue(-0.11f, Type.Y), RValue(-0.11f, Type.Y))
     }
 
     fun addMainElement(bitmap: Bitmap, index: IntArray) {
         mainIcon = Icon(
             mainIconPos,
-            RValue(0.1f, Type.Y),
+            mainIconRadius,
             bitmap,
         )
         mainIcon!!.index = index
@@ -52,7 +54,7 @@ open class TreeBuilder(protected val treeView: TreeView) {
         subIcons.add(
             Icon(
                 iconPos,
-                RValue(0.07f, Type.Y),
+                subIconRadius,
                 bitmap
             )
         )
@@ -100,7 +102,8 @@ open class TreeBuilder(protected val treeView: TreeView) {
                 Line.LinePoint(cornerPos, true),
                 Line.LinePoint(downAnchorPoint, false),
                 Line.LinePoint(subIcon.getRPos(), false)
-            )
+            ),
+            RValue(0.01f, Type.SmallSide)
         )
     }
 }
