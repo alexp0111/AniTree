@@ -1,10 +1,13 @@
 package com.ikbo0621.anitree.tree.builders
 
 import android.graphics.Bitmap
+import android.graphics.Color
+import android.graphics.Paint
 import com.ikbo0621.anitree.tree.TreeView
 import com.ikbo0621.anitree.tree.elements.*
 import com.ikbo0621.anitree.tree.positioning.RValue.Type
 import com.ikbo0621.anitree.tree.positioning.RPosition
+import com.ikbo0621.anitree.tree.positioning.RRect
 import com.ikbo0621.anitree.tree.positioning.RValue
 
 open class TreeBuilder(protected val treeView: TreeView) {
@@ -72,17 +75,88 @@ open class TreeBuilder(protected val treeView: TreeView) {
         }
         treeView.addElement(mainIcon!!)
         addBackField()
+        addDesign()
         treeView.invalidate()
     }
 
     private fun addBackField() {
-        val rect = Rectangle.RectR(
+        val rect = RRect(
             RPosition(RValue(0f, Type.X), RValue(0f, Type.Y)),
             RPosition(RValue(0.2f, Type.SmallSide), RValue(1f, Type.Y))
         )
         treeView.addElement(Rectangle(RPosition(RValue(), RValue()), rect).apply {
             index = intArrayOf(0)
         })
+    }
+
+    // Fix it!!!
+    private fun addDesign() {
+        // Make Relative
+        val rect = RRect(
+            RPosition(RValue(0.03f, Type.Y), RValue(0.06f, Type.Y)),
+            RPosition(RValue(0.20f, Type.Y), RValue(0.23f, Type.Y))
+        )
+        treeView.addElement(
+            Rectangle(
+                RPosition(RValue(), RValue()),
+                rect,
+                Paint.Style.STROKE,
+                Color.LTGRAY,
+                RValue(0.01f, Type.SmallSide)
+            )
+        )
+
+        val subFrameRect = RRect(
+            (subIconPos1.clone() as RPosition).apply {
+                add(
+                    RValue(-subIconRadius.getRelative(), subIconRadius.getType()),
+                    RValue(-subIconRadius.getRelative() + 0.025f, subIconRadius.getType())
+                )
+            },
+            (subIconPos1.clone() as RPosition).apply {
+                add(
+                    RValue(subIconRadius.getRelative() - 0.025f, subIconRadius.getType()),
+                    RValue(subIconRadius.getRelative(), subIconRadius.getType())
+                )
+            }
+        )
+        treeView.addElement(
+            Rectangle(
+                RPosition(RValue(), RValue()),
+                subFrameRect.clone() as RRect,
+                Paint.Style.STROKE,
+                Color.LTGRAY,
+                RValue(0.01f, Type.SmallSide)
+            )
+        )
+
+        // Fix it!!!
+        if (subIcons.size > 1) {
+            val offset = RPosition(RValue(), RValue(0.2f, Type.Y))
+            subFrameRect.add(offset)
+            treeView.addElement(
+                Rectangle(
+                    RPosition(RValue(), RValue()),
+                    subFrameRect.clone() as RRect,
+                    Paint.Style.STROKE,
+                    Color.LTGRAY,
+                    RValue(0.01f, Type.SmallSide)
+                )
+            )
+
+            if (subIcons.size > 2) {
+                subFrameRect.add(offset)
+                treeView.addElement(
+                    Rectangle(
+                        RPosition(RValue(), RValue()),
+                        subFrameRect,
+                        Paint.Style.STROKE,
+                        Color.LTGRAY,
+                        RValue(0.01f, Type.SmallSide)
+                    )
+                )
+            }
+        }
     }
 
     private fun createCurveToSubIcon(mainIcon: Circle, subIcon: Circle) : Curve {

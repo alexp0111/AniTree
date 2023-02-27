@@ -42,6 +42,12 @@ class RPosition(
         valuesY.add(y.clone() as RValue)
     }
 
+    fun add(offset: RPosition) {
+        for (i in offset.valuesX)
+            valuesX.add(i.clone() as RValue)
+        for (i in offset.valuesY)
+            valuesY.add(i.clone() as RValue)
+    }
     fun getRelativeX() : ArrayList<RValue> {
         return valuesX
     }
@@ -53,7 +59,6 @@ class RPosition(
     fun getAbsolute(w: Int, h: Int) : PointF {
         val result = PointF(0f, 0f)
         for (i in 0 until max(valuesX.size, valuesY.size)) {
-            //result.offset(valuesX[i].getAbsolute(w, h), valuesY[i].getAbsolute(w, h))
             result.offset(
                 valuesX.getOrElse(i) { _ -> RValue() }.getAbsolute(w, h),
                 valuesY.getOrElse(i) { _ -> RValue() }.getAbsolute(w, h)
@@ -64,9 +69,12 @@ class RPosition(
     }
 
     public override fun clone(): Any {
-        //val a = ArrayList(valuesX.map { it.clone() to RValue() })
-        val cloneX = (valuesX.clone() to ArrayList<RValue>()).second
-        val cloneY = (valuesY.clone() to ArrayList<RValue>()).second
+        val cloneX = ArrayList<RValue>()
+        val cloneY = ArrayList<RValue>()
+        for (i in 0 until max(valuesX.size, valuesY.size)) {
+            cloneX.add(valuesX.getOrElse(i) { _ -> RValue() })
+            cloneY.add(valuesY.getOrElse(i) { _ -> RValue() })
+        }
         return RPosition(cloneX, cloneY)
     }
 }

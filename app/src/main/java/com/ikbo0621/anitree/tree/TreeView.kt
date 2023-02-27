@@ -1,5 +1,6 @@
 package com.ikbo0621.anitree.tree
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Matrix
@@ -10,6 +11,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.Scroller
 import com.ikbo0621.anitree.tree.elements.TreeElement
+
 class TreeView(context: Context, attrs: AttributeSet) : View(context, attrs) {
     private var elements: ArrayList<TreeElement> = ArrayList()
     private var currentPos = PointF(0f, 0f)
@@ -58,12 +60,15 @@ class TreeView(context: Context, attrs: AttributeSet) : View(context, attrs) {
         elements.removeAt(index)
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
 
         when (event.actionMasked) {
             MotionEvent.ACTION_DOWN -> {
                 for (it in elements.iterator()) {
-                    if (it.isSelected(PointF(event.x - currentPos.x, event.y - currentPos.y))) {
+                    if (
+                        it.isSelected(PointF(event.x - currentPos.x, event.y - currentPos.y))
+                    ) {
                         selectedElement = it
                         performClick()
                         break

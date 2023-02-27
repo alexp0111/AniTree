@@ -3,8 +3,8 @@ package com.ikbo0621.anitree.tree.builders
 import com.ikbo0621.anitree.tree.TreeView
 import com.ikbo0621.anitree.tree.elements.Circle
 import com.ikbo0621.anitree.tree.elements.TreeElement
-import com.ikbo0621.anitree.tree.positioning.RValue
 import com.ikbo0621.anitree.tree.structures.TreeData
+
 open class TreeViewer(treeView: TreeView, protected var treeData: TreeData? = null) : TreeBuilder(treeView) {
     protected var currentElement = treeData
 

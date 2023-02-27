@@ -7,17 +7,14 @@ import com.ikbo0621.anitree.tree.positioning.RValue
 
 class Curve(
     relativePath: Array<Line.LinePoint>,
-    //curveWidth: Float = 15f,
     private val width: RValue,
     curveColor: Int = Color.BLACK,
     cap: Paint.Cap = Paint.Cap.ROUND
 ) : TreeElement() {
-    //override var relativePos = PointF(0.0f, 0.0f)
     override var relativePos = RPosition(RValue(0f, RValue.Type.X), RValue(0f, RValue.Type.Y))
     override var paint: Paint = Paint().apply {
         isAntiAlias = true
         style = Style.STROKE
-        //strokeWidth = curveWidth
         color = curveColor
         strokeCap = cap
     }
@@ -31,15 +28,14 @@ class Curve(
         return false
     }
 
-    override fun correctPos(w: Int, h: Int) { // Пересчет всей линии?
+    override fun correctPos(w: Int, h: Int) {
         super.correctPos(w, h)
 
-        //screenSize = Point(w.toFloat(), h.toFloat())
         paint.strokeWidth = width.getAbsolute(w, h)
         line.correctPos(absolutePos, screenSize)
     }
 
-    override fun setRPos(posX: Float, posY: Float) { // Пересчет всей линии?
+    override fun setRPos(posX: Float, posY: Float) {
         super.setRPos(posX, posY)
 
         line.correctPos(absolutePos, screenSize)

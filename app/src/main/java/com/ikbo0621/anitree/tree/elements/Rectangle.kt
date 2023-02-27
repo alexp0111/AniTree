@@ -2,13 +2,15 @@ package com.ikbo0621.anitree.tree.elements
 
 import android.graphics.*
 import com.ikbo0621.anitree.tree.positioning.RPosition
+import com.ikbo0621.anitree.tree.positioning.RRect
+import com.ikbo0621.anitree.tree.positioning.RValue
 
 class Rectangle(
     override var relativePos: RPosition,
-    rectPoints: RectR,
+    rectPoints: RRect,
     private val renderType: Paint.Style? = null,
     private val color: Int? = null, // not rendered if null
-    private val strokeWidth: Float? = null
+    private val width: RValue = RValue(0.05f)
     ) : TreeElement() {
     var rectPoints = rectPoints
         private set
@@ -16,7 +18,7 @@ class Rectangle(
         isAntiAlias = true
         style = renderType ?: Paint.Style.FILL
         color = this@Rectangle.color ?: Color.BLACK
-        strokeWidth = this@Rectangle.strokeWidth ?: 1f
+        //strokeWidth = this@Rectangle.strokeWidth ?: 1f
     }
 
     override fun draw(canvas: Canvas) {
@@ -33,19 +35,7 @@ class Rectangle(
     override fun correctPos(w: Int, h: Int) {
         super.correctPos(w, h)
 
+        paint.strokeWidth = width.getAbsolute(w, h)
         absolutePos = relativePos.getAbsolute(w, h)
-    }
-
-    data class RectR(val leftUpper: RPosition, val rightBottom: RPosition) {
-        fun getAbsoluteRect(w: Int, h: Int, offset: PointF) : RectF {
-            val absoluteLeftUpper = leftUpper.getAbsolute(w, h)
-            val absoluteRightBottom = rightBottom.getAbsolute(w, h)
-            return RectF(
-                absoluteLeftUpper.x, absoluteLeftUpper.y,
-                absoluteRightBottom.x, absoluteRightBottom.y
-            ).apply {
-                offset(offset.x, offset.y)
-            }
-        }
     }
 }
