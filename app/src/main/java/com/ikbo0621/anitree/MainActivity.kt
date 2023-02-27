@@ -2,7 +2,6 @@ package com.ikbo0621.anitree
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.graphics.Matrix
 import android.os.Bundle
 import android.view.Window
 import androidx.appcompat.app.AppCompatActivity
@@ -47,27 +46,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun formBitmaps() {
         val canvas = Canvas()
-
-        /*
-        bitmaps.add(scaleBitmap(
-            Bitmap.createBitmap(190, 190, Bitmap.Config.ARGB_8888).apply {
-                canvas.setBitmap(this)
-                canvas.drawRGB(255, 0, 0)
-            }
-        ))
-        bitmaps.add(scaleBitmap(
-            Bitmap.createBitmap(190, 190, Bitmap.Config.ARGB_8888).apply {
-                canvas.setBitmap(this)
-                canvas.drawRGB(0, 255, 0)
-            }
-        ))
-        bitmaps.add(scaleBitmap(
-            Bitmap.createBitmap(190, 190, Bitmap.Config.ARGB_8888).apply {
-                canvas.setBitmap(this)
-                canvas.drawRGB(0, 0, 255)
-            }
-        ))
-         */
         bitmaps.add(
             Bitmap.createBitmap(190, 190, Bitmap.Config.ARGB_8888).apply {
                 canvas.setBitmap(this)

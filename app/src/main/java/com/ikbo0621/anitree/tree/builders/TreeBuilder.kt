@@ -11,10 +11,10 @@ open class TreeBuilder(protected val treeView: TreeView) {
     protected var mainIcon: Circle? = null
     protected var subIcons = ArrayList<Circle>()
 
-    protected val mainIconRadius = RValue(0.12f, Type.Y)
+    protected val mainIconRadius = RValue(0.1f, Type.Y)
     protected val subIconRadius = RValue(0.08f, Type.Y)
     protected val mainIconPos = RPosition().apply {
-        add(RValue(0.15f, Type.Y), RValue(0.15f, Type.Y))
+        add(RValue(0.13f, Type.Y), RValue(0.13f, Type.Y))
     }
     protected val subIconPos1 = RPosition(
         RValue(1.0f, Type.X), RValue(0.6f, Type.Y)
