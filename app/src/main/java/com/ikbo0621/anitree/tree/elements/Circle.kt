@@ -9,12 +9,15 @@ open class Circle(
     override var relativePos: RPosition,
     radius: RValue,
     circleColor: Int = Color.BLACK,
+    renderType: Paint.Style? = Paint.Style.FILL,
+    private val width: RValue = RValue(0.05f)
     ) : TreeElement() {
     var radius = radius
         protected set
     override var paint: Paint = Paint().apply {
         isAntiAlias = true
         color = circleColor
+        style = renderType
     }
     private val path: Path = Path()
 
@@ -32,6 +35,7 @@ open class Circle(
         super.correctPos(w, h)
 
         absolutePos = relativePos.getAbsolute(w, h)
+        paint.strokeWidth = width.getAbsolute(w, h)
         modifyPath()
     }
 

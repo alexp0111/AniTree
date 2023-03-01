@@ -57,13 +57,17 @@ open class TreeViewer(treeView: TreeView, protected var treeData: TreeData? = nu
             mainIcon!!.index = intArrayOf(0)
         }
 
+        /*
         val iconPos = when (subIcons.size) {
             0 -> subIconPos1
             1 -> subIconPos2
             2 -> subIconPos3
             else -> null
         } ?: return
+         */
+        if (subIcons.size >= 3)
+            return
 
-        subIcons.add(Circle(iconPos, subIconRadius))
+        subIcons.add(Circle(subIconsPositions[subIcons.size], subIconRadius))
     }
 }

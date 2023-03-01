@@ -8,7 +8,7 @@ import com.ikbo0621.anitree.tree.positioning.RValue
 class Rectangle(
     override var relativePos: RPosition,
     rectPoints: RRect,
-    private val renderType: Paint.Style? = null,
+    renderType: Paint.Style? = null,
     private val color: Int? = null, // not rendered if null
     private val width: RValue = RValue(0.05f)
     ) : TreeElement() {

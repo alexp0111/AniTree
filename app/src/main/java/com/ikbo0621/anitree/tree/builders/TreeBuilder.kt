@@ -16,23 +16,31 @@ open class TreeBuilder(protected val treeView: TreeView) {
 
     protected val mainIconRadius = RValue(0.1f, Type.Y)
     protected val subIconRadius = RValue(0.08f, Type.Y)
+    private val mainFramePos = RPosition(RValue(0.13f, Type.Y), RValue(0.13f, Type.Y))
+    private val subFramePositions = ArrayList<RPosition>(3).apply{
+        add(
+            RPosition(
+                RValue(1.0f, Type.X), RValue(0.6f, Type.Y)
+            ).apply {
+                add(RValue(-0.11f, Type.Y), RValue(-0.11f, Type.Y))
+            }
+        )
+        add(RPosition(last()).apply { add(RValue(), RValue(0.2f, Type.Y)) })
+        add(RPosition(last()).apply { add(RValue(), RValue(0.2f, Type.Y)) })
+    }
     protected val mainIconPos = RPosition().apply {
-        add(RValue(0.13f, Type.Y), RValue(0.13f, Type.Y))
+        add(RValue(0.14f, Type.Y), RValue(0.12f, Type.Y))
     }
-    protected val subIconPos1 = RPosition(
-        RValue(1.0f, Type.X), RValue(0.6f, Type.Y)
-    ).apply {
-        add(RValue(-0.11f, Type.Y), RValue(-0.11f, Type.Y))
-    }
-    protected val subIconPos2 = RPosition(
-        RValue(1.0f, Type.X), RValue(0.8f, Type.Y)
-    ).apply {
-        add(RValue(-0.11f, Type.Y), RValue(-0.11f, Type.Y))
-    }
-    protected val subIconPos3 = RPosition(
-        RValue(1.0f, Type.X), RValue(1.0f, Type.Y)
-    ).apply {
-        add(RValue(-0.11f, Type.Y), RValue(-0.11f, Type.Y))
+    protected val subIconsPositions = ArrayList<RPosition>(3).apply{
+        add(
+            RPosition(
+                RValue(1.0f, Type.X), RValue(0.6f, Type.Y)
+            ).apply {
+                add(RValue(-0.10f, Type.Y), RValue(-0.12f, Type.Y))
+            }
+        )
+        add(RPosition(last()).apply { add(RValue(), RValue(0.2f, Type.Y)) })
+        add(RPosition(last()).apply { add(RValue(), RValue(0.2f, Type.Y)) })
     }
 
     fun addMainElement(bitmap: Bitmap, index: IntArray) {
@@ -47,16 +55,12 @@ open class TreeBuilder(protected val treeView: TreeView) {
         if (mainIcon == null)
             return
 
-        val iconPos = when (subIcons.size) {
-            0 -> subIconPos1
-            1 -> subIconPos2
-            2 -> subIconPos3
-            else -> null
-        } ?: return
+        if (subIcons.size >= 3)
+            return
 
         subIcons.add(
             Icon(
-                iconPos,
+                subIconsPositions[subIcons.size],
                 subIconRadius,
                 bitmap
             )
@@ -69,9 +73,9 @@ open class TreeBuilder(protected val treeView: TreeView) {
             return
 
         treeView.clearElements()
-        for (i in subIcons) {
-            treeView.addElement(createCurveToSubIcon(mainIcon!!, i))
-            treeView.addElement(i)
+        for (i in 0 until subIcons.size) {
+            treeView.addElement(createCurveToSubIcon(mainFramePos, subFramePositions[i]))
+            treeView.addElement(subIcons[i])
         }
         treeView.addElement(mainIcon!!)
         addBackField()
@@ -89,95 +93,57 @@ open class TreeBuilder(protected val treeView: TreeView) {
         })
     }
 
-    // Fix it!!!
     private fun addDesign() {
-        // Make Relative
-        val rect = RRect(
-            RPosition(RValue(0.03f, Type.Y), RValue(0.06f, Type.Y)),
-            RPosition(RValue(0.20f, Type.Y), RValue(0.23f, Type.Y))
-        )
         treeView.addElement(
-            Rectangle(
-                RPosition(RValue(), RValue()),
-                rect,
-                Paint.Style.STROKE,
+            Circle(
+                mainFramePos,
+                mainIconRadius,
                 Color.LTGRAY,
+                Paint.Style.STROKE,
                 RValue(0.01f, Type.SmallSide)
             )
         )
 
-        val subFrameRect = RRect(
-            (subIconPos1.clone() as RPosition).apply {
-                add(
-                    RValue(-subIconRadius.getRelative(), subIconRadius.getType()),
-                    RValue(-subIconRadius.getRelative() + 0.025f, subIconRadius.getType())
-                )
-            },
-            (subIconPos1.clone() as RPosition).apply {
-                add(
-                    RValue(subIconRadius.getRelative() - 0.025f, subIconRadius.getType()),
-                    RValue(subIconRadius.getRelative(), subIconRadius.getType())
-                )
-            }
-        )
-        treeView.addElement(
-            Rectangle(
-                RPosition(RValue(), RValue()),
-                subFrameRect.clone() as RRect,
-                Paint.Style.STROKE,
-                Color.LTGRAY,
-                RValue(0.01f, Type.SmallSide)
-            )
-        )
-
-        // Fix it!!!
-        if (subIcons.size > 1) {
-            val offset = RPosition(RValue(), RValue(0.2f, Type.Y))
-            subFrameRect.add(offset)
+        for (i in 0 until subIcons.size) {
             treeView.addElement(
-                Rectangle(
-                    RPosition(RValue(), RValue()),
-                    subFrameRect.clone() as RRect,
-                    Paint.Style.STROKE,
+                Circle(
+                    subFramePositions[i],
+                    subIconRadius,
                     Color.LTGRAY,
+                    Paint.Style.STROKE,
                     RValue(0.01f, Type.SmallSide)
                 )
             )
-
-            if (subIcons.size > 2) {
-                subFrameRect.add(offset)
-                treeView.addElement(
-                    Rectangle(
-                        RPosition(RValue(), RValue()),
-                        subFrameRect,
-                        Paint.Style.STROKE,
-                        Color.LTGRAY,
-                        RValue(0.01f, Type.SmallSide)
-                    )
-                )
-            }
         }
     }
 
-    private fun createCurveToSubIcon(mainIcon: Circle, subIcon: Circle) : Curve {
+    private fun createCurveToSubIcon(mainPos: RPosition, subPos: RPosition) : Curve {
+        val startPos = RPosition(mainFramePos).apply {
+            add(RValue(), RValue(mainIconRadius.getRelative(), mainIconRadius.getType()))
+        }
         val cornerPos = RPosition(
-            mainIcon.getRPos().getRelativeX(), subIcon.getRPos().getRelativeY()
+            mainPos.getRelativeX(), subPos.getRelativeY()
         )
-        val delta = subIcon.radius
+        val endPos = RPosition(subPos).apply {
+            add(RValue(-subIconRadius.getRelative(), subIconRadius.getType()), RValue())
+        }
         val upperAnchorPoint = RPosition(cornerPos)
-        upperAnchorPoint.add(RValue(), RValue(-delta.getRelative(), delta.getType()))
+        upperAnchorPoint.add(
+            RValue(), RValue(-subIconRadius.getRelative(), subIconRadius.getType())
+        )
         val downAnchorPoint = RPosition(cornerPos)
-        downAnchorPoint.add(RValue(delta.getRelative(), delta.getType()), RValue())
+        downAnchorPoint.add(RValue(subIconRadius.getRelative(), subIconRadius.getType()), RValue())
 
         return Curve(
             arrayOf(
-                Line.LinePoint(mainIconPos, false),
+                Line.LinePoint(startPos, false),
                 Line.LinePoint(upperAnchorPoint, false),
                 Line.LinePoint(cornerPos, true),
                 Line.LinePoint(downAnchorPoint, false),
-                Line.LinePoint(subIcon.getRPos(), false)
+                Line.LinePoint(endPos, false)
             ),
-            RValue(0.01f, Type.SmallSide)
+            RValue(0.01f, Type.SmallSide),
+            Color.LTGRAY
         )
     }
 }
