@@ -60,19 +60,29 @@ class TreeView(context: Context, attrs: AttributeSet) : View(context, attrs) {
         elements.removeAt(index)
     }
 
+    var counter = 0L
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
-
         when (event.actionMasked) {
             MotionEvent.ACTION_DOWN -> {
+                counter = event.eventTime
+            }
+            MotionEvent.ACTION_UP -> {
+                val elapsedTime = event.eventTime - counter
+
                 for (it in elements.iterator()) {
                     if (
                         it.isSelected(PointF(event.x - currentPos.x, event.y - currentPos.y))
                     ) {
                         selectedElement = it
-                        performClick()
                         break
                     }
+                }
+
+                if (elapsedTime > 400) {
+                    performLongClick()
+                } else {
+                    performClick()
                 }
 
                 selectedElement = null

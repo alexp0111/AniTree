@@ -11,9 +11,11 @@ import com.ikbo0621.anitree.tree.positioning.RRect
 import com.ikbo0621.anitree.tree.positioning.RValue
 
 open class TreeBuilder(protected val treeView: TreeView) {
+    protected var otherElements = ArrayList<TreeElement>()
     protected var mainIcon: Circle? = null
     protected var subIcons = ArrayList<Circle>()
 
+    protected val mainColor = Color.rgb(222, 222, 222) // Just for test
     protected val mainIconRadius = RValue(0.1f, Type.Y)
     protected val subIconRadius = RValue(0.08f, Type.Y)
     private val mainFramePos = RPosition(RValue(0.13f, Type.Y), RValue(0.13f, Type.Y))
@@ -73,6 +75,10 @@ open class TreeBuilder(protected val treeView: TreeView) {
             return
 
         treeView.clearElements()
+
+        for (i in otherElements)
+            treeView.addElement(i)
+
         for (i in 0 until subIcons.size) {
             treeView.addElement(createCurveToSubIcon(mainFramePos, subFramePositions[i]))
             treeView.addElement(subIcons[i])
@@ -98,9 +104,9 @@ open class TreeBuilder(protected val treeView: TreeView) {
             Circle(
                 mainFramePos,
                 mainIconRadius,
-                Color.LTGRAY,
+                mainColor,
                 Paint.Style.STROKE,
-                RValue(0.01f, Type.SmallSide)
+                RValue(0.003f, Type.Y)
             )
         )
 
@@ -109,9 +115,9 @@ open class TreeBuilder(protected val treeView: TreeView) {
                 Circle(
                     subFramePositions[i],
                     subIconRadius,
-                    Color.LTGRAY,
+                    mainColor,
                     Paint.Style.STROKE,
-                    RValue(0.01f, Type.SmallSide)
+                    RValue(0.003f, Type.Y)
                 )
             )
         }
@@ -142,7 +148,7 @@ open class TreeBuilder(protected val treeView: TreeView) {
                 Line.LinePoint(downAnchorPoint, false),
                 Line.LinePoint(endPos, false)
             ),
-            RValue(0.01f, Type.SmallSide),
+            RValue(0.003f, Type.Y),
             Color.LTGRAY
         )
     }

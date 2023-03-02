@@ -14,7 +14,7 @@ open class Circle(
     ) : TreeElement() {
     var radius = radius
         protected set
-    override var paint: Paint = Paint().apply {
+    override var paint = Paint().apply {
         isAntiAlias = true
         color = circleColor
         style = renderType

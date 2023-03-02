@@ -1,11 +1,21 @@
 package com.ikbo0621.anitree.tree.builders
 
+import android.graphics.Color
+import android.graphics.Typeface
+import androidx.core.graphics.*
 import com.ikbo0621.anitree.tree.TreeView
 import com.ikbo0621.anitree.tree.elements.Circle
+import com.ikbo0621.anitree.tree.elements.Text
 import com.ikbo0621.anitree.tree.elements.TreeElement
+import com.ikbo0621.anitree.tree.positioning.RPosition
+import com.ikbo0621.anitree.tree.positioning.RValue
 import com.ikbo0621.anitree.tree.structures.TreeData
 
-open class TreeViewer(treeView: TreeView, protected var treeData: TreeData? = null) : TreeBuilder(treeView) {
+open class TreeViewer(
+    treeView: TreeView,
+    protected var treeData: TreeData? = null,
+    protected var font: Typeface? = null
+) : TreeBuilder(treeView) {
     protected var currentElement = treeData
 
     init {
@@ -37,12 +47,18 @@ open class TreeViewer(treeView: TreeView, protected var treeData: TreeData? = nu
         }
         currentElement = resultLayer
 
+        updateLayer()
+    }
+
+    protected fun updateLayer() {
+        val layer = currentElement ?: return
+
         treeView.clearElements()
         subIcons.clear()
 
-        addMainElement(currentElement!!.bitmap, currentElement!!.index)
-        if (currentElement!!.tree != null) {
-            for (i in currentElement!!.tree!!)
+        addMainElement(layer.bitmap, layer.index)
+        if (layer.tree != null) {
+            for (i in layer.tree!!)
                 addSubElement(i.bitmap, i.index)
         }
     }
@@ -52,22 +68,31 @@ open class TreeViewer(treeView: TreeView, protected var treeData: TreeData? = nu
     }
 
     protected fun addScheme() {
+        val schemeColor = Color.argb(69, mainColor.red, mainColor.green, mainColor.blue) // Just for test
         if (mainIcon == null) {
-            mainIcon = Circle(mainIconPos, mainIconRadius)
+            mainIcon = Circle(mainIconPos, mainIconRadius, schemeColor)
             mainIcon!!.index = intArrayOf(0)
         }
 
-        /*
-        val iconPos = when (subIcons.size) {
-            0 -> subIconPos1
-            1 -> subIconPos2
-            2 -> subIconPos3
-            else -> null
-        } ?: return
-         */
         if (subIcons.size >= 3)
             return
 
-        subIcons.add(Circle(subIconsPositions[subIcons.size], subIconRadius))
+        subIcons.add(Circle(subIconsPositions[subIcons.size], subIconRadius, schemeColor))
+        addText()
+    }
+
+    protected fun addText() {
+        /*
+        val textPaint = Paint().apply {
+            isAntiAlias = true
+            style = Paint.Style.FILL
+            textSize = 16F
+        }
+        canvas.drawText("TEST TEXT", 0F, 0F, textPaint)
+         */
+        if (font == null)
+            return
+
+        otherElements.add(Text(RPosition(RValue(0.5f, RValue.Type.X), RValue(0.5f, RValue.Type.Y)), "I HATE EVERYTHING ABOUT YOU", font=font))
     }
 }

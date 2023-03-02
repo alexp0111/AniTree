@@ -68,7 +68,7 @@ class RPosition(
         return result
     }
 
-    public override fun clone(): Any {
+    override fun clone(): Any {
         val cloneX = ArrayList<RValue>()
         val cloneY = ArrayList<RValue>()
         for (i in 0 until max(valuesX.size, valuesY.size)) {

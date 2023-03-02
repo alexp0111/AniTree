@@ -18,7 +18,6 @@ class Rectangle(
         isAntiAlias = true
         style = renderType ?: Paint.Style.FILL
         color = this@Rectangle.color ?: Color.BLACK
-        //strokeWidth = this@Rectangle.strokeWidth ?: 1f
     }
 
     override fun draw(canvas: Canvas) {

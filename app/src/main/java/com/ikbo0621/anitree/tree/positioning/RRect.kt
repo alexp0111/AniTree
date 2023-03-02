@@ -21,6 +21,6 @@ data class RRect(val leftUpper: RPosition, val rightBottom: RPosition) : Cloneab
     }
 
     public override fun clone(): Any {
-        return RRect(leftUpper.clone() as RPosition, rightBottom.clone() as RPosition)
+        return RRect(RPosition(leftUpper), RPosition(rightBottom))
     }
 }

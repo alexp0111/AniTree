@@ -1,12 +1,15 @@
 package com.ikbo0621.anitree.tree.builders
 
 import android.graphics.Bitmap
+import android.graphics.Typeface
 import com.ikbo0621.anitree.tree.TreeView
 import com.ikbo0621.anitree.tree.elements.Icon
 import com.ikbo0621.anitree.tree.structures.TreeData
 
-class TreeEditor(treeView: TreeView) : TreeViewer(treeView) {
-
+class TreeEditor(
+    treeView: TreeView,
+    font: Typeface? = null
+) : TreeViewer(treeView, font=font) {
     override fun toAnotherLayer(index: IntArray) {
         super.toAnotherLayer(index)
         addScheme()
@@ -32,9 +35,38 @@ class TreeEditor(treeView: TreeView) : TreeViewer(treeView) {
         super.addSubElement(bitmap, index)
         addScheme() // Add next empty icon
     }
+
+    fun deleteElement(index: IntArray?) {
+        val currentLayer = currentElement ?: return
+        val elementIndex = index ?: return
+
+        for (i in subIcons) {
+            if (i.index.contentEquals(elementIndex)) {
+                if (subIcons.last().index == null) // delete empty icon
+                    subIcons.removeLast()
+                currentLayer.tree?.removeAt(subIcons.indexOf(i))
+
+                break
+            }
+        }
+
+        updateLayer()
+
+        // Correct indexes
+        for (i in subIcons) {
+            if (i.index != null) {
+                i.index = getIndex(currentLayer, subIcons.indexOf(i))
+                currentLayer.tree?.getOrNull(subIcons.indexOf(i))?.index = i.index!!
+            }
+        }
+        addScheme()
+        invalidate()
+    }
+
     fun getTree() : TreeData? {
         return treeData
     }
+
     private fun getIndex(parent: TreeData) : IntArray {
         val subIndex = parent.tree?.size ?: 0
 
@@ -43,6 +75,16 @@ class TreeEditor(treeView: TreeView) : TreeViewer(treeView) {
         for (i in parent.index.indices)
             result[i] = parent.index[i]
         result[result.lastIndex] = subIndex
+
+        return result
+    }
+
+    private fun getIndex(parent: TreeData, additional: Int) : IntArray {
+        val result = IntArray(parent.index.size + 1)
+
+        for (i in parent.index.indices)
+            result[i] = parent.index[i]
+        result[result.lastIndex] = additional
 
         return result
     }
