@@ -34,24 +34,28 @@ class MainActivity : AppCompatActivity() {
         treeEditor.invalidate()
 
         treeView.setOnClickListener {
-            val selectedElement = (it to treeView).second.selectedElement ?: return@setOnClickListener
+            val selectedElement =
+                (it to treeView).second.selectedElement ?: return@setOnClickListener
 
             if (selectedElement is Rectangle && selectedElement.index != null) { // Back "button"
                 treeEditor.toPreviousLayer()
             } else if (selectedElement is Icon) { // Sub element
                 treeEditor.toNextLayer(selectedElement)
             } else { // Empty icon
-                if (selectedElement.index != null) // create main element
-                    treeEditor.addMainElement("_", getRandomBitmap())
-                else // Create sub element
-                    treeEditor.addSubElement("01", getRandomBitmap())
+                if (selectedElement.index != null) { // create main element
+                    treeEditor.addMainElement("Main Anime", getRandomBitmap())
+                } else {// Create sub element
+                    val name = "${selectedElement.getAbsPos().y.toInt() / 100}Anime"
+                    treeEditor.addSubElement(name, getRandomBitmap())
+                }
             }
 
             treeEditor.invalidate()
         }
 
         treeView.setOnLongClickListener {
-            val selectedElement = (it to treeView).second.selectedElement ?: return@setOnLongClickListener false
+            val selectedElement =
+                (it to treeView).second.selectedElement ?: return@setOnLongClickListener false
             treeEditor.deleteElement(selectedElement.index)
 
             return@setOnLongClickListener true

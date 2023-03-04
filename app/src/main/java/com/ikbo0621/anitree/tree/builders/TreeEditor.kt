@@ -22,6 +22,7 @@ class TreeEditor(
         }
 
         super.addMainElement(bitmap, currentElement!!.index)
+        addMainText()
     }
 
     fun addSubElement(name: String, bitmap: Bitmap) {

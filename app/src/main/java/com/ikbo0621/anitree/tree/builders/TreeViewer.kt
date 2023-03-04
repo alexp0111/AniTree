@@ -6,6 +6,7 @@ import androidx.core.content.res.ResourcesCompat
 import com.ikbo0621.anitree.R
 import com.ikbo0621.anitree.tree.TreeView
 import com.ikbo0621.anitree.tree.elements.Circle
+import com.ikbo0621.anitree.tree.elements.Icon
 import com.ikbo0621.anitree.tree.elements.Text
 import com.ikbo0621.anitree.tree.elements.TreeElement
 import com.ikbo0621.anitree.tree.positioning.RPosition
@@ -99,12 +100,12 @@ open class TreeViewer(
             mainIcon = Circle(mainIconPos, mainIconRadius, schemeColor)
             mainIcon!!.index = intArrayOf(0)
         }
+        addText()
 
         if (subIcons.size >= 3)
             return
 
         subIcons.add(Circle(subIconsPositions[subIcons.size], subIconRadius, schemeColor))
-        addText()
     }
 
     private fun addMainText(context: Context, text: String, color: Int) {
@@ -140,88 +141,41 @@ open class TreeViewer(
         )
     }
 
+    private fun getMainText(context: Context, text: String, color: Int) : Text {
+        val font = Typeface.create(ResourcesCompat.getFont(context, R.font.intro), Typeface.BOLD)
+
+        return Text(mainTextPosition, text, color, font, mainTextSize, 90f)
+    }
+    protected fun addMainText() {
+        val context = contextRef.get() ?: return
+        val textColor = context.resources.getColor(R.color.text_color, null)
+
+        if (currentElement == null)
+            otherElements[0] = getMainText(context, "CHOOSE", textColor)
+            //addMainText(context, "CHOOSE", textColor)
+        else
+            otherElements[0] = getMainText(context, currentElement!!.name, textColor)
+            //addMainText(context, currentElement!!.name, textColor)
+    }
     private fun addText() {
         otherElements.clear()
         val context = contextRef.get() ?: return
         val textColor = context.resources.getColor(R.color.text_color, null)
 
-//        val largeFont = Typeface.create(firstFont, Typeface.BOLD)
-//        val smallFont = Typeface.create(secondFont, Typeface.BOLD)
+        if (currentElement == null)
+            addMainText(context, "CHOOSE", textColor)
+        else
+            addMainText(context, currentElement!!.name, textColor)
 
-        addMainText(context, "CHOOSE", textColor)
+        val border = currentElement?.tree?.size ?: 0
+        for (i in 0 until border) {
+            addSubText(context, currentElement!!.tree!![i].name, textColor, i)
+            addAdditionalText(context, "Anime studio", textColor, i)
+        }
 
-        for (i in 0 until 3) {
+        for (i in border until 3) {
             addSubText(context, subTextStrings[i], textColor, i)
             addAdditionalText(context, additionalTextStrings[i], textColor, i)
         }
-
-//        otherElements.add(
-//            Text(
-//                mainTextPosition.first,
-//                "CHOOSE",
-//                textColor,
-//                font = largeFont,
-//                size = mainTextPosition.second,
-//                rotationAngle = mainTextPosition.third
-//            )
-//        )
-//
-//        otherElements.add(
-//            Text(
-//                subTextPositions[0],
-//                "YOUR",
-//                textColor,
-//                font = firstFont,
-//                size = subTextSize
-//            )
-//        )
-//        otherElements.add(
-//            Text(
-//                subTextPositions[1],
-//                "FAVORITE",
-//                textColor,
-//                font = firstFont,
-//                size = subTextSize
-//            )
-//        )
-//        otherElements.add(
-//            Text(
-//                subTextPositions[2],
-//                "ANIME",
-//                textColor,
-//                font = firstFont,
-//                size = subTextSize
-//            )
-//        )
-//
-//        otherElements.add(
-//            Text(
-//                additionalTextPositions[0],
-//                "Help",
-//                textColor,
-//                font = smallFont,
-//                size = additionalTextSize
-//            )
-//        )
-//
-//        otherElements.add(
-//            Text(
-//                additionalTextPositions[1],
-//                "Others",
-//                textColor,
-//                font = smallFont,
-//                size = additionalTextSize
-//            )
-//        )
-//
-//        otherElements.add(
-//            Text(
-//                additionalTextPositions[2],
-//                "Choose",
-//                textColor,
-//                font = smallFont,
-//                size = additionalTextSize
-//            )
-//        )
     }
 }
