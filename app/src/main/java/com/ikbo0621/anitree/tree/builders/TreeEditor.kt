@@ -1,15 +1,16 @@
 package com.ikbo0621.anitree.tree.builders
 
+import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.Typeface
 import com.ikbo0621.anitree.tree.TreeView
 import com.ikbo0621.anitree.tree.elements.Icon
 import com.ikbo0621.anitree.tree.structures.TreeData
+import java.lang.ref.WeakReference
 
 class TreeEditor(
     treeView: TreeView,
-    font: Typeface? = null
-) : TreeViewer(treeView, font=font) {
+    contextRef: WeakReference<Context>,
+) : TreeViewer(treeView, contextRef) {
     override fun toAnotherLayer(index: IntArray) {
         super.toAnotherLayer(index)
         addScheme()
@@ -42,23 +43,17 @@ class TreeEditor(
 
         for (i in subIcons) {
             if (i.index.contentEquals(elementIndex)) {
-                if (subIcons.last().index == null) // delete empty icon
-                    subIcons.removeLast()
                 currentLayer.tree?.removeAt(subIcons.indexOf(i))
-
                 break
             }
         }
 
-        updateLayer()
-
-        // Correct indexes
-        for (i in subIcons) {
-            if (i.index != null) {
-                i.index = getIndex(currentLayer, subIcons.indexOf(i))
-                currentLayer.tree?.getOrNull(subIcons.indexOf(i))?.index = i.index!!
-            }
+        // Correct indices
+        for (i in currentLayer.tree!!) {
+            i.index = getIndex(currentLayer, currentLayer.tree!!.indexOf(i))
         }
+
+        updateLayer()
         addScheme()
         invalidate()
     }

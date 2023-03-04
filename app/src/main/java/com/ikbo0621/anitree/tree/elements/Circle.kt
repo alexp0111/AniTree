@@ -11,7 +11,7 @@ open class Circle(
     circleColor: Int = Color.BLACK,
     renderType: Paint.Style? = Paint.Style.FILL,
     private val width: RValue = RValue(0.05f)
-    ) : TreeElement() {
+) : TreeElement() {
     var radius = radius
         protected set
     override var paint = Paint().apply {

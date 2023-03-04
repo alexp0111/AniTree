@@ -3,15 +3,17 @@ package com.ikbo0621.anitree.tree.elements
 import android.graphics.*
 import com.ikbo0621.anitree.tree.positioning.RPosition
 import com.ikbo0621.anitree.tree.positioning.RValue
+import kotlin.math.abs
 
 class Text(
     override var relativePos: RPosition,
     private var text: String,
     textColor: Int = Color.BLACK,
     font: Typeface? = null,
+    private val size: RValue = RValue(0.1F),
+    private val rotationAngle: Float? = null,
     renderType: Paint.Style? = Paint.Style.FILL,
-    private val size: RValue = RValue(0.1F)
-    ) : TreeElement() {
+) : TreeElement() {
     override var paint = Paint().apply {
         isAntiAlias = true
         color = textColor
@@ -21,7 +23,15 @@ class Text(
     }
 
     override fun draw(canvas: Canvas) {
-        canvas.drawText(text, absolutePos.x, absolutePos.y, paint)
+        if (rotationAngle == null) {
+            canvas.drawText(text, absolutePos.x, absolutePos.y, paint)
+        } else {
+            canvas.save()
+            canvas.translate(absolutePos.x, absolutePos.y)
+            canvas.rotate(rotationAngle)
+            canvas.drawText(text, 0f, 0f, paint)
+            canvas.restore()
+        }
     }
 
     override fun isSelected(position: PointF): Boolean {

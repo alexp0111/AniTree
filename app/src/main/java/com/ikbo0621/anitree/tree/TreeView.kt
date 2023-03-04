@@ -20,6 +20,7 @@ class TreeView(context: Context, attrs: AttributeSet) : View(context, attrs) {
         private set
     private var scroller = Scroller(context)
     private var screenSize: Point? = null
+    private var clickCounter = 0L
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         screenSize = Point(w, h)
@@ -59,16 +60,14 @@ class TreeView(context: Context, attrs: AttributeSet) : View(context, attrs) {
             return
         elements.removeAt(index)
     }
-
-    var counter = 0L
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
         when (event.actionMasked) {
             MotionEvent.ACTION_DOWN -> {
-                counter = event.eventTime
+                clickCounter = event.eventTime
             }
             MotionEvent.ACTION_UP -> {
-                val elapsedTime = event.eventTime - counter
+                val elapsedTime = event.eventTime - clickCounter
 
                 for (it in elements.iterator()) {
                     if (

@@ -1,44 +1,49 @@
 package com.ikbo0621.anitree.tree.builders
 
+import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.Color
 import android.graphics.Paint
+import com.ikbo0621.anitree.R
 import com.ikbo0621.anitree.tree.TreeView
 import com.ikbo0621.anitree.tree.elements.*
 import com.ikbo0621.anitree.tree.positioning.RValue.Type
 import com.ikbo0621.anitree.tree.positioning.RPosition
 import com.ikbo0621.anitree.tree.positioning.RRect
 import com.ikbo0621.anitree.tree.positioning.RValue
+import java.lang.ref.WeakReference
 
-open class TreeBuilder(protected val treeView: TreeView) {
+open class TreeBuilder(
+    protected val treeView: TreeView,
+    protected val contextRef: WeakReference<Context>
+) {
     protected var otherElements = ArrayList<TreeElement>()
-    protected var mainIcon: Circle? = null
-    protected var subIcons = ArrayList<Circle>()
 
-    protected val mainColor = Color.rgb(222, 222, 222) // Just for test
-    protected val mainIconRadius = RValue(0.1f, Type.Y)
-    protected val subIconRadius = RValue(0.08f, Type.Y)
-    private val mainFramePos = RPosition(RValue(0.13f, Type.Y), RValue(0.13f, Type.Y))
-    private val subFramePositions = ArrayList<RPosition>(3).apply{
-        add(
-            RPosition(
-                RValue(1.0f, Type.X), RValue(0.6f, Type.Y)
-            ).apply {
-                add(RValue(-0.11f, Type.Y), RValue(-0.11f, Type.Y))
-            }
-        )
-        add(RPosition(last()).apply { add(RValue(), RValue(0.2f, Type.Y)) })
-        add(RPosition(last()).apply { add(RValue(), RValue(0.2f, Type.Y)) })
-    }
+    protected var mainIcon: Circle? = null
     protected val mainIconPos = RPosition().apply {
-        add(RValue(0.14f, Type.Y), RValue(0.12f, Type.Y))
+        add(RValue(0.14f, Type.Y), RValue(0.15f, Type.Y))
     }
+    protected val mainIconRadius = RValue(0.1f, Type.Y)
+    private val mainFramePos = RPosition(RValue(0.13f, Type.Y), RValue(0.16f, Type.Y))
+
+    protected var subIcons = ArrayList<Circle>()
     protected val subIconsPositions = ArrayList<RPosition>(3).apply{
         add(
             RPosition(
                 RValue(1.0f, Type.X), RValue(0.6f, Type.Y)
             ).apply {
                 add(RValue(-0.10f, Type.Y), RValue(-0.12f, Type.Y))
+            }
+        )
+        add(RPosition(last()).apply { add(RValue(), RValue(0.2f, Type.Y)) })
+        add(RPosition(last()).apply { add(RValue(), RValue(0.2f, Type.Y)) })
+    }
+    protected val subIconRadius = RValue(0.08f, Type.Y)
+    private val subFramePositions = ArrayList<RPosition>(3).apply{
+        add(
+            RPosition(
+                RValue(1.0f, Type.X), RValue(0.6f, Type.Y)
+            ).apply {
+                add(RValue(-0.11f, Type.Y), RValue(-0.11f, Type.Y))
             }
         )
         add(RPosition(last()).apply { add(RValue(), RValue(0.2f, Type.Y)) })
@@ -61,11 +66,7 @@ open class TreeBuilder(protected val treeView: TreeView) {
             return
 
         subIcons.add(
-            Icon(
-                subIconsPositions[subIcons.size],
-                subIconRadius,
-                bitmap
-            )
+            Icon(subIconsPositions[subIcons.size], subIconRadius, bitmap)
         )
         subIcons.last().index = index
     }
@@ -74,18 +75,22 @@ open class TreeBuilder(protected val treeView: TreeView) {
         if (mainIcon == null)
             return
 
+        val context = contextRef.get() ?: return
+        val elementsColor = context.resources.getColor(R.color.elements_color, null)
         treeView.clearElements()
 
         for (i in otherElements)
             treeView.addElement(i)
 
         for (i in 0 until subIcons.size) {
-            treeView.addElement(createCurveToSubIcon(mainFramePos, subFramePositions[i]))
+            treeView.addElement(
+                createCurveToSubIcon(mainFramePos, subFramePositions[i], elementsColor)
+            )
             treeView.addElement(subIcons[i])
         }
         treeView.addElement(mainIcon!!)
         addBackField()
-        addDesign()
+        addDesign(elementsColor)
         treeView.invalidate()
     }
 
@@ -99,31 +104,22 @@ open class TreeBuilder(protected val treeView: TreeView) {
         })
     }
 
-    private fun addDesign() {
+    private fun addCircle(position: RPosition, radius: RValue, color: Int) {
         treeView.addElement(
-            Circle(
-                mainFramePos,
-                mainIconRadius,
-                mainColor,
-                Paint.Style.STROKE,
-                RValue(0.003f, Type.Y)
+                Circle(position, radius, color, Paint.Style.STROKE, RValue(0.003f, Type.Y)
             )
         )
+    }
+
+    private fun addDesign(color: Int) {
+        addCircle(mainFramePos, mainIconRadius, color)
 
         for (i in 0 until subIcons.size) {
-            treeView.addElement(
-                Circle(
-                    subFramePositions[i],
-                    subIconRadius,
-                    mainColor,
-                    Paint.Style.STROKE,
-                    RValue(0.003f, Type.Y)
-                )
-            )
+            addCircle(subFramePositions[i], subIconRadius, color)
         }
     }
 
-    private fun createCurveToSubIcon(mainPos: RPosition, subPos: RPosition) : Curve {
+    private fun createCurveToSubIcon(mainPos: RPosition, subPos: RPosition, color: Int) : Curve {
         val startPos = RPosition(mainFramePos).apply {
             add(RValue(), RValue(mainIconRadius.getRelative(), mainIconRadius.getType()))
         }
@@ -149,7 +145,7 @@ open class TreeBuilder(protected val treeView: TreeView) {
                 Line.LinePoint(endPos, false)
             ),
             RValue(0.003f, Type.Y),
-            Color.LTGRAY
+            color
         )
     }
 }

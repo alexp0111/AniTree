@@ -9,9 +9,9 @@ class Rectangle(
     override var relativePos: RPosition,
     rectPoints: RRect,
     renderType: Paint.Style? = null,
-    private val color: Int? = null, // not rendered if null
+    private val color: Int? = null, // Not rendered if null
     private val width: RValue = RValue(0.05f)
-    ) : TreeElement() {
+) : TreeElement() {
     var rectPoints = rectPoints
         private set
     override var paint: Paint = Paint().apply {
