@@ -2,19 +2,33 @@ package com.ikbo0621.anitree.tree.builders
 
 import android.content.Context
 import android.graphics.Bitmap
+import com.ikbo0621.anitree.R
 import com.ikbo0621.anitree.tree.TreeView
-import com.ikbo0621.anitree.tree.elements.Icon
+import com.ikbo0621.anitree.tree.elements.Circle
+import com.ikbo0621.anitree.tree.elements.Rectangle
+import com.ikbo0621.anitree.tree.positioning.RPosition
+import com.ikbo0621.anitree.tree.positioning.RRect
+import com.ikbo0621.anitree.tree.positioning.RValue
+import com.ikbo0621.anitree.tree.positioning.RValue.Type
 import com.ikbo0621.anitree.tree.structures.TreeData
 import java.lang.ref.WeakReference
 
 class TreeEditor(
     treeView: TreeView,
     contextRef: WeakReference<Context>,
-) : TreeViewer(treeView, contextRef) {
-    override fun toAnotherLayer(index: IntArray) {
-        super.toAnotherLayer(index)
+    treeData: TreeData? = null,
+) : TreeViewer(treeView, contextRef, treeData) {
+    override fun update() {
+        super.update()
         addScheme()
+        addBackField()
     }
+
+    override fun updateLayer() {
+        addScheme()
+        super.updateLayer()
+    }
+
     fun addMainElement(name: String, bitmap: Bitmap) {
         if (treeData == null) {
             treeData = TreeData(name, bitmap, IntArray(0))
@@ -22,7 +36,6 @@ class TreeEditor(
         }
 
         super.addMainElement(bitmap, currentElement!!.index)
-        addMainText()
     }
 
     fun addSubElement(name: String, bitmap: Bitmap) {
@@ -30,12 +43,8 @@ class TreeEditor(
             return
 
         val index = getIndex(currentElement!!)
-        if (subIcons.isNotEmpty() && subIcons.last() !is Icon) // If sub element is empty
-            subIcons.removeAt(subIcons.lastIndex)
-
         currentElement!!.addSubElement(name, bitmap, index)
         super.addSubElement(bitmap, index)
-        addScheme() // Add next empty icon
     }
 
     fun deleteElement(index: IntArray?) {
@@ -55,14 +64,49 @@ class TreeEditor(
         }
 
         updateLayer()
-        addScheme()
-        invalidate()
     }
 
     fun getTree() : TreeData? {
         return treeData
     }
 
+    private fun addScheme() {
+        val context = contextRef.get() ?: return
+        val schemeColor = context.resources.getColor(R.color.scheme_color, null)
+        val elementsColor = context.resources.getColor(R.color.elements_color, null)
+
+        if (mainIcon == null) {
+            treeView.addElement(
+                Circle(mainIconPos, mainIconRadius, schemeColor).apply {
+                    index = intArrayOf(0)
+                }
+            )
+            addMainFrame(elementsColor)
+        }
+
+        val schemeIndex = subIcons.size
+        if (schemeIndex >= 3)
+            return
+
+        treeView.addElement(Circle(subIconsPositions[schemeIndex], subIconRadius, schemeColor))
+
+        treeView.addElement(
+            createCurveToSubIcon(mainFramePos, subFramePositions[schemeIndex], elementsColor)
+        )
+        addSubFrame(schemeIndex, elementsColor)
+    }
+
+    private fun addBackField() {
+        val rect = RRect(
+            RPosition(RValue(0f, Type.X), RValue(0f, Type.Y)),
+            RPosition(RValue(0.2f, Type.SmallSide), RValue(1f, Type.Y))
+        )
+        treeView.addElement(Rectangle(RPosition(RValue(), RValue()), rect).apply {
+            index = intArrayOf(0)
+        })
+    }
+
+    // Returns the index of the new element
     private fun getIndex(parent: TreeData) : IntArray {
         val subIndex = parent.tree?.size ?: 0
 
@@ -75,12 +119,13 @@ class TreeEditor(
         return result
     }
 
-    private fun getIndex(parent: TreeData, additional: Int) : IntArray {
+    // Returns the index of the element at the given position
+    private fun getIndex(parent: TreeData, position: Int) : IntArray {
         val result = IntArray(parent.index.size + 1)
 
         for (i in parent.index.indices)
             result[i] = parent.index[i]
-        result[result.lastIndex] = additional
+        result[result.lastIndex] = position
 
         return result
     }

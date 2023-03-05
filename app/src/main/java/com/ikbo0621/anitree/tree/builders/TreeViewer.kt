@@ -1,14 +1,12 @@
 package com.ikbo0621.anitree.tree.builders
 
 import android.content.Context
+import android.graphics.Paint
 import android.graphics.Typeface
 import androidx.core.content.res.ResourcesCompat
 import com.ikbo0621.anitree.R
 import com.ikbo0621.anitree.tree.TreeView
-import com.ikbo0621.anitree.tree.elements.Circle
-import com.ikbo0621.anitree.tree.elements.Icon
-import com.ikbo0621.anitree.tree.elements.Text
-import com.ikbo0621.anitree.tree.elements.TreeElement
+import com.ikbo0621.anitree.tree.elements.*
 import com.ikbo0621.anitree.tree.positioning.RPosition
 import com.ikbo0621.anitree.tree.positioning.RValue
 import com.ikbo0621.anitree.tree.positioning.RValue.Type
@@ -18,7 +16,7 @@ import java.lang.ref.WeakReference
 open class TreeViewer(
     treeView: TreeView,
     contextRef: WeakReference<Context>,
-    protected var treeData: TreeData? = null,
+    protected var treeData: TreeData? = null
 ) : TreeBuilder(treeView, contextRef) {
     protected var currentElement = treeData
 
@@ -26,6 +24,7 @@ open class TreeViewer(
         RValue(-0.05F,  Type.Y), RValue(-0.04F,  Type.Y)
     )
     private val mainTextSize = RValue(0.3F, Type.Y)
+    protected val mainFramePos = RPosition(RValue(0.13f, Type.Y), RValue(0.16f, Type.Y))
 
     private val subTextPositions = ArrayList<RPosition>(3).apply{
         add(RPosition(RValue(0.17f, Type.Y), RValue(0.518f, Type.Y)))
@@ -34,6 +33,17 @@ open class TreeViewer(
     }
     private val subTextSize = RValue(0.08F, Type.Y)
     private val subTextStrings = arrayOf("YOUR", "FAVORITE", "ANIME")
+    protected val subFramePositions = ArrayList<RPosition>(3).apply{
+        add(
+            RPosition(
+                RValue(1.0f, Type.X), RValue(0.6f, Type.Y)
+            ).apply {
+                add(RValue(-0.11f, Type.Y), RValue(-0.11f, Type.Y))
+            }
+        )
+        add(RPosition(last()).apply { add(RValue(), RValue(0.2f, Type.Y)) })
+        add(RPosition(last()).apply { add(RValue(), RValue(0.2f, Type.Y)) })
+    }
 
     private val additionalTextPositions = ArrayList<RPosition>(3).apply{
         add(RPosition(RValue(0.17f, Type.Y), RValue(0.549f, Type.Y)))
@@ -44,10 +54,16 @@ open class TreeViewer(
     private val additionalTextStrings = arrayOf("Help", "Others", "Choose")
 
     init {
-        if (treeData == null)
-            addScheme()
-        else
+        if (treeData != null)
             this.toAnotherLayer(intArrayOf())
+    }
+
+    override fun update() {
+        val context = contextRef.get() ?: return
+        addText(context)
+        super.update()
+        addFrames(context)
+        addCurves(context)
     }
 
     fun toPreviousLayer() {
@@ -65,7 +81,7 @@ open class TreeViewer(
         toAnotherLayer(nextIndex)
     }
 
-    protected open fun toAnotherLayer(index: IntArray) {
+    private fun toAnotherLayer(index: IntArray) {
         var resultLayer = treeData
         for (i in index) {
             resultLayer = resultLayer!!.tree?.getOrNull(i) ?: return
@@ -75,13 +91,11 @@ open class TreeViewer(
         updateLayer()
     }
 
-    protected fun updateLayer() {
+    protected open fun updateLayer() {
         val layer = currentElement ?: return
 
-        treeView.clearElements()
-        subIcons.clear()
-
         addMainElement(layer.bitmap, layer.index)
+        subIcons.clear()
         if (layer.tree != null) {
             for (i in layer.tree!!)
                 addSubElement(i.bitmap, i.index)
@@ -92,26 +106,10 @@ open class TreeViewer(
         return currentElement?.index
     }
 
-    protected fun addScheme() {
-        val context = contextRef.get() ?: return
-        val schemeColor = context.resources.getColor(R.color.scheme_color, null)
-
-        if (mainIcon == null) {
-            mainIcon = Circle(mainIconPos, mainIconRadius, schemeColor)
-            mainIcon!!.index = intArrayOf(0)
-        }
-        addText()
-
-        if (subIcons.size >= 3)
-            return
-
-        subIcons.add(Circle(subIconsPositions[subIcons.size], subIconRadius, schemeColor))
-    }
-
     private fun addMainText(context: Context, text: String, color: Int) {
         val font = Typeface.create(ResourcesCompat.getFont(context, R.font.intro), Typeface.BOLD)
 
-        otherElements.add(
+        treeView.addElement(
             Text(
                 mainTextPosition,
                 text,
@@ -126,7 +124,7 @@ open class TreeViewer(
     private fun addSubText(context: Context, text: String, color: Int, index: Int) {
         val font = ResourcesCompat.getFont(context, R.font.intro)
 
-        otherElements.add(
+        treeView.addElement(
             Text(subTextPositions[index], text, color, font, subTextSize)
         )
     }
@@ -136,30 +134,12 @@ open class TreeViewer(
             ResourcesCompat.getFont(context, R.font.fira_sans), Typeface.BOLD
         )
 
-        otherElements.add(
+        treeView.addElement(
             Text(additionalTextPositions[index], text, color, font, additionalTextSize)
         )
     }
 
-    private fun getMainText(context: Context, text: String, color: Int) : Text {
-        val font = Typeface.create(ResourcesCompat.getFont(context, R.font.intro), Typeface.BOLD)
-
-        return Text(mainTextPosition, text, color, font, mainTextSize, 90f)
-    }
-    protected fun addMainText() {
-        val context = contextRef.get() ?: return
-        val textColor = context.resources.getColor(R.color.text_color, null)
-
-        if (currentElement == null)
-            otherElements[0] = getMainText(context, "CHOOSE", textColor)
-            //addMainText(context, "CHOOSE", textColor)
-        else
-            otherElements[0] = getMainText(context, currentElement!!.name, textColor)
-            //addMainText(context, currentElement!!.name, textColor)
-    }
-    private fun addText() {
-        otherElements.clear()
-        val context = contextRef.get() ?: return
+    private fun addText(context: Context) {
         val textColor = context.resources.getColor(R.color.text_color, null)
 
         if (currentElement == null)
@@ -177,5 +157,81 @@ open class TreeViewer(
             addSubText(context, subTextStrings[i], textColor, i)
             addAdditionalText(context, additionalTextStrings[i], textColor, i)
         }
+    }
+
+    protected fun addMainFrame(color: Int) {
+        treeView.addElement(
+            Circle(
+                mainFramePos,
+                mainIconRadius,
+                color,
+                Paint.Style.STROKE, RValue(0.003f, Type.Y)
+            )
+        )
+    }
+
+    protected fun addSubFrame(index: Int, color: Int) {
+        treeView.addElement(
+            Circle(
+                subFramePositions[index],
+                subIconRadius,
+                color,
+                Paint.Style.STROKE,
+                RValue(0.003f, Type.Y)
+            )
+        )
+    }
+
+    private fun addFrames(context: Context) {
+        if (mainIcon == null)
+            return
+
+        val color = context.resources.getColor(R.color.elements_color, null)
+
+        addMainFrame(color)
+
+        for (i in 0 until subIcons.size) {
+            addSubFrame(i, color)
+        }
+    }
+
+    private fun addCurves(context: Context) {
+        val color = context.resources.getColor(R.color.elements_color, null)
+
+        for (i in 0 until subIcons.size) {
+            treeView.addElement(
+                createCurveToSubIcon(mainFramePos, subFramePositions[i], color)
+            )
+        }
+    }
+
+    protected fun createCurveToSubIcon(mainPos: RPosition, subPos: RPosition, color: Int) : Curve {
+        val startPos = RPosition(mainFramePos).apply {
+            add(RValue(), RValue(mainIconRadius.getRelative(), mainIconRadius.getType()))
+        }
+        val cornerPos = RPosition(
+            mainPos.getRelativeX(), subPos.getRelativeY()
+        )
+        val endPos = RPosition(subPos).apply {
+            add(RValue(-subIconRadius.getRelative(), subIconRadius.getType()), RValue())
+        }
+        val upperAnchorPoint = RPosition(cornerPos)
+        upperAnchorPoint.add(
+            RValue(), RValue(-subIconRadius.getRelative(), subIconRadius.getType())
+        )
+        val downAnchorPoint = RPosition(cornerPos)
+        downAnchorPoint.add(RValue(subIconRadius.getRelative(), subIconRadius.getType()), RValue())
+
+        return Curve(
+            arrayOf(
+                Line.LinePoint(startPos, false),
+                Line.LinePoint(upperAnchorPoint, false),
+                Line.LinePoint(cornerPos, true),
+                Line.LinePoint(downAnchorPoint, false),
+                Line.LinePoint(endPos, false)
+            ),
+            RValue(0.003f, Type.Y),
+            color
+        )
     }
 }
