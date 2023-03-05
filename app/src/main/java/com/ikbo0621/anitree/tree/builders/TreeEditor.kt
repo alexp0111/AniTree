@@ -4,8 +4,9 @@ import android.content.Context
 import android.graphics.Bitmap
 import com.ikbo0621.anitree.R
 import com.ikbo0621.anitree.tree.TreeView
-import com.ikbo0621.anitree.tree.elements.Circle
-import com.ikbo0621.anitree.tree.elements.Rectangle
+import com.ikbo0621.anitree.tree.elements.buttons.Button
+import com.ikbo0621.anitree.tree.elements.buttons.MainSchemeButton
+import com.ikbo0621.anitree.tree.elements.buttons.SchemeButton
 import com.ikbo0621.anitree.tree.positioning.RPosition
 import com.ikbo0621.anitree.tree.positioning.RRect
 import com.ikbo0621.anitree.tree.positioning.RValue
@@ -76,11 +77,7 @@ class TreeEditor(
         val elementsColor = context.resources.getColor(R.color.elements_color, null)
 
         if (mainIcon == null) {
-            treeView.addElement(
-                Circle(mainIconPos, mainIconRadius, schemeColor).apply {
-                    index = intArrayOf(0)
-                }
-            )
+            treeView.addElement(MainSchemeButton(mainIconPos, mainIconRadius, schemeColor))
             addMainFrame(elementsColor)
         }
 
@@ -88,8 +85,9 @@ class TreeEditor(
         if (schemeIndex >= 3)
             return
 
-        treeView.addElement(Circle(subIconsPositions[schemeIndex], subIconRadius, schemeColor))
-
+        treeView.addElement(
+            SchemeButton(subIconsPositions[schemeIndex], subIconRadius, schemeColor)
+        )
         treeView.addElement(
             createCurveToSubIcon(mainFramePos, subFramePositions[schemeIndex], elementsColor)
         )
@@ -101,9 +99,7 @@ class TreeEditor(
             RPosition(RValue(0f, Type.X), RValue(0f, Type.Y)),
             RPosition(RValue(0.2f, Type.SmallSide), RValue(1f, Type.Y))
         )
-        treeView.addElement(Rectangle(RPosition(RValue(), RValue()), rect).apply {
-            index = intArrayOf(0)
-        })
+        treeView.addElement(Button(RPosition(RValue(), RValue()), rect))
     }
 
     // Returns the index of the new element

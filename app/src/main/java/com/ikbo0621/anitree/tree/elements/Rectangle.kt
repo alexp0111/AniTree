@@ -5,7 +5,7 @@ import com.ikbo0621.anitree.tree.positioning.RPosition
 import com.ikbo0621.anitree.tree.positioning.RRect
 import com.ikbo0621.anitree.tree.positioning.RValue
 
-class Rectangle(
+open class Rectangle(
     override var relativePos: RPosition,
     rectPoints: RRect,
     renderType: Paint.Style? = null,

@@ -7,11 +7,11 @@ import android.view.Window
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.ikbo0621.anitree.tree.TreeView
-import com.ikbo0621.anitree.tree.builders.TreeBuilder
 import com.ikbo0621.anitree.tree.builders.TreeEditor
-import com.ikbo0621.anitree.tree.builders.TreeViewer
 import com.ikbo0621.anitree.tree.elements.Icon
-import com.ikbo0621.anitree.tree.elements.Rectangle
+import com.ikbo0621.anitree.tree.elements.buttons.Button
+import com.ikbo0621.anitree.tree.elements.buttons.MainSchemeButton
+import com.ikbo0621.anitree.tree.elements.buttons.SchemeButton
 import com.ikbo0621.anitree.tree.structures.TreeData
 import java.lang.ref.WeakReference
 
@@ -45,17 +45,14 @@ class MainActivity : AppCompatActivity() {
             val selectedElement =
                 (it to treeView).second.selectedElement ?: return@setOnClickListener
 
-            if (selectedElement is Rectangle && selectedElement.index != null) { // Back "button"
-                treeEditor.toPreviousLayer()
-            } else if (selectedElement is Icon) { // Sub element
-                treeEditor.toNextLayer(selectedElement)
-            } else { // Empty icon
-                if (selectedElement.index != null) { // create main element
-                    treeEditor.addMainElement("Main Anime", getRandomBitmap())
-                } else {// Create sub element
+            when(selectedElement) {
+                is Icon -> treeEditor.toNextLayer(selectedElement)
+                is SchemeButton -> {
                     val name = "${selectedElement.getAbsPos().y.toInt() / 100}Anime"
                     treeEditor.addSubElement(name, getRandomBitmap())
                 }
+                is Button -> treeEditor.toPreviousLayer()
+                is MainSchemeButton -> treeEditor.addMainElement("Main Anime", getRandomBitmap())
             }
 
             treeEditor.invalidate()
