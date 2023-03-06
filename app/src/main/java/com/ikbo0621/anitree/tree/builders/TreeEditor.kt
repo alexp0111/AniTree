@@ -97,7 +97,7 @@ class TreeEditor(
     private fun addBackField() {
         val rect = RRect(
             RPosition(RValue(0f, Type.X), RValue(0f, Type.Y)),
-            RPosition(RValue(0.2f, Type.SmallSide), RValue(1f, Type.Y))
+            RPosition(RValue(0.3f, Type.SmallSide), RValue(1f, Type.Y))
         )
         treeView.addElement(Button(RPosition(RValue(), RValue()), rect))
     }

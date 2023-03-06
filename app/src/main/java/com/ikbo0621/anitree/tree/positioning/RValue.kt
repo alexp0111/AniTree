@@ -1,11 +1,13 @@
 package com.ikbo0621.anitree.tree.positioning
 
+import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
 class RValue(
     private var value: Float = 0f,
-    private val type: Type = Type.X
+    private val type: Type = Type.X,
+    var limit: RValue? = null
 ) : Cloneable {
     fun set(value: Float) {
         this.value = value
@@ -20,7 +22,7 @@ class RValue(
     }
 
     fun getAbsolute(w: Int, h: Int) : Float {
-        return when (type) {
+        val result = when (type) {
             Type.X -> {
                 w * value
             }
@@ -36,10 +38,26 @@ class RValue(
                 smallSide * value
             }
         }
+        val absoluteLimit = limit?.getAbsolute(w, h) ?: return result
+
+        return if (abs(result) > abs(absoluteLimit))
+            absoluteLimit
+        else
+            result
     }
 
-    public override fun clone(): Any {
-        return RValue(value, type)
+    operator fun unaryMinus(): RValue{
+        val cloneLimit = if (limit == null)
+            null
+        else if (value > 0)
+            -limit!!
+        else
+            limit
+
+        return RValue(-value, type, cloneLimit)
+    }
+    public override fun clone(): RValue {
+        return RValue(value, type, limit)
     }
 
     enum class Type {

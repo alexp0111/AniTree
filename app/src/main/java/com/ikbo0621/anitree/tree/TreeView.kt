@@ -2,10 +2,7 @@ package com.ikbo0621.anitree.tree
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Matrix
-import android.graphics.Point
-import android.graphics.PointF
+import android.graphics.*
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
@@ -46,8 +43,6 @@ class TreeView(context: Context, attrs: AttributeSet) : View(context, attrs) {
     fun getElement(index: Int) : TreeElement? = elements.getOrNull(index)
 
     fun clearElements() = elements.clear()
-
-    fun getNumberOfElements() : Int = elements.size
 
     fun addElement(element: TreeElement) {
         if (screenSize != null)

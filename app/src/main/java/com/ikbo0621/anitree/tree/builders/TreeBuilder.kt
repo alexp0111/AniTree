@@ -14,12 +14,14 @@ open class TreeBuilder(
     protected val contextRef: WeakReference<Context>
 ) {
     protected var mainIcon: Circle? = null
+    protected val mainIconRadius = RValue(0.1f, Type.Y, RValue(0.18f, Type.X))
     protected val mainIconPos = RPosition().apply {
-        add(RValue(0.14f, Type.Y), RValue(0.15f, Type.Y))
+        add(RValue(0.035f, Type.Y), RValue(0.05f, Type.Y))
+        add(mainIconRadius, mainIconRadius)
     }
-    protected val mainIconRadius = RValue(0.1f, Type.Y)
 
     protected var subIcons = ArrayList<Circle>(3)
+    protected val subIconRadius = RValue(0.08f, Type.Y, RValue(0.16f, Type.X))
     protected val subIconsPositions = ArrayList<RPosition>(3).apply{
         add(
             RPosition(
@@ -31,7 +33,6 @@ open class TreeBuilder(
         add(RPosition(last()).apply { add(RValue(), RValue(0.2f, Type.Y)) })
         add(RPosition(last()).apply { add(RValue(), RValue(0.2f, Type.Y)) })
     }
-    protected val subIconRadius = RValue(0.08f, Type.Y)
 
     fun addMainElement(bitmap: Bitmap, index: IntArray) {
         mainIcon = Icon(

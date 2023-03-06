@@ -37,4 +37,19 @@ abstract class TreeElement {
     fun setRPos(relativePos: PointF) {
         setRPos(relativePos.x, relativePos.y)
     }
+
+    override fun equals(other: Any?): Boolean {
+        val comparedElement = other as? TreeElement ?: return false
+        return absolutePos == comparedElement.absolutePos &&
+                index.contentEquals(comparedElement.index)
+    }
+
+    override fun hashCode(): Int {
+        var result = relativePos.hashCode()
+        result = 31 * result + absolutePos.hashCode()
+        result = 31 * result + screenSize.hashCode()
+        result = 31 * result + paint.hashCode()
+        result = 31 * result + (index?.contentHashCode() ?: 0)
+        return result
+    }
 }

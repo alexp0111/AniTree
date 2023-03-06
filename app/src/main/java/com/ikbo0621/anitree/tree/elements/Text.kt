@@ -3,7 +3,6 @@ package com.ikbo0621.anitree.tree.elements
 import android.graphics.*
 import com.ikbo0621.anitree.tree.positioning.RPosition
 import com.ikbo0621.anitree.tree.positioning.RValue
-import kotlin.math.abs
 
 class Text(
     override var relativePos: RPosition,

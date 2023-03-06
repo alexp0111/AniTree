@@ -24,7 +24,9 @@ open class TreeViewer(
         RValue(-0.05F,  Type.Y), RValue(-0.04F,  Type.Y)
     )
     private val mainTextSize = RValue(0.3F, Type.Y)
-    protected val mainFramePos = RPosition(RValue(0.13f, Type.Y), RValue(0.16f, Type.Y))
+    protected val mainFramePos = RPosition(mainIconPos).apply {
+        add(RValue(-0.01f, Type.Y), RValue(0.01f, Type.Y))
+    }
 
     private val subTextPositions = ArrayList<RPosition>(3).apply{
         add(RPosition(RValue(0.17f, Type.Y), RValue(0.518f, Type.Y)))
@@ -35,10 +37,8 @@ open class TreeViewer(
     private val subTextStrings = arrayOf("YOUR", "FAVORITE", "ANIME")
     protected val subFramePositions = ArrayList<RPosition>(3).apply{
         add(
-            RPosition(
-                RValue(1.0f, Type.X), RValue(0.6f, Type.Y)
-            ).apply {
-                add(RValue(-0.11f, Type.Y), RValue(-0.11f, Type.Y))
+            RPosition(subIconsPositions.first()).apply {
+                add(RValue(-0.01f, Type.Y), RValue(+0.01f, Type.Y))
             }
         )
         add(RPosition(last()).apply { add(RValue(), RValue(0.2f, Type.Y)) })
@@ -207,20 +207,20 @@ open class TreeViewer(
 
     protected fun createCurveToSubIcon(mainPos: RPosition, subPos: RPosition, color: Int) : Curve {
         val startPos = RPosition(mainFramePos).apply {
-            add(RValue(), RValue(mainIconRadius.getRelative(), mainIconRadius.getType()))
+            add(RValue(), mainIconRadius)
         }
         val cornerPos = RPosition(
             mainPos.getRelativeX(), subPos.getRelativeY()
         )
-        val endPos = RPosition(subPos).apply {
-            add(RValue(-subIconRadius.getRelative(), subIconRadius.getType()), RValue())
+        val upperAnchorPoint = RPosition(cornerPos).apply {
+            add(RValue(), -subIconRadius)
         }
-        val upperAnchorPoint = RPosition(cornerPos)
-        upperAnchorPoint.add(
-            RValue(), RValue(-subIconRadius.getRelative(), subIconRadius.getType())
-        )
-        val downAnchorPoint = RPosition(cornerPos)
-        downAnchorPoint.add(RValue(subIconRadius.getRelative(), subIconRadius.getType()), RValue())
+        val downAnchorPoint = RPosition(cornerPos).apply {
+            add(subIconRadius, RValue())
+        }
+        val endPos = RPosition(subPos).apply {
+            add(-subIconRadius, RValue())
+        }
 
         return Curve(
             arrayOf(
