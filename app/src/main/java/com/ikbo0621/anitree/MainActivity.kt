@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
         val treeView = findViewById<TreeView>(R.id.tree)
-        treeView.setBackgroundColor(resources.getColor(R.color.background, null))
+        //treeView.setBackgroundColor(resources.getColor(R.color.background, null))
 
         // Form test bitmaps
         formBitmaps()
@@ -100,7 +100,7 @@ class MainActivity : AppCompatActivity() {
         val paint = Paint()
         // Just dividing each color component
         val filter: ColorFilter = LightingColorFilter(
-            Color.argb(255, multiply, multiply, multiply), 0
+            Color.rgb(multiply, multiply, multiply), 0
         )
         paint.colorFilter = filter
         canvas.drawBitmap(bitmap, 0f, 0f, paint)

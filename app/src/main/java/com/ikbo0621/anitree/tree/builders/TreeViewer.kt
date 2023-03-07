@@ -28,7 +28,7 @@ open class TreeViewer(
     protected val mainFramePos = RPosition(mainIconPos).apply {
         add(RValue(-0.01f, Type.Y), RValue(0.01f, Type.Y))
     }
-    private val mainNameText = RPosition(mainFramePos).apply {
+    private val mainNameTextPosition = RPosition(mainFramePos).apply {
         add(-mainIconRadius, mainIconRadius)
     }
 
@@ -57,6 +57,13 @@ open class TreeViewer(
     private val subNameTextSize = RValue(0.04F, Type.Y)
     private val subNameTextStrings = arrayOf("Help", "Others", "Choose")
     protected val lineWidth = RValue(0.003f, Type.Y)
+
+    // Preserving Elements to Optimize Rendering
+    private var mainStudioText: Text? = null
+    private var mainNameText: Text? = null
+    private val subStudioTexts = arrayOf<Text?>(null, null, null)
+    private val subNameTexts = arrayOf<Text?>(null, null, null)
+    private val curves = arrayOf<Curve?>(null, null, null)
 
     init {
         if (treeData != null)
@@ -113,44 +120,56 @@ open class TreeViewer(
     }
 
     private fun addMainStudioText(context: Context, text: String, color: Int) {
-        val font = Typeface.create(ResourcesCompat.getFont(context, R.font.intro), Typeface.BOLD)
-
-        treeView.addElement(
-            Text(
+        if (mainStudioText == null) {
+            val font =
+                Typeface.create(ResourcesCompat.getFont(context, R.font.intro), Typeface.BOLD)
+            mainStudioText = Text(
                 mainStudioTextPosition,
-                text,
+                String(),
                 color,
                 font,
                 mainStudioTextSize,
                 90f
             )
-        )
+        }
+        mainStudioText!!.text = text
+
+        treeView.addElement(mainStudioText!!)
     }
 
     private fun addSubStudioText(context: Context, text: String, color: Int, index: Int) {
-        val font = ResourcesCompat.getFont(context, R.font.intro)
+        if (subStudioTexts[index] == null) {
+            val font = ResourcesCompat.getFont(context, R.font.intro)
+            subStudioTexts[index] =
+                Text(subStudioTextPositions[index], String(), color, font, subStudioTextSize)
+        }
+        subStudioTexts[index]!!.text = text
 
-        treeView.addElement(
-            Text(subStudioTextPositions[index], text, color, font, subStudioTextSize)
-        )
+        treeView.addElement(subStudioTexts[index]!!)
     }
 
     private fun addSubNameText(context: Context, text: String, color: Int, index: Int) {
-        val font = Typeface.create(
-            ResourcesCompat.getFont(context, R.font.fira_sans), Typeface.BOLD
-        )
+        if (subNameTexts[index] == null) {
+            val font =
+                Typeface.create(ResourcesCompat.getFont(context, R.font.fira_sans), Typeface.BOLD)
+            subNameTexts[index] =
+                Text(subNameTextPositions[index], String(), color, font, subNameTextSize)
+        }
+        subNameTexts[index]!!.text = text
+        subNameTexts[index]!!.textColor = color
 
-        treeView.addElement(
-            Text(subNameTextPositions[index], text, color, font, subNameTextSize)
-        )
+        treeView.addElement(subNameTexts[index]!!)
     }
 
     private fun addMainNameText(context: Context, text: String, color: Int) {
-        val font = ResourcesCompat.getFont(context, R.font.intro)
+        if (mainNameText == null) {
+            val font = ResourcesCompat.getFont(context, R.font.intro)
+            mainNameText =
+                Text(mainNameTextPosition, text, color, font, subStudioTextSize, 90f)
+        }
+        mainNameText!!.text = text
 
-        treeView.addElement(
-            Text(mainNameText, text, color, font, subStudioTextSize, 90f)
-        )
+        treeView.addElement(mainNameText!!)
     }
 
     private fun addBottomText(context: Context) {
@@ -223,13 +242,18 @@ open class TreeViewer(
     }
 
     private fun addCurves(context: Context) {
-        val color = context.resources.getColor(R.color.elements_color, null)
-
         for (i in 0 until subIcons.size) {
-            treeView.addElement(
-                createCurveToSubIcon(mainFramePos, subFramePositions[i], color)
-            )
+            createCurveToSubIcon(context, i)
         }
+    }
+
+    private fun createCurveToSubIcon(context: Context, index: Int) {
+        if (curves[index] == null) {
+            val color = context.resources.getColor(R.color.elements_color, null)
+            curves[index] = createCurveToSubIcon(mainFramePos, subFramePositions[index], color)
+        }
+
+        treeView.addElement(curves[index]!!)
     }
 
     protected fun createCurveToSubIcon(

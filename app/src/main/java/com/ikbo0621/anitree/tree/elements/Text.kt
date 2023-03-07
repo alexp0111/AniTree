@@ -6,13 +6,18 @@ import com.ikbo0621.anitree.tree.positioning.RValue
 
 class Text(
     override var relativePos: RPosition,
-    private var text: String,
+    var text: String,
     textColor: Int = Color.BLACK,
     font: Typeface? = null,
     private val size: RValue = RValue(0.1F),
     private val rotationAngle: Float? = null,
     renderType: Paint.Style? = Paint.Style.FILL,
 ) : TreeElement() {
+    var textColor = textColor
+        set(value) {
+            field = value
+            paint.color = field
+        }
     override var paint = Paint().apply {
         isAntiAlias = true
         color = textColor
