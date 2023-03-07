@@ -2,6 +2,7 @@ package com.ikbo0621.anitree.tree.builders
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.Paint
 import com.ikbo0621.anitree.R
 import com.ikbo0621.anitree.tree.TreeView
 import com.ikbo0621.anitree.tree.elements.buttons.Button
@@ -30,21 +31,21 @@ class TreeEditor(
         super.updateLayer()
     }
 
-    fun addMainElement(name: String, bitmap: Bitmap) {
+    fun addMainElement(name: String, studio: String, bitmap: Bitmap) {
         if (treeData == null) {
-            treeData = TreeData(name, bitmap, IntArray(0))
+            treeData = TreeData(name, studio, bitmap, IntArray(0))
             currentElement = treeData
         }
 
         super.addMainElement(bitmap, currentElement!!.index)
     }
 
-    fun addSubElement(name: String, bitmap: Bitmap) {
+    fun addSubElement(name: String, studio: String, bitmap: Bitmap) {
         if (currentElement == null)
             return
 
         val index = getIndex(currentElement!!)
-        currentElement!!.addSubElement(name, bitmap, index)
+        currentElement!!.addSubElement(name, studio, bitmap, index)
         super.addSubElement(bitmap, index)
     }
 
@@ -88,8 +89,15 @@ class TreeEditor(
         treeView.addElement(
             SchemeButton(subIconsPositions[schemeIndex], subIconRadius, schemeColor)
         )
+        // Adjusting the position so that the line does not
+        // paint over the frame of the main element
         treeView.addElement(
-            createCurveToSubIcon(mainFramePos, subFramePositions[schemeIndex], elementsColor)
+            createCurveToSubIcon(
+                RPosition(mainFramePos).apply { add(RValue(), lineWidth) },
+                subFramePositions[schemeIndex],
+                elementsColor,
+                Paint.Cap.SQUARE
+            )
         )
         addSubFrame(schemeIndex, elementsColor)
     }
