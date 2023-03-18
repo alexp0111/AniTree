@@ -2,6 +2,7 @@
     <!-- Base application theme. -->
     <style name="Theme.AniTree" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
+        <item name="android:windowFullscreen">true</item>
         <item name="colorPrimary">@color/crimson</item>
         <item name="colorPrimaryVariant">@color/pink</item>
         <item name="colorOnPrimary">@color/dark_grey</item>
