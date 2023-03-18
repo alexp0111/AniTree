@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">AniTree</string>
     <string name="designer">designer</string>
+    <string name="search_bar">Let\'s find some journey</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
