@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.button.MaterialButton
 
@@ -24,7 +25,8 @@ class AccountFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_account, container, false)
         val backButton = view.findViewById<MaterialButton>(R.id.back_button)
         backButton.setOnClickListener {
-            findNavController().navigate(R.id.action_accountFragment_to_searchFragment)
+            val action = AccountFragmentDirections.actionAccountFragmentToSearchFragment()
+            Navigation.findNavController(view).navigate(action)
         }
         return view
     }
