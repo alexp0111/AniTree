@@ -6,29 +6,30 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.Navigation
-import androidx.navigation.fragment.findNavController
-import com.google.android.material.button.MaterialButton
 
-import com.ikbo0621.anitree.R
-import com.ikbo0621.anitree.databinding.ActivityMainBinding
 import com.ikbo0621.anitree.databinding.FragmentAccountBinding
 
 
 class AccountFragment : Fragment() {
 
-
+    private var _binding: FragmentAccountBinding? = null
+    private val binding get() = _binding!!
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_account, container, false)
-        val backButton = view.findViewById<MaterialButton>(R.id.back_button)
-        backButton.setOnClickListener {
+        _binding = FragmentAccountBinding.inflate(layoutInflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        _binding?.backButton?.setOnClickListener {
             val action = AccountFragmentDirections.actionAccountFragmentToSearchFragment()
             Navigation.findNavController(view).navigate(action)
         }
-        return view
+
     }
 
 
