@@ -5,7 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.ikbo0621.anitree.MAIN
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
+import com.google.android.material.button.MaterialButton
+
 import com.ikbo0621.anitree.MainActivity
 import com.ikbo0621.anitree.R
 import com.ikbo0621.anitree.databinding.ActivityMainBinding
@@ -14,22 +17,21 @@ import com.ikbo0621.anitree.databinding.FragmentSearchBinding
 
 class SearchFragment : Fragment() {
 
-    lateinit var binding: FragmentSearchBinding
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentSearchBinding.inflate(layoutInflater, container, false)
         // Inflate the layout for this fragment
-        return binding.root
+        val view = inflater.inflate(R.layout.fragment_search, container, false)
+        val navButton = view.findViewById<MaterialButton>(R.id.search_button)
+        navButton.setOnClickListener {
+            findNavController().navigate(R.id.action_searchFragment_to_accountFragment)
+        }
+        return view
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        binding.searchButton.setOnClickListener {
-            MAIN.navController.navigate(R.id.action_searchFragment_to_accountFragment)
-        }
-    }
+
 }
 
 
