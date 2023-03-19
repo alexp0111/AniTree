@@ -58,7 +58,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            treeEditor.invalidate()
+            //treeEditor.invalidate()
         }
 
         treeView.setOnLongClickListener {

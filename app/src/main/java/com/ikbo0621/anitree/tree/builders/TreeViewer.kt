@@ -1,11 +1,18 @@
 package com.ikbo0621.anitree.tree.builders
 
+import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Paint
 import android.graphics.Paint.Cap
+import android.graphics.Point
+import android.graphics.PointF
 import android.graphics.Typeface
+import android.view.animation.DecelerateInterpolator
+import androidx.core.animation.doOnEnd
 import androidx.core.content.res.ResourcesCompat
+import com.ikbo0621.anitree.MainActivity
 import com.ikbo0621.anitree.R
+import com.ikbo0621.anitree.tree.TreeAnimator
 import com.ikbo0621.anitree.tree.TreeView
 import com.ikbo0621.anitree.tree.elements.*
 import com.ikbo0621.anitree.tree.positioning.RPosition
@@ -13,6 +20,7 @@ import com.ikbo0621.anitree.tree.positioning.RValue
 import com.ikbo0621.anitree.tree.positioning.RValue.Type
 import com.ikbo0621.anitree.tree.structures.TreeData
 import java.lang.ref.WeakReference
+import kotlin.math.abs
 
 open class TreeViewer(
     treeView: TreeView,
@@ -65,13 +73,14 @@ open class TreeViewer(
     private val subNameTexts = arrayOf<Text?>(null, null, null)
     private val curves = arrayOf<Curve?>(null, null, null)
 
+    protected var isAnimating = false
+
     init {
         if (treeData != null)
             this.toAnotherLayer(intArrayOf())
     }
 
-    override fun update() {
-        val context = contextRef.get() ?: return
+    fun a(context: Context) {
         addBottomText(context)
         super.update()
         addCurves(context)
@@ -79,19 +88,205 @@ open class TreeViewer(
         addUpperText(context)
     }
 
+    override fun update() {
+        val context = contextRef.get() ?: return
+
+//        if (mainStudioText != null) {
+//            val thread: Thread = object : Thread() {
+//                val distance = -50f
+//                val initPos = mainStudioText!!.getAbsPos()
+//                var animatedPos = initPos.x
+//                var duration = 3000
+//                val pixelsPerFrame = 16 * distance / duration
+//                val border = initPos.x + distance
+//
+//                override fun run() {
+//                    try {
+//                        while (animatedPos > border) {
+//                            sleep(16)
+//                            animatedPos += pixelsPerFrame
+//                            //customView.position.set(animatedPos, initPos)
+//                            //customView.postInvalidate()
+//                            mainStudioText!!.setRPos(animatedPos, initPos.y)
+//                            treeView.postInvalidate()
+//                        }
+//                        a(context)
+//                    } catch (e: InterruptedException) {
+//                        e.printStackTrace()
+//                    }
+//                }
+//            }
+//            thread.start()
+//        } else {
+//            a(context)
+//        }
+
+        addBottomText(context)
+        super.update()
+        addCurves(context)
+        addFrames(context)
+        addUpperText(context)
+    }
+
+    fun createThread(index: IntArray, distance: Float) {
+        val context = contextRef.get() ?: return
+
+        val thread: Thread = object : Thread() {
+            val initPos = mainStudioText!!.getAbsPos()
+            var animatedPos = initPos.x
+            var duration = 100
+            val pixelsPerFrame = 16 * distance / duration
+            val border = initPos.x + distance
+
+            override fun run() {
+                isAnimating = true
+                try {
+                    while (abs(animatedPos) < abs(border)) {
+                        sleep(16)
+                        animatedPos += pixelsPerFrame
+//                        mainStudioText!!.setAbsPos(animatedPos, initPos.y)
+//                        treeView.postInvalidate()
+                        (context as MainActivity).runOnUiThread {
+                            mainStudioText!!.setAbsPos(animatedPos, initPos.y)
+                            treeView.postInvalidate()
+                        }
+                    }
+
+
+                    (context as MainActivity).runOnUiThread {
+                        toAnotherLayer(index)
+                        invalidate()
+                    }
+
+                    isAnimating = false
+                    //update()
+                    //treeView.postInvalidate()
+                } catch (e: InterruptedException) {
+                    e.printStackTrace()
+                    isAnimating = false
+                }
+            }
+        }
+        thread.start()
+    }
+
+    fun startAnimation(index: IntArray, distance: Float) {
+        val context = contextRef.get() ?: return
+        val initPos = mainStudioText!!.getAbsPos()
+        val border = initPos.x + distance
+        isAnimating = true
+
+        val animator = ValueAnimator().apply {
+            setFloatValues(initPos.x, border)
+            duration = 200
+            interpolator = DecelerateInterpolator()
+            addUpdateListener {
+                (context as MainActivity).runOnUiThread {
+                    mainStudioText!!.setAbsPos(animatedValue as Float, initPos.y)
+                    treeView.postInvalidate()
+                }
+            }
+            doOnEnd {
+                (context as MainActivity).runOnUiThread {
+                    toAnotherLayer(index)
+                    invalidate()
+                }
+
+                isAnimating = false
+            }
+        }
+        animator.start()
+    }
+
     fun toPreviousLayer() {
+        if (isAnimating)
+            return
+
         val currentIndex = getCurrentIndex() ?: return
         if (currentIndex.isEmpty())
             return
         val previousIndex = currentIndex.copyOf(currentIndex.size - 1)
 
-        toAnotherLayer(previousIndex)
+//        val thread: Thread = object : Thread() {
+//            val distance = 500f
+//            val initPos = mainStudioText!!.getAbsPos()
+//            var animatedPos = initPos.x
+//            var duration = 500
+//            val pixelsPerFrame = 16 * distance / duration
+//            val border = initPos.x + distance
+//
+//            override fun run() {
+//                try {
+//                    while (animatedPos < border) {
+//                        sleep(16)
+//                        animatedPos += pixelsPerFrame
+//                        //customView.position.set(animatedPos, initPos)
+//                        //customView.postInvalidate()
+//                        mainStudioText!!.setAbsPos(animatedPos, initPos.y)
+//                        treeView.postInvalidate()
+//                    }
+//
+//
+//                    (context as MainActivity).runOnUiThread {
+//                        toAnotherLayer(previousIndex)
+//                        invalidate()
+//                    }
+//
+//                    //update()
+//                    //treeView.postInvalidate()
+//                } catch (e: InterruptedException) {
+//                    e.printStackTrace()
+//                }
+//            }
+//        }
+//        thread.start()
+
+        createThread(previousIndex, 500f)
+
+        //toAnotherLayer(previousIndex)
     }
 
     fun toNextLayer(nextElement: TreeElement?) {
-        val nextIndex = nextElement?.index ?: return
+        if (isAnimating || nextElement == null || mainStudioText == null)
+            return
+        val nextIndex = nextElement.index ?: return
 
-        toAnotherLayer(nextIndex)
+        //createThread(nextIndex, -500f)
+        //startAnimation(nextIndex, -300f)
+        //startAnimation(nextIndex, -mainStudioTextSize.getAbsolute(mainStudioText!!.screenSize) * 0.5f)
+
+        val context = contextRef.get() ?: return
+        isAnimating = true
+        TreeAnimator(contextRef, treeView).apply {
+            elements.add(mainStudioText)
+            elements.add(mainNameText)
+            elements.add(mainIcon)
+
+            elements.addAll(subStudioTexts)
+            elements.addAll(subNameTexts)
+            elements.addAll(subIcons)
+
+            elements.addAll(curves)
+
+            setOnEndFunction {
+                (context as MainActivity).runOnUiThread {
+                    toAnotherLayer(nextIndex)
+                    invalidate()
+                }
+
+                isAnimating = false
+            }
+//            startAnimation(PointF(
+//                -mainStudioTextSize.getAbsolute(mainStudioText!!.screenSize) * 0.5f,
+//                0f
+//            ))
+            startAnimation(PointF(
+                mainIcon!!.getAbsPos().x - nextElement.getAbsPos().x,
+                mainIcon!!.getAbsPos().y - nextElement.getAbsPos().y
+            ))
+        }
+
+        //toAnotherLayer(nextIndex)
     }
 
     private fun toAnotherLayer(index: IntArray) {
@@ -106,12 +301,16 @@ open class TreeViewer(
 
     protected open fun updateLayer() {
         val layer = currentElement ?: return
+        val context = contextRef.get() ?: return
 
         addMainElement(layer.bitmap, layer.index)
         subIcons.clear()
         if (layer.tree != null) {
             for (i in layer.tree!!)
                 addSubElement(i.bitmap, i.index)
+//            for (i in curves.indices)
+//                curves[i] = null
+//            addCurves(context)
         }
     }
 
@@ -231,13 +430,12 @@ open class TreeViewer(
         if (mainIcon == null)
             return
 
-        val mainColor = context.resources.getColor(R.color.highlight, null)
-        val subColor = context.resources.getColor(R.color.elements_color, null)
+        val color = context.resources.getColor(R.color.elements_color, null)
 
-        addMainFrame(mainColor)
+        addMainFrame(color)
 
         for (i in 0 until subIcons.size) {
-            addSubFrame(i, subColor)
+            addSubFrame(i, color)
         }
     }
 

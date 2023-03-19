@@ -26,9 +26,14 @@ abstract class TreeElement {
         return absolutePos
     }
 
+    fun setAbsPos(posX: Float, posY: Float) {
+        absolutePos = PointF(posX, posY)
+    }
+
     fun getRPos() : RPosition {
         return relativePos
     }
+
     open fun setRPos(posX: Float, posY: Float) {
         relativePos.set(RValue(posX, RValue.Type.X), RValue(posY, RValue.Type.X))
         absolutePos = relativePos.getAbsolute(screenSize.x, screenSize.y)

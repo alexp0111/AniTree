@@ -1,5 +1,6 @@
 package com.ikbo0621.anitree.tree.positioning
 
+import android.graphics.Point
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
@@ -44,6 +45,10 @@ class RValue(
             absoluteLimit
         else
             result
+    }
+
+    fun getAbsolute(screenSize: Point) : Float {
+        return getAbsolute(screenSize.x, screenSize.y)
     }
 
     operator fun unaryMinus(): RValue{

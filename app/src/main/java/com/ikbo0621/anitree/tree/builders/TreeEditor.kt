@@ -32,24 +32,32 @@ class TreeEditor(
     }
 
     fun addMainElement(name: String, studio: String, bitmap: Bitmap) {
+        if (isAnimating)
+            return
         if (treeData == null) {
             treeData = TreeData(name, studio, bitmap, IntArray(0))
             currentElement = treeData
         }
 
         super.addMainElement(bitmap, currentElement!!.index)
+        invalidate()
     }
 
     fun addSubElement(name: String, studio: String, bitmap: Bitmap) {
+        if (isAnimating)
+            return
         if (currentElement == null)
             return
 
         val index = getIndex(currentElement!!)
         currentElement!!.addSubElement(name, studio, bitmap, index)
         super.addSubElement(bitmap, index)
+        invalidate()
     }
 
     fun deleteElement(index: IntArray?) {
+        if (isAnimating)
+            return
         val currentLayer = currentElement ?: return
         val elementIndex = index ?: return
 
