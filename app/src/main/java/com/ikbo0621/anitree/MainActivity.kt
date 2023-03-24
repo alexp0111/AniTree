@@ -33,11 +33,12 @@ class MainActivity : AppCompatActivity() {
 
         // Work with tree
         // Test editor
+
         val tree = TreeData("ERASED", "A-1Pictures", getRandomBitmap(), IntArray(0))
         tree.addSubElement("OVERLORD", "Madhouse", getRandomBitmap(), intArrayOf(0))
         tree.addSubElement("STEINS;GATE", "WHITEFOX", getRandomBitmap(), intArrayOf(1))
 
-        val treeEditor = TreeEditor(treeView, WeakReference(this), tree)
+        val treeEditor = TreeEditor(treeView, WeakReference(this), null)
         treeEditor.invalidate()
 
         treeView.setOnClickListener {

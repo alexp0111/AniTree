@@ -35,6 +35,11 @@ class Curve(
         line.correctPos(absolutePos, screenSize)
     }
 
+    override fun setAbsPos(posX: Float, posY: Float) {
+        super.setAbsPos(posX, posY)
+        line.correctPos(absolutePos, screenSize)
+    }
+
     override fun setRPos(posX: Float, posY: Float) {
         super.setRPos(posX, posY)
 

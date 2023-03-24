@@ -10,13 +10,15 @@ import android.widget.Scroller
 import com.ikbo0621.anitree.tree.elements.TreeElement
 
 class TreeView(context: Context, attrs: AttributeSet) : View(context, attrs) {
-    private var elements: ArrayList<TreeElement> = ArrayList()
-    private var currentPos = PointF(0f, 0f)
-    private var canvasMatrix = Matrix()
+    var elements: ArrayList<TreeElement> = ArrayList()
+        private set
+    var screenSize: Point? = null
+        private set
     var selectedElement: TreeElement? = null
         private set
+    private var currentPos = PointF(0f, 0f)
+    private var canvasMatrix = Matrix()
     private var scroller = Scroller(context)
-    private var screenSize: Point? = null
     private var clickCounter = 0L
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
@@ -39,8 +41,6 @@ class TreeView(context: Context, attrs: AttributeSet) : View(context, attrs) {
             it.draw(canvas)
         }
     }
-
-    fun getElement(index: Int) : TreeElement? = elements.getOrNull(index)
 
     fun clearElements() = elements.clear()
 

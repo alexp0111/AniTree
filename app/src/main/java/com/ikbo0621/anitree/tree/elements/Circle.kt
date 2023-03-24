@@ -44,8 +44,18 @@ open class Circle(
         modifyPath()
     }
 
+    override fun setAbsPos(posX: Float, posY: Float) {
+        super.setAbsPos(posX, posY)
+        modifyPath()
+    }
+
     private fun modifyPath() {
         path.reset()
-        path.addCircle(absolutePos.x, absolutePos.y, radius.getAbsolute(screenSize.x, screenSize.y), Path.Direction.CCW)
+        path.addCircle(
+            absolutePos.x,
+            absolutePos.y,
+            radius.getAbsolute(screenSize.x, screenSize.y),
+            Path.Direction.CCW
+        )
     }
 }

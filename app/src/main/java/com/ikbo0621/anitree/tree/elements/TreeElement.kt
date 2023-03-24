@@ -13,6 +13,11 @@ abstract class TreeElement {
     var screenSize = Point(0, 0)
         protected set
     protected abstract var paint: Paint
+    var alpha
+        get() = paint.alpha
+        set(value) {
+            paint.alpha = value
+        }
     var index: IntArray? = null
 
     abstract fun draw(canvas: Canvas)
@@ -26,7 +31,7 @@ abstract class TreeElement {
         return absolutePos
     }
 
-    fun setAbsPos(posX: Float, posY: Float) {
+    open fun setAbsPos(posX: Float, posY: Float) {
         absolutePos = PointF(posX, posY)
     }
 

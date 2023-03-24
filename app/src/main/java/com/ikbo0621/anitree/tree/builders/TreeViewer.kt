@@ -1,26 +1,22 @@
 package com.ikbo0621.anitree.tree.builders
 
-import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Paint
 import android.graphics.Paint.Cap
-import android.graphics.Point
 import android.graphics.PointF
 import android.graphics.Typeface
-import android.view.animation.DecelerateInterpolator
-import androidx.core.animation.doOnEnd
 import androidx.core.content.res.ResourcesCompat
-import com.ikbo0621.anitree.MainActivity
 import com.ikbo0621.anitree.R
-import com.ikbo0621.anitree.tree.TreeAnimator
+import com.ikbo0621.anitree.animators.TreeAnimator
 import com.ikbo0621.anitree.tree.TreeView
 import com.ikbo0621.anitree.tree.elements.*
+import com.ikbo0621.anitree.tree.elements.buttons.Button
 import com.ikbo0621.anitree.tree.positioning.RPosition
+import com.ikbo0621.anitree.tree.positioning.RRect
 import com.ikbo0621.anitree.tree.positioning.RValue
 import com.ikbo0621.anitree.tree.positioning.RValue.Type
 import com.ikbo0621.anitree.tree.structures.TreeData
 import java.lang.ref.WeakReference
-import kotlin.math.abs
 
 open class TreeViewer(
     treeView: TreeView,
@@ -28,43 +24,9 @@ open class TreeViewer(
     protected var treeData: TreeData? = null
 ) : TreeBuilder(treeView, contextRef) {
     protected var currentElement = treeData
-
-    private val mainStudioTextPosition = RPosition(
-        RValue(-0.048F,  Type.Y), RValue(-0.04F,  Type.Y)
-    )
-    private val mainStudioTextSize = RValue(0.3F, Type.Y)
-    protected val mainFramePos = RPosition(mainIconPos).apply {
-        add(RValue(-0.01f, Type.Y), RValue(0.01f, Type.Y))
-    }
-    private val mainNameTextPosition = RPosition(mainFramePos).apply {
-        add(-mainIconRadius, mainIconRadius)
-    }
-
-    private val subStudioTextPositions = ArrayList<RPosition>(3).apply{
-        add(RPosition(RValue(0.16f, Type.Y), RValue(0.518f, Type.Y)))
-        add(RPosition(last()).apply { add(RValue(), RValue(0.2f, Type.Y)) })
-        add(RPosition(last()).apply { add(RValue(), RValue(0.2f, Type.Y)) })
-    }
-    private val subStudioTextSize = RValue(0.08F, Type.Y)
+    protected val animator = JumpAnimator()
     private val subStudioTextStrings = arrayOf("YOUR", "FAVORITE", "ANIME")
-    protected val subFramePositions = ArrayList<RPosition>(3).apply{
-        add(
-            RPosition(subIconsPositions.first()).apply {
-                add(RValue(-0.01f, Type.Y), RValue(+0.01f, Type.Y))
-            }
-        )
-        add(RPosition(last()).apply { add(RValue(), RValue(0.2f, Type.Y)) })
-        add(RPosition(last()).apply { add(RValue(), RValue(0.2f, Type.Y)) })
-    }
-
-    private val subNameTextPositions = ArrayList<RPosition>(3).apply{
-        add(RPosition(RValue(0.17f, Type.Y), RValue(0.546f, Type.Y)))
-        add(RPosition(last()).apply { add(RValue(), RValue(0.2f, Type.Y)) })
-        add(RPosition(last()).apply { add(RValue(), RValue(0.2f, Type.Y)) })
-    }
-    private val subNameTextSize = RValue(0.04F, Type.Y)
     private val subNameTextStrings = arrayOf("Help", "Others", "Choose")
-    protected val lineWidth = RValue(0.003f, Type.Y)
 
     // Preserving Elements to Optimize Rendering
     private var mainStudioText: Text? = null
@@ -73,54 +35,15 @@ open class TreeViewer(
     private val subNameTexts = arrayOf<Text?>(null, null, null)
     private val curves = arrayOf<Curve?>(null, null, null)
 
-    protected var isAnimating = false
-
     init {
         if (treeData != null)
             this.toAnotherLayer(intArrayOf())
     }
 
-    fun a(context: Context) {
-        addBottomText(context)
-        super.update()
-        addCurves(context)
-        addFrames(context)
-        addUpperText(context)
-    }
-
     override fun update() {
         val context = contextRef.get() ?: return
 
-//        if (mainStudioText != null) {
-//            val thread: Thread = object : Thread() {
-//                val distance = -50f
-//                val initPos = mainStudioText!!.getAbsPos()
-//                var animatedPos = initPos.x
-//                var duration = 3000
-//                val pixelsPerFrame = 16 * distance / duration
-//                val border = initPos.x + distance
-//
-//                override fun run() {
-//                    try {
-//                        while (animatedPos > border) {
-//                            sleep(16)
-//                            animatedPos += pixelsPerFrame
-//                            //customView.position.set(animatedPos, initPos)
-//                            //customView.postInvalidate()
-//                            mainStudioText!!.setRPos(animatedPos, initPos.y)
-//                            treeView.postInvalidate()
-//                        }
-//                        a(context)
-//                    } catch (e: InterruptedException) {
-//                        e.printStackTrace()
-//                    }
-//                }
-//            }
-//            thread.start()
-//        } else {
-//            a(context)
-//        }
-
+        addBackField()
         addBottomText(context)
         super.update()
         addCurves(context)
@@ -128,165 +51,39 @@ open class TreeViewer(
         addUpperText(context)
     }
 
-    fun createThread(index: IntArray, distance: Float) {
-        val context = contextRef.get() ?: return
-
-        val thread: Thread = object : Thread() {
-            val initPos = mainStudioText!!.getAbsPos()
-            var animatedPos = initPos.x
-            var duration = 100
-            val pixelsPerFrame = 16 * distance / duration
-            val border = initPos.x + distance
-
-            override fun run() {
-                isAnimating = true
-                try {
-                    while (abs(animatedPos) < abs(border)) {
-                        sleep(16)
-                        animatedPos += pixelsPerFrame
-//                        mainStudioText!!.setAbsPos(animatedPos, initPos.y)
-//                        treeView.postInvalidate()
-                        (context as MainActivity).runOnUiThread {
-                            mainStudioText!!.setAbsPos(animatedPos, initPos.y)
-                            treeView.postInvalidate()
-                        }
-                    }
-
-
-                    (context as MainActivity).runOnUiThread {
-                        toAnotherLayer(index)
-                        invalidate()
-                    }
-
-                    isAnimating = false
-                    //update()
-                    //treeView.postInvalidate()
-                } catch (e: InterruptedException) {
-                    e.printStackTrace()
-                    isAnimating = false
-                }
-            }
-        }
-        thread.start()
-    }
-
-    fun startAnimation(index: IntArray, distance: Float) {
-        val context = contextRef.get() ?: return
-        val initPos = mainStudioText!!.getAbsPos()
-        val border = initPos.x + distance
-        isAnimating = true
-
-        val animator = ValueAnimator().apply {
-            setFloatValues(initPos.x, border)
-            duration = 200
-            interpolator = DecelerateInterpolator()
-            addUpdateListener {
-                (context as MainActivity).runOnUiThread {
-                    mainStudioText!!.setAbsPos(animatedValue as Float, initPos.y)
-                    treeView.postInvalidate()
-                }
-            }
-            doOnEnd {
-                (context as MainActivity).runOnUiThread {
-                    toAnotherLayer(index)
-                    invalidate()
-                }
-
-                isAnimating = false
-            }
-        }
-        animator.start()
-    }
-
     fun toPreviousLayer() {
-        if (isAnimating)
+        if (animator.isAnimating)
             return
 
         val currentIndex = getCurrentIndex() ?: return
         if (currentIndex.isEmpty())
             return
-        val previousIndex = currentIndex.copyOf(currentIndex.size - 1)
+        val nextIndex = currentIndex.copyOf(currentIndex.size - 1)
+        val screenSize = treeView.screenSize ?: return
+        val nextPosition = layout.subFramePositions[getCurrentIndex()?.last() ?: return].
+            getAbsolute(screenSize.x, screenSize.y)
 
-//        val thread: Thread = object : Thread() {
-//            val distance = 500f
-//            val initPos = mainStudioText!!.getAbsPos()
-//            var animatedPos = initPos.x
-//            var duration = 500
-//            val pixelsPerFrame = 16 * distance / duration
-//            val border = initPos.x + distance
-//
-//            override fun run() {
-//                try {
-//                    while (animatedPos < border) {
-//                        sleep(16)
-//                        animatedPos += pixelsPerFrame
-//                        //customView.position.set(animatedPos, initPos)
-//                        //customView.postInvalidate()
-//                        mainStudioText!!.setAbsPos(animatedPos, initPos.y)
-//                        treeView.postInvalidate()
-//                    }
-//
-//
-//                    (context as MainActivity).runOnUiThread {
-//                        toAnotherLayer(previousIndex)
-//                        invalidate()
-//                    }
-//
-//                    //update()
-//                    //treeView.postInvalidate()
-//                } catch (e: InterruptedException) {
-//                    e.printStackTrace()
-//                }
-//            }
-//        }
-//        thread.start()
-
-        createThread(previousIndex, 500f)
-
-        //toAnotherLayer(previousIndex)
+        animator.startAnimation(
+            nextIndex,
+            PointF(
+                nextPosition.x - mainIcon!!.getAbsPos().x,
+                nextPosition.y - mainIcon!!.getAbsPos().y
+            )
+        )
     }
 
-    fun toNextLayer(nextElement: TreeElement?) {
-        if (isAnimating || nextElement == null || mainStudioText == null)
+    fun toNextLayer(nextElement: Icon?) {
+        if (animator.isAnimating || nextElement == null || mainStudioText == null)
             return
         val nextIndex = nextElement.index ?: return
 
-        //createThread(nextIndex, -500f)
-        //startAnimation(nextIndex, -300f)
-        //startAnimation(nextIndex, -mainStudioTextSize.getAbsolute(mainStudioText!!.screenSize) * 0.5f)
-
-        val context = contextRef.get() ?: return
-        isAnimating = true
-        TreeAnimator(contextRef, treeView).apply {
-            elements.add(mainStudioText)
-            elements.add(mainNameText)
-            elements.add(mainIcon)
-
-            elements.addAll(subStudioTexts)
-            elements.addAll(subNameTexts)
-            elements.addAll(subIcons)
-
-            elements.addAll(curves)
-
-            setOnEndFunction {
-                (context as MainActivity).runOnUiThread {
-                    toAnotherLayer(nextIndex)
-                    invalidate()
-                }
-
-                isAnimating = false
-            }
-//            startAnimation(PointF(
-//                -mainStudioTextSize.getAbsolute(mainStudioText!!.screenSize) * 0.5f,
-//                0f
-//            ))
-            startAnimation(PointF(
+        animator.startAnimation(
+            nextIndex,
+            PointF(
                 mainIcon!!.getAbsPos().x - nextElement.getAbsPos().x,
                 mainIcon!!.getAbsPos().y - nextElement.getAbsPos().y
-            ))
-        }
-
-        //toAnotherLayer(nextIndex)
+            )
+        )
     }
 
     private fun toAnotherLayer(index: IntArray) {
@@ -301,16 +98,12 @@ open class TreeViewer(
 
     protected open fun updateLayer() {
         val layer = currentElement ?: return
-        val context = contextRef.get() ?: return
 
         addMainElement(layer.bitmap, layer.index)
         subIcons.clear()
         if (layer.tree != null) {
             for (i in layer.tree!!)
                 addSubElement(i.bitmap, i.index)
-//            for (i in curves.indices)
-//                curves[i] = null
-//            addCurves(context)
         }
     }
 
@@ -323,11 +116,11 @@ open class TreeViewer(
             val font =
                 Typeface.create(ResourcesCompat.getFont(context, R.font.intro), Typeface.BOLD)
             mainStudioText = Text(
-                mainStudioTextPosition,
+                layout.mainStudioTextPosition,
                 String(),
                 color,
                 font,
-                mainStudioTextSize,
+                layout.mainStudioTextSize,
                 90f
             )
         }
@@ -340,7 +133,7 @@ open class TreeViewer(
         if (subStudioTexts[index] == null) {
             val font = ResourcesCompat.getFont(context, R.font.intro)
             subStudioTexts[index] =
-                Text(subStudioTextPositions[index], String(), color, font, subStudioTextSize)
+                Text(layout.subStudioTextPositions[index], String(), color, font, layout.subStudioTextSize)
         }
         subStudioTexts[index]!!.text = text
 
@@ -352,7 +145,7 @@ open class TreeViewer(
             val font =
                 Typeface.create(ResourcesCompat.getFont(context, R.font.fira_sans), Typeface.BOLD)
             subNameTexts[index] =
-                Text(subNameTextPositions[index], String(), color, font, subNameTextSize)
+                Text(layout.subNameTextPositions[index], String(), color, font, layout.subNameTextSize)
         }
         subNameTexts[index]!!.text = text
         subNameTexts[index]!!.textColor = color
@@ -364,7 +157,7 @@ open class TreeViewer(
         if (mainNameText == null) {
             val font = ResourcesCompat.getFont(context, R.font.intro)
             mainNameText =
-                Text(mainNameTextPosition, text, color, font, subStudioTextSize, 90f)
+                Text(layout.mainNameTextPosition, text, color, font, layout.subStudioTextSize, 90f)
         }
         mainNameText!!.text = text
 
@@ -405,11 +198,11 @@ open class TreeViewer(
     protected fun addMainFrame(color: Int) {
         treeView.addElement(
             Circle(
-                mainFramePos,
-                mainIconRadius,
+                layout.mainFramePos,
+                layout.mainIconRadius,
                 color,
                 Paint.Style.STROKE,
-                lineWidth
+                layout.lineWidth
             )
         )
     }
@@ -417,11 +210,11 @@ open class TreeViewer(
     protected fun addSubFrame(index: Int, color: Int) {
         treeView.addElement(
             Circle(
-                subFramePositions[index],
-                subIconRadius,
+                layout.subFramePositions[index],
+                layout.subIconRadius,
                 color,
                 Paint.Style.STROKE,
-                lineWidth
+                layout.lineWidth
             )
         )
     }
@@ -445,35 +238,43 @@ open class TreeViewer(
         }
     }
 
-    private fun createCurveToSubIcon(context: Context, index: Int) {
+    protected fun createCurveToSubIcon(context: Context, index: Int) {
         if (curves[index] == null) {
             val color = context.resources.getColor(R.color.elements_color, null)
-            curves[index] = createCurveToSubIcon(mainFramePos, subFramePositions[index], color)
+            curves[index] = createCurveToSubIcon(layout.mainFramePos, layout.subFramePositions[index], color)
         }
 
         treeView.addElement(curves[index]!!)
     }
 
-    protected fun createCurveToSubIcon(
+    private fun addBackField() {
+        val rect = RRect(
+            RPosition(RValue(0f, Type.X), RValue(0f, Type.Y)),
+            RPosition(RValue(0.4f, Type.SmallSide), RValue(1f, Type.Y))
+        )
+        treeView.addElement(Button(RPosition(RValue(), RValue()), rect))
+    }
+
+    private fun createCurveToSubIcon(
         mainPos: RPosition,
         subPos: RPosition,
         color: Int,
         cap: Cap = Cap.ROUND
     ) : Curve {
         val startPos = RPosition(mainPos).apply {
-            add(RValue(), mainIconRadius)
+            add(RValue(), layout.mainIconRadius)
         }
         val cornerPos = RPosition(
             mainPos.getRelativeX(), subPos.getRelativeY()
         )
         val upperAnchorPoint = RPosition(cornerPos).apply {
-            add(RValue(), -subIconRadius)
+            add(RValue(), -layout.subIconRadius)
         }
         val downAnchorPoint = RPosition(cornerPos).apply {
-            add(subIconRadius, RValue())
+            add(layout.subIconRadius, RValue())
         }
         val endPos = RPosition(subPos).apply {
-            add(-subIconRadius, RValue())
+            add(-layout.subIconRadius, RValue())
         }
 
         return Curve(
@@ -484,9 +285,52 @@ open class TreeViewer(
                 Line.LinePoint(downAnchorPoint, false),
                 Line.LinePoint(endPos, false)
             ),
-            lineWidth,
+            layout.lineWidth,
             color,
             cap=cap
         )
+    }
+
+    inner class JumpAnimator : TreeAnimator(contextRef, treeView) {
+        var isAnimating = false
+            private set
+        private var index = IntArray(0)
+
+        init {
+            setOnEndFunction {
+                toAnotherLayer(index)
+
+                TreeAnimator(contextRef, treeView).apply {
+                    invalidate()
+                    duration = 400
+                    addElement(treeView.elements, AdditionalEffect.FADEIN)
+
+                    setOnEndFunction {
+                        invalidate()
+                        isAnimating = false
+                    }
+                    startAnimation(PointF())
+                }
+            }
+        }
+
+        private fun setElements() {
+            elements.clear()
+
+            for (i in treeView.elements) {
+                if (i is Text || i is Icon) {
+                    addElement(i, AdditionalEffect.FADEOUT)
+                } else {
+                    addElement(i, AdditionalEffect.FADEOUT, MovementType.NONE)
+                }
+            }
+        }
+
+        fun startAnimation(index: IntArray, dPos: PointF) {
+            isAnimating = true
+            animator.setElements()
+            this.index = index
+            super.startAnimation(dPos)
+        }
     }
 }
