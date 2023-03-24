@@ -9,7 +9,6 @@ import com.ikbo0621.anitree.tree.TreeView
 import com.ikbo0621.anitree.tree.builders.TreeEditor
 import com.ikbo0621.anitree.tree.elements.Icon
 import com.ikbo0621.anitree.tree.elements.buttons.Button
-import com.ikbo0621.anitree.tree.elements.buttons.MainSchemeButton
 import com.ikbo0621.anitree.tree.elements.buttons.SchemeButton
 import com.ikbo0621.anitree.tree.structures.TreeData
 import java.lang.ref.WeakReference
@@ -33,12 +32,11 @@ class MainActivity : AppCompatActivity() {
 
         // Work with tree
         // Test editor
-
         val tree = TreeData("ERASED", "A-1Pictures", getRandomBitmap(), IntArray(0))
-        tree.addSubElement("OVERLORD", "Madhouse", getRandomBitmap(), intArrayOf(0))
-        tree.addSubElement("STEINS;GATE", "WHITEFOX", getRandomBitmap(), intArrayOf(1))
+        //tree.addSubElement("OVERLORD", "Madhouse", getRandomBitmap(), intArrayOf(0))
+        //tree.addSubElement("STEINS;GATE", "WHITEFOX", getRandomBitmap(), intArrayOf(1))
 
-        val treeEditor = TreeEditor(treeView, WeakReference(this), null)
+        val treeEditor = TreeEditor(treeView, WeakReference(this), tree)
         treeEditor.invalidate()
 
         treeView.setOnClickListener {
@@ -52,14 +50,7 @@ class MainActivity : AppCompatActivity() {
                     treeEditor.addSubElement(name, "RandStudio", getRandomBitmap())
                 }
                 is Button -> treeEditor.toPreviousLayer()
-                is MainSchemeButton -> {
-                    treeEditor.addMainElement(
-                        "Main Anime", "RandStudio", getRandomBitmap()
-                    )
-                }
             }
-
-            //treeEditor.invalidate()
         }
 
         treeView.setOnLongClickListener {
@@ -71,28 +62,36 @@ class MainActivity : AppCompatActivity() {
             return@setOnLongClickListener true
         }
 
-        /*
         // Test viewer
-        val tree = TreeData("Main anime", getRandomBitmap(), IntArray(0))
-        tree.addSubElement("0Anime", getRandomBitmap(), intArrayOf(0))
-        tree.addSubElement("1Anime", getRandomBitmap(), intArrayOf(1))
-        tree.addSubElement("2Anime", getRandomBitmap(), intArrayOf(2))
-        tree.addSubElement("3Anime", getRandomBitmap(), intArrayOf(3))
+//        val tree = TreeData("Main anime", "MainStudio", getRandomBitmap(), IntArray(0))
+//        tree.addSubElement("0Anime", "Studio0", getRandomBitmap(), intArrayOf(0))
+//        tree.addSubElement("1Anime", "Studio1", getRandomBitmap(), intArrayOf(1))
+//        tree.addSubElement("2Anime", "Studio2", getRandomBitmap(), intArrayOf(2))
+//        tree.addSubElement("3Anime", "Studio3", getRandomBitmap(), intArrayOf(3))
+//        tree.tree?.get(1)?.addSubElement("4Anime", "Studio4", getRandomBitmap(), intArrayOf(1, 0))
+//        tree.tree?.get(1)?.addSubElement("5Anime", "Studio5", getRandomBitmap(), intArrayOf(1, 1))
+//
+//        val treeViewer = TreeViewer(treeView, WeakReference(this), tree)
+//        treeViewer.invalidate()
+//
+//        treeView.setOnClickListener {
+//            val selectedElement =
+//                (it to treeView).second.selectedElement ?: return@setOnClickListener
+//
+//            when(selectedElement) {
+//                is Icon -> treeViewer.toNextLayer(selectedElement)
+//                is Button -> treeViewer.toPreviousLayer()
+//            }
+//        }
 
-        val treeEditor = TreeViewer(treeView, WeakReference(this), tree)
-        treeEditor.invalidate()
-         */
-
-        /*
         // Test builder
-        val treeBuilder = TreeBuilder(treeView, WeakReference(this))
-        treeBuilder.addMainElement(getRandomBitmap(), IntArray(0))
-        treeBuilder.addSubElement(getRandomBitmap(), intArrayOf(0))
-        treeBuilder.addSubElement(getRandomBitmap(), intArrayOf(1))
-        treeBuilder.addSubElement(getRandomBitmap(), intArrayOf(2))
-        treeBuilder.addSubElement(getRandomBitmap(), intArrayOf(3))
-        treeBuilder.invalidate()
-         */
+//        val treeBuilder = TreeBuilder(treeView, WeakReference(this))
+//        treeBuilder.addMainElement(getRandomBitmap(), IntArray(0))
+//        treeBuilder.addSubElement(getRandomBitmap(), intArrayOf(0))
+//        treeBuilder.addSubElement(getRandomBitmap(), intArrayOf(1))
+//        treeBuilder.addSubElement(getRandomBitmap(), intArrayOf(2))
+//        treeBuilder.addSubElement(getRandomBitmap(), intArrayOf(3))
+//        treeBuilder.invalidate()
     }
 
     private fun getDarkenBitmap(bitmap: Bitmap): Bitmap {

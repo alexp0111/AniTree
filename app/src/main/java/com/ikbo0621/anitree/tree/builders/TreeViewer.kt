@@ -21,7 +21,7 @@ import java.lang.ref.WeakReference
 open class TreeViewer(
     treeView: TreeView,
     contextRef: WeakReference<Context>,
-    protected var treeData: TreeData? = null
+    protected var treeData: TreeData
 ) : TreeBuilder(treeView, contextRef) {
     protected var currentElement = treeData
     protected val animator = JumpAnimator()
@@ -36,8 +36,7 @@ open class TreeViewer(
     private val curves = arrayOf<Curve?>(null, null, null)
 
     init {
-        if (treeData != null)
-            this.toAnotherLayer(intArrayOf())
+        this.toAnotherLayer(intArrayOf())
     }
 
     override fun update() {
@@ -55,12 +54,12 @@ open class TreeViewer(
         if (animator.isAnimating)
             return
 
-        val currentIndex = getCurrentIndex() ?: return
+        val currentIndex = getCurrentIndex()
         if (currentIndex.isEmpty())
             return
         val nextIndex = currentIndex.copyOf(currentIndex.size - 1)
         val screenSize = treeView.screenSize ?: return
-        val nextPosition = layout.subFramePositions[getCurrentIndex()?.last() ?: return].
+        val nextPosition = layout.subFramePositions[getCurrentIndex().last()].
             getAbsolute(screenSize.x, screenSize.y)
 
         animator.startAnimation(
@@ -89,7 +88,7 @@ open class TreeViewer(
     private fun toAnotherLayer(index: IntArray) {
         var resultLayer = treeData
         for (i in index) {
-            resultLayer = resultLayer!!.tree?.getOrNull(i) ?: return
+            resultLayer = resultLayer.tree?.getOrNull(i) ?: return
         }
         currentElement = resultLayer
 
@@ -97,7 +96,7 @@ open class TreeViewer(
     }
 
     protected open fun updateLayer() {
-        val layer = currentElement ?: return
+        val layer = currentElement
 
         addMainElement(layer.bitmap, layer.index)
         subIcons.clear()
@@ -107,8 +106,8 @@ open class TreeViewer(
         }
     }
 
-    private fun getCurrentIndex() : IntArray? {
-        return currentElement?.index
+    private fun getCurrentIndex() : IntArray {
+        return currentElement.index
     }
 
     private fun addMainStudioText(context: Context, text: String, color: Int) {
@@ -167,14 +166,11 @@ open class TreeViewer(
     private fun addBottomText(context: Context) {
         val textColor = context.resources.getColor(R.color.text_color, null)
 
-        if (currentElement == null)
-            addMainStudioText(context, "CHOOSE", textColor)
-        else
-            addMainStudioText(context, currentElement!!.studio, textColor)
+        addMainStudioText(context, currentElement.studio, textColor)
 
-        val border = currentElement?.tree?.size ?: 0
+        val border = currentElement.tree?.size ?: 0
         for (i in 0 until border) {
-            addSubStudioText(context, currentElement!!.tree!![i].studio, textColor, i)
+            addSubStudioText(context, currentElement.tree!![i].studio, textColor, i)
         }
 
         for (i in border until 3) {
@@ -186,12 +182,11 @@ open class TreeViewer(
     private fun addUpperText(context: Context) {
         val textColor = context.resources.getColor(R.color.elements_color, null)
 
-        if (currentElement != null)
-            addMainNameText(context, currentElement!!.name, textColor)
+        addMainNameText(context, currentElement.name, textColor)
 
-        val border = currentElement?.tree?.size ?: 0
+        val border = currentElement.tree?.size ?: 0
         for (i in 0 until border) {
-            addSubNameText(context, currentElement!!.tree!![i].name, textColor, i)
+            addSubNameText(context, currentElement.tree!![i].name, textColor, i)
         }
     }
 
@@ -291,7 +286,7 @@ open class TreeViewer(
         )
     }
 
-    inner class JumpAnimator : TreeAnimator(contextRef, treeView) {
+    protected inner class JumpAnimator : TreeAnimator(contextRef, treeView) {
         var isAnimating = false
             private set
         private var index = IntArray(0)
@@ -316,6 +311,7 @@ open class TreeViewer(
 
         private fun setElements() {
             elements.clear()
+            elements.ensureCapacity(treeView.elements.size)
 
             for (i in treeView.elements) {
                 if (i is Text || i is Icon) {

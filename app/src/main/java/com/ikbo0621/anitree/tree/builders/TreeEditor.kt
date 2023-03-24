@@ -12,20 +12,12 @@ import java.lang.ref.WeakReference
 class TreeEditor(
     treeView: TreeView,
     contextRef: WeakReference<Context>,
-    treeData: TreeData? = null,
+    treeData: TreeData,
 ) : TreeViewer(treeView, contextRef, treeData) {
     override fun update() {
-        //super.update()
-        //addScheme()
-        //addBackField()
-
-        val context = contextRef.get() ?: return
-        val schemeColor = context.resources.getColor(R.color.scheme_color, null)
-        val elementsColor = context.resources.getColor(R.color.elements_color, null)
-
-        addSchemeButtons(elementsColor, schemeColor)
+        addSchemeButtons()
         super.update()
-        addFramesAndCurvesToScheme(context, elementsColor)
+        addFramesAndCurvesToScheme()
     }
 
     override fun updateLayer() {
@@ -33,26 +25,12 @@ class TreeEditor(
         super.updateLayer()
     }
 
-    fun addMainElement(name: String, studio: String, bitmap: Bitmap) {
-        if (animator.isAnimating)
-            return
-        if (treeData == null) {
-            treeData = TreeData(name, studio, bitmap, IntArray(0))
-            currentElement = treeData
-        }
-
-        super.addMainElement(bitmap, currentElement!!.index)
-        invalidate()
-    }
-
     fun addSubElement(name: String, studio: String, bitmap: Bitmap) {
         if (animator.isAnimating)
             return
-        if (currentElement == null)
-            return
 
-        val index = getIndex(currentElement!!)
-        currentElement!!.addSubElement(name, studio, bitmap, index)
+        val index = getIndex(currentElement)
+        currentElement.addSubElement(name, studio, bitmap, index)
         super.addSubElement(bitmap, index)
         invalidate()
     }
@@ -60,8 +38,10 @@ class TreeEditor(
     fun deleteElement(index: IntArray?) {
         if (animator.isAnimating)
             return
-        val currentLayer = currentElement ?: return
+        val currentLayer = currentElement
         val elementIndex = index ?: return
+        if (elementIndex.contentEquals(currentElement.index)) // Do not remove the main element
+            return
 
         for (i in subIcons) {
             if (i.index.contentEquals(elementIndex)) {
@@ -78,11 +58,15 @@ class TreeEditor(
         updateLayer()
     }
 
-    fun getTree() : TreeData? {
+    fun getTree() : TreeData {
         return treeData
     }
 
-    private fun addSchemeButtons(elementsColor: Int, schemeColor: Int) {
+    private fun addSchemeButtons() {
+        val context = contextRef.get() ?: return
+        val schemeColor = context.resources.getColor(R.color.scheme_color, null)
+        val elementsColor = context.resources.getColor(R.color.elements_color, null)
+
         if (mainIcon == null) {
             treeView.addElement(MainSchemeButton(layout.mainIconPos, layout.mainIconRadius, schemeColor))
             addMainFrame(elementsColor)
@@ -97,7 +81,10 @@ class TreeEditor(
         )
     }
 
-    private fun addFramesAndCurvesToScheme(context: Context, elementsColor: Int) {
+    private fun addFramesAndCurvesToScheme() {
+        val context = contextRef.get() ?: return
+        val elementsColor = context.resources.getColor(R.color.elements_color, null)
+
         addMainFrame(elementsColor)
 
         val schemeIndex = subIcons.size
@@ -126,17 +113,6 @@ class TreeEditor(
             SchemeButton(layout.subIconsPositions[schemeIndex], layout.subIconRadius, schemeColor)
         )
 
-        // Adjusting the position so that the line does not
-        // paint over the frame of the main element
-        /*
-        treeView.addElement(
-            createCurveToSubIcon(
-                RPosition(mainFramePos).apply { add(RValue(), lineWidth) },
-                subFramePositions[schemeIndex],
-                elementsColor,
-                Paint.Cap.SQUARE
-            )
-        )*/
         createCurveToSubIcon(context, schemeIndex)
         addSubFrame(schemeIndex, elementsColor)
     }
