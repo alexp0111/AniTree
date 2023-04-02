@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "977310024",
+    "project_id": "anitree-f99ea",
+    "storage_bucket": "anitree-f99ea.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:977310024:android:9fd52a017318ebee18a37d",
+        "android_client_info": {
+          "package_name": "com.ikbo0621.anitree"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "977310024-ksbhktt97talhiq9d60laf5mpjoch7mb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA3qbFuMivyRmz1xQ4oGLuri9_Q10zY9fo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "977310024-ksbhktt97talhiq9d60laf5mpjoch7mb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
