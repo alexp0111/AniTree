@@ -4,10 +4,14 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
+import android.view.GestureDetector
+import android.view.GestureDetector.SimpleOnGestureListener
+import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
 import android.view.View
 import android.widget.Scroller
 import com.ikbo0621.anitree.tree.elements.TreeElement
+
 
 class TreeView(context: Context, attrs: AttributeSet) : View(context, attrs) {
     var elements: ArrayList<TreeElement> = ArrayList()
@@ -19,7 +23,27 @@ class TreeView(context: Context, attrs: AttributeSet) : View(context, attrs) {
     private var currentPos = PointF(0f, 0f)
     private var canvasMatrix = Matrix()
     private var scroller = Scroller(context)
-    private var clickCounter = 0L
+    private val gestureDetector = GestureDetector(context, object : SimpleOnGestureListener() {
+        override fun onDown(e: MotionEvent): Boolean {
+            for (it in elements.iterator()) {
+                if (it.isSelected(PointF(e.x - currentPos.x, e.y - currentPos.y))) {
+                    selectedElement = it
+                    break
+                }
+            }
+            return true
+        }
+
+        override fun onLongPress(e: MotionEvent) {
+            performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
+            performLongClick()
+        }
+
+        override fun onSingleTapUp(e: MotionEvent): Boolean {
+            performClick()
+            return true
+        }
+    })
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         screenSize = Point(w, h)
@@ -55,33 +79,9 @@ class TreeView(context: Context, attrs: AttributeSet) : View(context, attrs) {
             return
         elements.removeAt(index)
     }
+
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        when (event.actionMasked) {
-            MotionEvent.ACTION_DOWN -> {
-                clickCounter = event.eventTime
-            }
-            MotionEvent.ACTION_UP -> {
-                val elapsedTime = event.eventTime - clickCounter
-
-                for (it in elements.iterator()) {
-                    if (
-                        it.isSelected(PointF(event.x - currentPos.x, event.y - currentPos.y))
-                    ) {
-                        selectedElement = it
-                        break
-                    }
-                }
-
-                if (elapsedTime > 400) {
-                    performLongClick()
-                } else {
-                    performClick()
-                }
-
-                selectedElement = null
-            }
-        }
-        return true
+        return gestureDetector.onTouchEvent(event)
     }
 }

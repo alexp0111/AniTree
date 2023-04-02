@@ -8,14 +8,14 @@ import com.ikbo0621.anitree.tree.positioning.RValue
 class Curve(
     relativePath: Array<Line.LinePoint>,
     private val width: RValue,
-    curveColor: Int = Color.BLACK,
+    color: Int = Color.BLACK,
     cap: Paint.Cap = Paint.Cap.ROUND
 ) : TreeElement() {
     override var relativePos = RPosition(RValue(0f, RValue.Type.X), RValue(0f, RValue.Type.Y))
     override var paint: Paint = Paint().apply {
         isAntiAlias = true
         style = Style.STROKE
-        color = curveColor
+        this.color = color
         strokeCap = cap
     }
     private var line: Line = Line(relativePath)

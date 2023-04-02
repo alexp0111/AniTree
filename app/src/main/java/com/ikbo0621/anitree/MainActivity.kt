@@ -54,11 +54,13 @@ class MainActivity : AppCompatActivity() {
         }
 
         treeView.setOnLongClickListener {
-            val selectedElement =
-                (it to treeView).second.selectedElement ?: return@setOnLongClickListener false
-            treeEditor.deleteElement(selectedElement.index)
+//            val selectedElement =
+//                (it to treeView).second.selectedElement ?: return@setOnLongClickListener false
+//            treeEditor.deleteElement(selectedElement.index)
+//
+//            treeEditor.invalidate()
+            treeEditor.showCrossButtons()
 
-            treeEditor.invalidate()
             return@setOnLongClickListener true
         }
 
