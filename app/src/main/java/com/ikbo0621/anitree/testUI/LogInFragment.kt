@@ -16,7 +16,6 @@ import dagger.hilt.android.AndroidEntryPoint
 class LogInFragment : Fragment() {
 
     private val TAG: String = "LOG_IN_FRAGMENT"
-    private val PASSWORD_LENGTH: Int = 8
     lateinit var binding: FragmentLogInBinding
     val viewModel: UserViewModel by viewModels()
 
@@ -44,8 +43,8 @@ class LogInFragment : Fragment() {
         }
 
         // binding.btnForgotPassword.setOnClickListener {
-        //     parentFragmentManager.beginTransaction().addToBackStack("log_in")
-        //         .replace(R.id.fragment_container_view, PasswordRecoveryFragment()).commit()
+        //     parentFragmentManager.beginTransaction()
+        //         .replace(R.id.fragment_container_view, SearchFragment()).commit()
         // }
 
         binding.btnRegister.setOnClickListener {
@@ -58,9 +57,9 @@ class LogInFragment : Fragment() {
      * Set up an observer for livedata
      * to get result of log in operation
      * */
-    fun observer(){
+    fun observer() {
         viewModel.login.observe(viewLifecycleOwner) { state ->
-            when(state){
+            when (state) {
                 is UiState.Loading -> {
                     binding.btnLogIn.text = "Loading"
                     binding.pb.show()
@@ -74,7 +73,9 @@ class LogInFragment : Fragment() {
                     binding.btnLogIn.text = "Log In"
                     binding.pb.hide()
                     toast(state.data)
-                    // TODO: goto -> home fragment
+
+                    parentFragmentManager.beginTransaction().addToBackStack("log_in")
+                        .replace(R.id.fragment_container_view, SearchFragment()).commit()
                 }
             }
         }
@@ -99,12 +100,22 @@ class LogInFragment : Fragment() {
             isValid = false
             toast(getString(R.string.enter_password))
         } else {
-            if (binding.etPassword.text.toString().length < PASSWORD_LENGTH) {
+            if (binding.etPassword.text.toString().length < RegistrationParams.PASSWORD_LENGTH) {
                 isValid = false
                 toast(getString(R.string.invalid_password))
             }
         }
         return isValid
+    }
+
+    override fun onStart() {
+        super.onStart()
+        viewModel.getSession { user ->
+            if (user != null) {
+                parentFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container_view, SearchFragment()).commit()
+            }
+        }
     }
 
 }

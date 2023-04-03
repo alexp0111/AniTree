@@ -5,22 +5,35 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.ikbo0621.anitree.R
+import com.ikbo0621.anitree.databinding.FragmentProfileBinding
+import com.ikbo0621.anitree.viewModel.UserViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class ProfileFragment : Fragment() {
 
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
+    private val TAG: String = "PROFILE_FRAGMENT"
+    lateinit var binding: FragmentProfileBinding
+    val viewModel: UserViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_profile, container, false)
+        binding = FragmentProfileBinding.inflate(layoutInflater)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.btnLogOut.setOnClickListener {
+            viewModel.logout {
+                parentFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container_view, LogInFragment()).commit()
+            }
+        }
     }
 
 }
