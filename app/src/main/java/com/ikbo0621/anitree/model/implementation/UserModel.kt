@@ -1,7 +1,9 @@
 package com.ikbo0621.anitree.model.implementation
 
+import android.content.SharedPreferences
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.gson.Gson
 import com.ikbo0621.anitree.model.repository.UserRepository
 import com.ikbo0621.anitree.structure.User
 import com.ikbo0621.anitree.util.UiState
@@ -9,6 +11,8 @@ import com.ikbo0621.anitree.util.UiState
 class UserModel(
     val auth: FirebaseAuth,
     val database: FirebaseFirestore,
+    val appPreferences: SharedPreferences,
+    val gson: Gson
 ) : UserRepository {
     override fun registerUser(
         email: String,

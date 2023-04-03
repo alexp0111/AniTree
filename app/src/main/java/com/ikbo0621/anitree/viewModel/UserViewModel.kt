@@ -6,11 +6,13 @@ import androidx.lifecycle.ViewModel
 import com.ikbo0621.anitree.model.repository.UserRepository
 import com.ikbo0621.anitree.structure.User
 import com.ikbo0621.anitree.util.UiState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 /**
  * ViewModel for User
  * */
+@HiltViewModel
 class UserViewModel @Inject constructor(
     val repository: UserRepository
 ) : ViewModel() {
