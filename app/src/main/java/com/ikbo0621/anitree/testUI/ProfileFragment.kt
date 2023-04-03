@@ -28,6 +28,15 @@ class ProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // Temporary solution
+        // TODO: Replace with get request to firestore with observer logic
+        viewModel.getSession {
+            if (it != null) {
+                binding.tvProfileName.text = it.name + "\n" + it.id
+            }
+        }
+
         binding.btnLogOut.setOnClickListener {
             viewModel.logout {
                 parentFragmentManager.beginTransaction()
