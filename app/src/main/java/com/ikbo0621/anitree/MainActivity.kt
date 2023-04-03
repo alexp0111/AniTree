@@ -19,9 +19,8 @@ class MainActivity : AppCompatActivity() {
             .commitAllowingStateLoss()
 
         //TODO:
-        // 1. Check for SESSION logic
-        // 2. DI realisation
-        // 3. Dagger annotations
-        // 4. UserModel methods realisation
+        // 1. DI realisation
+        // 2. Dagger annotations
+        // 3. UserModel methods realisation
     }
 }
