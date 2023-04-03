@@ -34,4 +34,12 @@ class UserModel(
     override fun logout(result: () -> Unit) {
         TODO("Not yet implemented")
     }
+
+    override fun storeSession(id: String, result: (User?) -> Unit) {
+        TODO("Not yet implemented")
+    }
+
+    override fun getSession(result: (User?) -> Unit) {
+        TODO("Not yet implemented")
+    }
 }
