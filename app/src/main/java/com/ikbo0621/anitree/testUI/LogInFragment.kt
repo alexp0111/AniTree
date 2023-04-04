@@ -74,7 +74,7 @@ class LogInFragment : Fragment() {
                     binding.pb.hide()
                     toast(state.data)
 
-                    parentFragmentManager.beginTransaction().addToBackStack("log_in")
+                    parentFragmentManager.beginTransaction()
                         .replace(R.id.fragment_container_view, SearchFragment()).commit()
                 }
             }
