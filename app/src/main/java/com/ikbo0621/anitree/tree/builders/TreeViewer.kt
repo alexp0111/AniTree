@@ -25,10 +25,10 @@ open class TreeViewer(
 ) : TreeBuilder(treeView, contextRef) {
     protected var currentElement = treeData
     protected val animator = JumpAnimator()
-    private val subStudioTextStrings = arrayOf("YOUR", "FAVORITE", "ANIME")
-    private val subNameTextStrings = arrayOf("Help", "Others", "Choose")
+//    private val subStudioTextStrings = arrayOf("YOUR", "FAVORITE", "ANIME")
+//    private val subNameTextStrings = arrayOf("Help", "Others", "Choose")
 
-    // Preserving Elements to Optimize Rendering
+    // Preserving elements to optimize rendering
     private var mainStudioText: Text? = null
     private var mainNameText: Text? = null
     private val subStudioTexts = arrayOf<Text?>(null, null, null)
@@ -42,15 +42,15 @@ open class TreeViewer(
     override fun update() {
         val context = contextRef.get() ?: return
 
-        addBackField()
         addBottomText(context)
         super.update()
         addCurves(context)
         addFrames(context)
         addUpperText(context)
+        addBackField()
     }
 
-    fun toPreviousLayer() {
+    open fun toPreviousLayer() {
         if (animator.isAnimating)
             return
 
@@ -71,7 +71,7 @@ open class TreeViewer(
         )
     }
 
-    fun toNextLayer(nextElement: Icon?) {
+    open fun toNextLayer(nextElement: Icon?) {
         if (animator.isAnimating || nextElement == null || mainStudioText == null)
             return
         val nextIndex = nextElement.index ?: return
@@ -104,6 +104,7 @@ open class TreeViewer(
             for (i in layer.tree!!)
                 addSubElement(i.bitmap, i.index)
         }
+        invalidate()
     }
 
     private fun getCurrentIndex() : IntArray {
@@ -174,8 +175,8 @@ open class TreeViewer(
         }
 
         for (i in border until 3) {
-            addSubStudioText(context, subStudioTextStrings[i], textColor, i)
-            addSubNameText(context, subNameTextStrings[i], textColor, i)
+            addSubStudioText(context, layout.subStudioTextStrings[i], textColor, i)
+            addSubNameText(context, layout.subNameTextStrings[i], textColor, i)
         }
     }
 
@@ -198,7 +199,7 @@ open class TreeViewer(
                 color,
                 Paint.Style.STROKE,
                 layout.lineWidth
-            )
+            ).apply { selectable = false }
         )
     }
 
@@ -210,7 +211,7 @@ open class TreeViewer(
                 color,
                 Paint.Style.STROKE,
                 layout.lineWidth
-            )
+            ).apply { selectable = false }
         )
     }
 

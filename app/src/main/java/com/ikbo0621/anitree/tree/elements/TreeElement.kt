@@ -19,6 +19,7 @@ abstract class TreeElement {
             paint.alpha = value
         }
     var index: IntArray? = null
+    var selectable = true
 
     abstract fun draw(canvas: Canvas)
     abstract fun isSelected(position: PointF) : Boolean

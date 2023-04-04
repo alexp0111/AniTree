@@ -9,6 +9,7 @@ import com.ikbo0621.anitree.tree.TreeView
 import com.ikbo0621.anitree.tree.builders.TreeEditor
 import com.ikbo0621.anitree.tree.elements.Icon
 import com.ikbo0621.anitree.tree.elements.buttons.Button
+import com.ikbo0621.anitree.tree.elements.buttons.CrossButton
 import com.ikbo0621.anitree.tree.elements.buttons.SchemeButton
 import com.ikbo0621.anitree.tree.structures.TreeData
 import java.lang.ref.WeakReference
@@ -40,8 +41,11 @@ class MainActivity : AppCompatActivity() {
         treeEditor.invalidate()
 
         treeView.setOnClickListener {
-            val selectedElement =
-                (it to treeView).second.selectedElement ?: return@setOnClickListener
+            val selectedElement = (it to treeView).second.selectedElement
+            if (selectedElement == null) {
+                treeEditor.showCrossButtons(false)
+                return@setOnClickListener
+            }
 
             when(selectedElement) {
                 is Icon -> treeEditor.toNextLayer(selectedElement)
@@ -49,17 +53,16 @@ class MainActivity : AppCompatActivity() {
                     val name = "${selectedElement.getAbsPos().y.toInt() / 100}Anime"
                     treeEditor.addSubElement(name, "RandStudio", getRandomBitmap())
                 }
+                is CrossButton -> {
+                    treeEditor.deleteElement(selectedElement.index)
+                }
                 is Button -> treeEditor.toPreviousLayer()
+                else -> treeEditor.showCrossButtons(false)
             }
         }
 
         treeView.setOnLongClickListener {
-//            val selectedElement =
-//                (it to treeView).second.selectedElement ?: return@setOnLongClickListener false
-//            treeEditor.deleteElement(selectedElement.index)
-//
-//            treeEditor.invalidate()
-            treeEditor.showCrossButtons()
+            treeEditor.showCrossButtons(true)
 
             return@setOnLongClickListener true
         }

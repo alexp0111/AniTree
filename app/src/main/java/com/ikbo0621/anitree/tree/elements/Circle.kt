@@ -26,9 +26,9 @@ open class Circle(
     }
 
     override fun isSelected(position: PointF) : Boolean {
-        return (position.x - absolutePos.x).pow(2) +
+        return selectable && (position.x - absolutePos.x).pow(2) +
                 (position.y - absolutePos.y).pow(2) <=
-                radius.getAbsolute(screenSize.x, screenSize.y).pow(2) //radius.pow(2)
+                radius.getAbsolute(screenSize.x, screenSize.y).pow(2)
     }
 
     override fun correctPos(w: Int, h: Int) {

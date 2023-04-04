@@ -25,9 +25,17 @@ class TreeView(context: Context, attrs: AttributeSet) : View(context, attrs) {
     private var scroller = Scroller(context)
     private val gestureDetector = GestureDetector(context, object : SimpleOnGestureListener() {
         override fun onDown(e: MotionEvent): Boolean {
-            for (it in elements.iterator()) {
-                if (it.isSelected(PointF(e.x - currentPos.x, e.y - currentPos.y))) {
-                    selectedElement = it
+//            for (it in elements.iterator()) {
+//                if (it.isSelected(PointF(e.x - currentPos.x, e.y - currentPos.y))) {
+//                    selectedElement = it
+//                    break
+//                }
+//            }
+
+            selectedElement = null
+            for (element in elements.reversed()) {
+                if (element.isSelected(PointF(e.x - currentPos.x, e.y - currentPos.y))) {
+                    selectedElement = element
                     break
                 }
             }

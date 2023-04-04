@@ -28,7 +28,7 @@ open class Rectangle(
 
     override fun isSelected(position: PointF): Boolean {
         val absoluteRect = rectPoints.getAbsoluteRect(screenSize.x, screenSize.y, absolutePos)
-        return absoluteRect.contains(position.x, position.y)
+        return selectable && absoluteRect.contains(position.x, position.y)
     }
 
     override fun correctPos(w: Int, h: Int) {

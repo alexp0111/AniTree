@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.PointF
+import android.graphics.RectF
 import com.ikbo0621.anitree.tree.positioning.RPosition
 import com.ikbo0621.anitree.tree.positioning.RRect
 import com.ikbo0621.anitree.tree.positioning.RValue
@@ -33,9 +34,25 @@ class CrossButton(
 
         paint.strokeWidth = width.getAbsolute(w, h)
 
+        val rect = calculateDrawableRect(w, h)
+        path.reset()
+        path.moveTo(rect.left, rect.top)
+        path.lineTo(rect.right, rect.bottom)
+        path.moveTo(rect.left, rect.bottom)
+        path.lineTo(rect.right, rect.top)
+    }
+
+    override fun isSelected(position: PointF): Boolean {
+        return selectable && calculateDrawableRect(
+            screenSize.x, screenSize.y).contains(position.x, position.y
+        )
+    }
+
+    private fun calculateDrawableRect(w: Int, h: Int) : RectF {
         val leftUpper = rectPoints.leftUpper.getAbsolute(w, h)
         val rightBottom = rectPoints.rightBottom.getAbsolute(w, h)
         val offset = PointF((rightBottom.x + paint.strokeWidth) * 0.5f, (rightBottom.y + paint.strokeWidth) * 0.5f)
+
         val correctedLeftUpper = leftUpper.apply {
             offset(absolutePos.x - offset.x, absolutePos.y - offset.y)
         }
@@ -43,10 +60,11 @@ class CrossButton(
             offset(absolutePos.x - offset.x, absolutePos.y - offset.y)
         }
 
-        path.reset()
-        path.moveTo(correctedLeftUpper.x, correctedLeftUpper.y)
-        path.lineTo(correctedRightBottom.x, correctedRightBottom.y)
-        path.moveTo(correctedLeftUpper.x, correctedRightBottom.y)
-        path.lineTo(correctedRightBottom.x, correctedLeftUpper.y)
+        return RectF(
+            correctedLeftUpper.x,
+            correctedLeftUpper.y,
+            correctedRightBottom.x,
+            correctedRightBottom.y
+        )
     }
 }

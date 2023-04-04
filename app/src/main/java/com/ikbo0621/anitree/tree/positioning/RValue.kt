@@ -51,7 +51,7 @@ class RValue(
         return getAbsolute(screenSize.x, screenSize.y)
     }
 
-    operator fun unaryMinus(): RValue{
+    operator fun unaryMinus(): RValue {
         val cloneLimit = if (limit == null)
             null
         else if (value > 0)

@@ -4,13 +4,12 @@ import android.content.Context
 import android.graphics.Bitmap
 import com.ikbo0621.anitree.R
 import com.ikbo0621.anitree.tree.TreeView
-import com.ikbo0621.anitree.tree.elements.Curve
+import com.ikbo0621.anitree.tree.elements.Icon
 import com.ikbo0621.anitree.tree.elements.buttons.CrossButton
 import com.ikbo0621.anitree.tree.elements.buttons.MainSchemeButton
 import com.ikbo0621.anitree.tree.elements.buttons.SchemeButton
 import com.ikbo0621.anitree.tree.positioning.RPosition
 import com.ikbo0621.anitree.tree.positioning.RRect
-import com.ikbo0621.anitree.tree.positioning.RValue
 import com.ikbo0621.anitree.tree.structures.TreeData
 import java.lang.ref.WeakReference
 
@@ -19,24 +18,15 @@ class TreeEditor(
     contextRef: WeakReference<Context>,
     treeData: TreeData,
 ) : TreeViewer(treeView, contextRef, treeData) {
+    // Preserving elements to optimize rendering
     private val crossButtons = arrayOf<CrossButton?>(null, null, null)
+    private var isRemoval = false
 
     override fun update() {
         addSchemeButtons()
         super.update()
-        //addCrossButtons(contextRef.get()!!)
         addFramesAndCurvesToScheme()
-
-//        treeView.addElement(
-//            CrossButton(
-//                RPosition(RValue(0.5f, RValue.Type.X), RValue(0.5f, RValue.Type.Y)),
-//                RRect(
-//                    RPosition(RValue(0.1f, RValue.Type.X), RValue(0.1f, RValue.Type.Y)),
-//                    RPosition(RValue(0.9f, RValue.Type.X), RValue(0.9f, RValue.Type.Y))
-//                ),
-//                RValue(0.1f)
-//            )
-//        )
+        addCrossButtons()
     }
 
     override fun updateLayer() {
@@ -47,6 +37,7 @@ class TreeEditor(
     fun addSubElement(name: String, studio: String, bitmap: Bitmap) {
         if (animator.isAnimating)
             return
+        isRemoval = false
 
         val index = getIndex(currentElement)
         currentElement.addSubElement(name, studio, bitmap, index)
@@ -77,17 +68,27 @@ class TreeEditor(
         updateLayer()
     }
 
+    override fun toNextLayer(nextElement: Icon?) {
+        if (isRemoval)
+            return
+        super.toNextLayer(nextElement)
+    }
+
+    override fun toPreviousLayer() {
+        showCrossButtons(false)
+        super.toPreviousLayer()
+    }
+
     fun getTree() : TreeData {
         return treeData
     }
 
-    fun showCrossButtons() {
-        val context = contextRef.get() ?: return
+    fun showCrossButtons(show: Boolean) {
+        isRemoval = show
 
-        for (i in 0 until subIcons.size) {
-            createCrossButton(context, i)
-        }
-        treeView.invalidate()
+        if (isRemoval)
+            addCrossButtons()
+        invalidate()
     }
 
     private fun addSchemeButtons() {
@@ -125,21 +126,11 @@ class TreeEditor(
 
     private fun addScheme() {
         val context = contextRef.get() ?: return
-        val schemeColor = context.resources.getColor(R.color.scheme_color, null)
         val elementsColor = context.resources.getColor(R.color.elements_color, null)
-
-//        if (mainIcon == null) {
-//            treeView.addElement(MainSchemeButton(layout.mainIconPos, layout.mainIconRadius, schemeColor))
-//            addMainFrame(elementsColor)
-//        }
 
         val schemeIndex = subIcons.size
         if (schemeIndex >= 3)
             return
-
-//        treeView.addElement(
-//            SchemeButton(layout.subIconsPositions[schemeIndex], layout.subIconRadius, schemeColor)
-//        )
 
         createCurveToSubIcon(context, schemeIndex)
         addSubFrame(schemeIndex, elementsColor)
@@ -169,7 +160,17 @@ class TreeEditor(
         return result
     }
 
-    private fun createCrossButton(context: Context, index: Int) {
+    private fun addCrossButtons() {
+        if (!isRemoval)
+            return
+        val context = contextRef.get() ?: return
+
+        for (i in 0 until (currentElement.tree?.size ?: 0)) {
+            addCrossButton(context, i)
+        }
+    }
+
+    private fun addCrossButton(context: Context, index: Int) {
         if (crossButtons[index] == null) {
             val color = context.resources.getColor(R.color.elements_color, null)
             crossButtons[index] = CrossButton(
@@ -182,6 +183,7 @@ class TreeEditor(
                 color
             )
         }
+        crossButtons[index]!!.index = currentElement.tree!![index].index
 
         treeView.addElement(crossButtons[index]!!)
     }

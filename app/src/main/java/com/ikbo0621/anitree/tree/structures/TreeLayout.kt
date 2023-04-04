@@ -58,4 +58,6 @@ data class TreeLayout(val offset: RPosition) {
     }
     val subNameTextSize = RValue(0.04F, RValue.Type.Y)
     val lineWidth = RValue(0.003f, RValue.Type.Y)
+    val subStudioTextStrings = arrayOf("YOUR", "FAVORITE", "ANIME")
+    val subNameTextStrings = arrayOf("Help", "Others", "Choose")
 }
