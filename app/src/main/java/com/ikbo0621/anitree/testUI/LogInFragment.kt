@@ -42,10 +42,10 @@ class LogInFragment : Fragment() {
             }
         }
 
-        // binding.btnForgotPassword.setOnClickListener {
-        //     parentFragmentManager.beginTransaction()
-        //         .replace(R.id.fragment_container_view, SearchFragment()).commit()
-        // }
+        binding.btnForgotPassword.setOnClickListener {
+            parentFragmentManager.beginTransaction().addToBackStack("log_in")
+                .replace(R.id.fragment_container_view, ForgotPasswordFragment()).commit()
+        }
 
         binding.btnRegister.setOnClickListener {
             parentFragmentManager.beginTransaction().addToBackStack("log_in")
@@ -62,15 +62,18 @@ class LogInFragment : Fragment() {
             when (state) {
                 is UiState.Loading -> {
                     binding.btnLogIn.text = "Loading"
+                    binding.btnLogIn.disable()
                     binding.pb.show()
                 }
                 is UiState.Failure -> {
                     binding.btnLogIn.text = "Log In"
+                    binding.btnLogIn.enabled()
                     binding.pb.hide()
                     toast(state.error)
                 }
                 is UiState.Success -> {
                     binding.btnLogIn.text = "Log In"
+                    binding.btnLogIn.enabled()
                     binding.pb.hide()
                     toast(state.data)
 

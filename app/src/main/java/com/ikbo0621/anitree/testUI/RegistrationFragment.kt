@@ -55,15 +55,18 @@ class RegistrationFragment : Fragment() {
             when (state) {
                 is UiState.Loading -> {
                     binding.btnRegister.text = "Loading"
+                    binding.btnRegister.disable()
                     binding.pb.show()
                 }
                 is UiState.Failure -> {
                     binding.btnRegister.text = "Register"
+                    binding.btnRegister.enabled()
                     binding.pb.hide()
                     toast(state.error)
                 }
                 is UiState.Success -> {
                     binding.btnRegister.text = "Register"
+                    binding.btnRegister.enabled()
                     binding.pb.hide()
                     toast(state.data)
 
