@@ -84,6 +84,9 @@ class TreeEditor(
     }
 
     fun showCrossButtons(show: Boolean) {
+        if (animator.isAnimating)
+            return
+
         isRemoval = show
 
         if (isRemoval)
@@ -121,7 +124,7 @@ class TreeEditor(
             return
 
         createCurveToSubIcon(context, schemeIndex)
-        addSubFrame(schemeIndex, elementsColor)
+        addSubFrame(elementsColor, schemeIndex)
     }
 
     private fun addScheme() {
@@ -133,7 +136,7 @@ class TreeEditor(
             return
 
         createCurveToSubIcon(context, schemeIndex)
-        addSubFrame(schemeIndex, elementsColor)
+        addSubFrame(elementsColor, schemeIndex)
     }
 
     // Returns the index of the new element

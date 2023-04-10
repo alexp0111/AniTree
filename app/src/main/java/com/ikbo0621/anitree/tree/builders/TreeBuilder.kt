@@ -15,6 +15,7 @@ open class TreeBuilder(
     protected var mainIcon: Circle? = null
     protected var subIcons = ArrayList<Circle>(3)
     protected val layout = TreeLayout(RPosition())
+    protected var mainIconIndex: Int? = null
 
     fun addMainElement(bitmap: Bitmap, index: IntArray) {
         mainIcon = Icon(
@@ -46,6 +47,7 @@ open class TreeBuilder(
             treeView.addElement(subIcons[i])
         }
         treeView.addElement(mainIcon!!)
+        mainIconIndex = treeView.elements.lastIndex
     }
 
     fun invalidate() {

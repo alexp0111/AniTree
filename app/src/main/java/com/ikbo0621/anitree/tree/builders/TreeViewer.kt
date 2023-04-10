@@ -7,10 +7,12 @@ import android.graphics.PointF
 import android.graphics.Typeface
 import androidx.core.content.res.ResourcesCompat
 import com.ikbo0621.anitree.R
-import com.ikbo0621.anitree.animators.TreeAnimator
+import com.ikbo0621.anitree.animators.FadeAnimator
+import com.ikbo0621.anitree.animators.MoveAnimator
 import com.ikbo0621.anitree.tree.TreeView
 import com.ikbo0621.anitree.tree.elements.*
 import com.ikbo0621.anitree.tree.elements.buttons.Button
+import com.ikbo0621.anitree.tree.elements.buttons.SchemeButton
 import com.ikbo0621.anitree.tree.positioning.RPosition
 import com.ikbo0621.anitree.tree.positioning.RRect
 import com.ikbo0621.anitree.tree.positioning.RValue
@@ -25,8 +27,6 @@ open class TreeViewer(
 ) : TreeBuilder(treeView, contextRef) {
     protected var currentElement = treeData
     protected val animator = JumpAnimator()
-//    private val subStudioTextStrings = arrayOf("YOUR", "FAVORITE", "ANIME")
-//    private val subNameTextStrings = arrayOf("Help", "Others", "Choose")
 
     // Preserving elements to optimize rendering
     private var mainStudioText: Text? = null
@@ -34,6 +34,8 @@ open class TreeViewer(
     private val subStudioTexts = arrayOf<Text?>(null, null, null)
     private val subNameTexts = arrayOf<Text?>(null, null, null)
     private val curves = arrayOf<Curve?>(null, null, null)
+    private var mainFrame: Circle? = null
+    private val subFrames = arrayOf<Circle?>(null, null, null)
 
     init {
         this.toAnotherLayer(intArrayOf())
@@ -57,13 +59,13 @@ open class TreeViewer(
         val currentIndex = getCurrentIndex()
         if (currentIndex.isEmpty())
             return
-        val nextIndex = currentIndex.copyOf(currentIndex.size - 1)
+        //val nextIndex = currentIndex.copyOf(currentIndex.size - 1)
         val screenSize = treeView.screenSize ?: return
         val nextPosition = layout.subFramePositions[getCurrentIndex().last()].
             getAbsolute(screenSize.x, screenSize.y)
 
         animator.startAnimation(
-            nextIndex,
+            getPreviousIndex(),
             PointF(
                 nextPosition.x - mainIcon!!.getAbsPos().x,
                 nextPosition.y - mainIcon!!.getAbsPos().y
@@ -109,6 +111,12 @@ open class TreeViewer(
 
     private fun getCurrentIndex() : IntArray {
         return currentElement.index
+    }
+
+    private fun getPreviousIndex() : IntArray {
+        if (currentElement.index.isEmpty())
+            return currentElement.index
+        return currentElement.index.copyOf(currentElement.index.size - 1)
     }
 
     private fun addMainStudioText(context: Context, text: String, color: Int) {
@@ -192,27 +200,31 @@ open class TreeViewer(
     }
 
     protected fun addMainFrame(color: Int) {
-        treeView.addElement(
-            Circle(
+        if (mainFrame == null) {
+            mainFrame = Circle(
                 layout.mainFramePos,
                 layout.mainIconRadius,
                 color,
                 Paint.Style.STROKE,
                 layout.lineWidth
             ).apply { selectable = false }
-        )
+        }
+
+        treeView.addElement(mainFrame!!)
     }
 
-    protected fun addSubFrame(index: Int, color: Int) {
-        treeView.addElement(
-            Circle(
+    protected fun addSubFrame(color: Int, index: Int) {
+        if (subFrames[index] == null) {
+            subFrames[index] = Circle(
                 layout.subFramePositions[index],
                 layout.subIconRadius,
                 color,
                 Paint.Style.STROKE,
                 layout.lineWidth
             ).apply { selectable = false }
-        )
+        }
+
+        treeView.addElement(subFrames[index]!!)
     }
 
     private fun addFrames(context: Context) {
@@ -224,7 +236,7 @@ open class TreeViewer(
         addMainFrame(color)
 
         for (i in 0 until subIcons.size) {
-            addSubFrame(i, color)
+            addSubFrame(color, i)
         }
     }
 
@@ -287,47 +299,97 @@ open class TreeViewer(
         )
     }
 
-    protected inner class JumpAnimator : TreeAnimator(contextRef, treeView) {
+    protected inner class JumpAnimator {
         var isAnimating = false
             private set
         private var index = IntArray(0)
+        private var restoreElements: ArrayList<TreeElement?> = ArrayList()
 
-        init {
+        private val step4 = FadeAnimator(contextRef, treeView).apply {
+            type = FadeAnimator.Type.IN
+            doRestore = false
+            duration = 400
+            setOnEndFunction {
+                restoreElements.addAll(elements)
+                for (element in restoreElements) {
+                    element?.alpha = 255
+                }
+                restoreElements.clear()
+
+                treeView.postInvalidate()
+                isAnimating = false
+            }
+        }
+        private val step3 = MoveAnimator(contextRef, treeView).apply {
             setOnEndFunction {
                 toAnotherLayer(index)
-
-                TreeAnimator(contextRef, treeView).apply {
-                    invalidate()
-                    duration = 400
-                    addElement(treeView.elements, AdditionalEffect.FADEIN)
-
-                    setOnEndFunction {
-                        invalidate()
-                        isAnimating = false
-                    }
-                    startAnimation(PointF())
-                }
+                step4.elements.addAll(treeView.elements)
+                step4.start()
+            }
+        }
+        private val step2 = FadeAnimator(contextRef, treeView).apply {
+            type = FadeAnimator.Type.OUT
+        }
+        private val step1 = FadeAnimator(contextRef, treeView).apply {
+            type = FadeAnimator.Type.OUT
+            doRestore = false
+            duration = 400
+            setOnEndFunction {
+                restoreElements.addAll(elements)
+                step2.start()
+                step3.start()
             }
         }
 
         private fun setElements() {
-            elements.clear()
-            elements.ensureCapacity(treeView.elements.size)
+            step1.elements.clear()
+            step2.elements.clear()
 
-            for (i in treeView.elements) {
-                if (i is Text || i is Icon) {
-                    addElement(i, AdditionalEffect.FADEOUT)
-                } else {
-                    addElement(i, AdditionalEffect.FADEOUT, MovementType.NONE)
-                }
+            for (i in treeView.elements.indices) {
+                val element = treeView.elements[i]
+
+                step3.elements.add(element)
+                if (mainIconIndex != null && i == mainIconIndex)
+                    continue
+
+                if ((element is Icon && !element.index.contentEquals(index)) || element is SchemeButton)
+                    step1.elements.add(element)
+                else if (element !is Curve && element !is Text && element !is Circle)
+                    step2.elements.add(element)
             }
+
+            if (!index.contentEquals(getPreviousIndex())) {
+                for (i in subFrames.indices) {
+                    if (i != index.last()) {
+                        step1.elements.add(curves[i])
+                        step1.elements.add(subNameTexts[i])
+                        step1.elements.add(subStudioTexts[i])
+                        step1.elements.add(subFrames[i])
+                    } else {
+                        step2.elements.add(curves[i])
+                        step2.elements.add(subNameTexts[i])
+                        step2.elements.add(subStudioTexts[i])
+                        step2.elements.add(subFrames[i])
+                    }
+                }
+            } else {
+                step1.elements.addAll(curves)
+                step1.elements.addAll(subNameTexts)
+                step1.elements.addAll(subStudioTexts)
+                step1.elements.addAll(subFrames)
+            }
+            step2.elements.add(mainStudioText)
+            step2.elements.add(mainNameText)
+            step2.elements.add(mainFrame)
         }
 
         fun startAnimation(index: IntArray, dPos: PointF) {
             isAnimating = true
-            animator.setElements()
             this.index = index
-            super.startAnimation(dPos)
+            setElements()
+
+            step3.delta = dPos
+            step1.start()
         }
     }
 }
