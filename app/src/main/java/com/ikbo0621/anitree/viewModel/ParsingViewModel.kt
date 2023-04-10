@@ -3,10 +3,12 @@ package com.ikbo0621.anitree.viewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.ikbo0621.anitree.model.repository.ParsingRepository
 import com.ikbo0621.anitree.structure.Anime
 import com.ikbo0621.anitree.util.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -24,8 +26,10 @@ class ParsingViewModel @Inject constructor(
         animeTitle: String
     ) {
         _anim.value = UiState.Loading
-        repository.getAnimeWithName(
-            animeTitle = animeTitle,
-        ) { _anim.value = it }
+        viewModelScope.launch {
+            repository.getAnimeWithName(
+                animeTitle = animeTitle,
+            ) { _anim.value = it }
+        }
     }
 }

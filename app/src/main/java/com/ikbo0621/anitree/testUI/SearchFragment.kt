@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.bumptech.glide.Glide
 import com.ikbo0621.anitree.R
 import com.ikbo0621.anitree.databinding.FragmentSearchBinding
 import com.ikbo0621.anitree.util.*
@@ -36,7 +37,10 @@ class SearchFragment : Fragment() {
         }
         binding.btnFind.setOnClickListener {
             if (validation()) {
-                val trimmedTitle = binding.etAnimeTitle.text.toString().trim().replace(" ", "-")
+                val trimmedTitle = binding.etAnimeTitle.text.toString()
+                    .trim()
+                    .replace(" ", "-")
+                    .lowercase()
                 viewModel.getAnimeWithTitle(trimmedTitle)
             }
         }
@@ -67,7 +71,13 @@ class SearchFragment : Fragment() {
                     binding.btnFind.text = "FIND"
                     binding.btnFind.enabled()
                     binding.pb.hide()
-                    toast(state.data.toString())
+                    binding.tvInfo.text = state.data.toString()
+
+                    context?.let {
+                        Glide.with(it)
+                            .load(state.data.imageURI)
+                            .into(binding.iv)
+                    }
                 }
             }
         }

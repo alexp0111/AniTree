@@ -10,6 +10,6 @@ data class Anime(
     var imageURI: Uri
 ){
     override fun toString(): String {
-        return "Anime(title='$title', description='$description', studio='$studio', releaseDate='$releaseDate', imageURI=$imageURI)"
+        return "Anime(\ntitle='$title'\n\ndescription='$description'\n\nstudio='$studio'\n\nreleaseDate='$releaseDate'\n\nimageURI=$imageURI)"
     }
 }
