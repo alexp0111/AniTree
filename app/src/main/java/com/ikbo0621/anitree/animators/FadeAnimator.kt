@@ -21,12 +21,14 @@ class FadeAnimator(
                 for (i in elements.indices) {
                     elements[i]?.alpha = (255.0 * alphaFactor).toInt()
                 }
-                treeView.postInvalidate()
+                if (autoUpdate)
+                    treeView.postInvalidate()
             }
         }
     }
 
     override fun start() {
+        super.start()
         for (i in elements.indices) {
             if (type == Type.IN)
                 elements[i]?.alpha = 0
@@ -45,5 +47,9 @@ class FadeAnimator(
 
     enum class Type {
         IN, OUT
+    }
+
+    override fun clear() {
+        elements.clear()
     }
 }

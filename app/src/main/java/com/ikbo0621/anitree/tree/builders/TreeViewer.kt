@@ -7,6 +7,7 @@ import android.graphics.PointF
 import android.graphics.Typeface
 import androidx.core.content.res.ResourcesCompat
 import com.ikbo0621.anitree.R
+import com.ikbo0621.anitree.animators.Animator
 import com.ikbo0621.anitree.animators.FadeAnimator
 import com.ikbo0621.anitree.animators.MoveAnimator
 import com.ikbo0621.anitree.tree.TreeView
@@ -309,7 +310,7 @@ open class TreeViewer(
             type = FadeAnimator.Type.IN
             doRestore = false
             duration = 400
-            setOnEndFunction {
+            onEnd = {
                 restoreElements.addAll(elements)
                 for (element in restoreElements) {
                     element?.alpha = 255
@@ -321,7 +322,7 @@ open class TreeViewer(
             }
         }
         private val step3 = MoveAnimator(contextRef, treeView).apply {
-            setOnEndFunction {
+            onEnd = {
                 toAnotherLayer(index)
                 step4.elements.addAll(treeView.elements)
                 step4.start()
@@ -329,54 +330,86 @@ open class TreeViewer(
         }
         private val step2 = FadeAnimator(contextRef, treeView).apply {
             type = FadeAnimator.Type.OUT
+            onEnd = {
+                val a = 34
+            }
         }
         private val step1 = FadeAnimator(contextRef, treeView).apply {
             type = FadeAnimator.Type.OUT
             doRestore = false
             duration = 400
-            setOnEndFunction {
+            onEnd = {
                 restoreElements.addAll(elements)
                 step2.start()
                 step3.start()
             }
         }
 
+        private fun addSubDecor(animator: Animator, index: Int) {
+            animator.elements.add(curves[index])
+            animator.elements.add(subNameTexts[index])
+            animator.elements.add(subStudioTexts[index])
+            animator.elements.add(subFrames[index])
+        }
+
         private fun setElements() {
-            step1.elements.clear()
-            step2.elements.clear()
-
             for (i in treeView.elements.indices) {
+//                val element = treeView.elements[i]
+//
+//                step3.elements.add(element)
+//                if (mainIconIndex != null && i == mainIconIndex)
+//                    continue
+//
+//                if ((element is Icon && !element.index.contentEquals(index)) || element is SchemeButton)
+//                    step1.elements.add(element)
+//                else if (element !is Curve && element !is Text && element !is Circle)
+//                    step2.elements.add(element)
+
                 val element = treeView.elements[i]
-
                 step3.elements.add(element)
-                if (mainIconIndex != null && i == mainIconIndex)
-                    continue
-
-                if ((element is Icon && !element.index.contentEquals(index)) || element is SchemeButton)
-                    step1.elements.add(element)
-                else if (element !is Curve && element !is Text && element !is Circle)
-                    step2.elements.add(element)
+                when(element) {
+                    is Icon -> {
+                        if (mainIconIndex != null && i == mainIconIndex)
+                            continue
+                        if (element.index.contentEquals(index))
+                            continue
+                        step1.elements.add(element)
+                    }
+                    is SchemeButton -> {
+                        step1.elements.add(element)
+                    }
+                    else -> {
+                        if (element is Curve || element is Text || element is Circle)
+                            continue
+                        step2.elements.add(element)
+                    }
+                }
             }
 
             if (!index.contentEquals(getPreviousIndex())) {
                 for (i in subFrames.indices) {
                     if (i != index.last()) {
-                        step1.elements.add(curves[i])
-                        step1.elements.add(subNameTexts[i])
-                        step1.elements.add(subStudioTexts[i])
-                        step1.elements.add(subFrames[i])
+//                        step1.elements.add(curves[i])
+//                        step1.elements.add(subNameTexts[i])
+//                        step1.elements.add(subStudioTexts[i])
+//                        step1.elements.add(subFrames[i])
+                        addSubDecor(step1, i)
                     } else {
-                        step2.elements.add(curves[i])
-                        step2.elements.add(subNameTexts[i])
-                        step2.elements.add(subStudioTexts[i])
-                        step2.elements.add(subFrames[i])
+//                        step2.elements.add(curves[i])
+//                        step2.elements.add(subNameTexts[i])
+//                        step2.elements.add(subStudioTexts[i])
+//                        step2.elements.add(subFrames[i])
+                        addSubDecor(step2, i)
                     }
                 }
             } else {
-                step1.elements.addAll(curves)
-                step1.elements.addAll(subNameTexts)
-                step1.elements.addAll(subStudioTexts)
-                step1.elements.addAll(subFrames)
+                for (i in subFrames.indices) {
+                    addSubDecor(step1, i)
+                }
+//                step1.elements.addAll(curves)
+//                step1.elements.addAll(subNameTexts)
+//                step1.elements.addAll(subStudioTexts)
+//                step1.elements.addAll(subFrames)
             }
             step2.elements.add(mainStudioText)
             step2.elements.add(mainNameText)

@@ -25,12 +25,14 @@ open class MoveAnimator(
                         initPositions[i].y + (factor * delta.y)
                     )
                 }
-                treeView.postInvalidate()
+                if (autoUpdate)
+                    treeView.postInvalidate()
             }
         }
     }
 
     override fun start() {
+        super.start()
         for (it in elements)
             initPositions.add(it?.getAbsPos() ?: PointF())
 
@@ -46,5 +48,6 @@ open class MoveAnimator(
 
     override fun clear() {
         initPositions.clear()
+        elements.clear()
     }
 }
