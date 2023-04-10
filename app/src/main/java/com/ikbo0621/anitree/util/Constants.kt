@@ -5,6 +5,10 @@ object FireStoreCollection{
     val TREE = "tree"
 }
 
+object ParserConstants{
+    val BASIC_URL = "https://www.anime-planet.com/"
+}
+
 object SharedPrefConstants {
     val LOCAL_SHARED_PREF = "local_shared_pref"
     val USER_SESSION = "user_session"

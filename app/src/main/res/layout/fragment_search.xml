@@ -9,17 +9,27 @@
     android:padding="16dp"
     tools:context=".testUI.SearchFragment">
 
+    <ProgressBar
+        android:id="@+id/pb"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/et_anime_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <EditText
-        android:id="@+id/et_email"
+        android:id="@+id/et_anime_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Enter anime"
-        app:layout_constraintBottom_toTopOf="@+id/btn_register"
+        app:layout_constraintBottom_toTopOf="@+id/btn_find"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/btn_register"
+        android:id="@+id/btn_find"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Find"

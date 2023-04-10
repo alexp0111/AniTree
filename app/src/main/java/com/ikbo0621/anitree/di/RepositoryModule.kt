@@ -4,7 +4,9 @@ import android.content.SharedPreferences
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.gson.Gson
+import com.ikbo0621.anitree.model.implementation.ParsingModel
 import com.ikbo0621.anitree.model.implementation.UserModel
+import com.ikbo0621.anitree.model.repository.ParsingRepository
 import com.ikbo0621.anitree.model.repository.UserRepository
 import dagger.Module
 import dagger.Provides
@@ -16,8 +18,13 @@ import javax.inject.Singleton
 @Module
 object RepositoryModule {
 
-    //TODO: Parsing repository
     //TODO: Tree repository
+
+    @Provides
+    @Singleton
+    fun provideParsingRepository(): ParsingRepository {
+        return ParsingModel()
+    }
 
     @Provides
     @Singleton
