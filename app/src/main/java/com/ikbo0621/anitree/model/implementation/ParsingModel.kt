@@ -5,6 +5,9 @@ import com.ikbo0621.anitree.model.repository.ParsingRepository
 import com.ikbo0621.anitree.structure.Anime
 import com.ikbo0621.anitree.util.UiState
 
+/**
+ * Model that provides parsing logic
+ * */
 class ParsingModel() : ParsingRepository {
     override fun getAnimeWithName(animeTitle: String, result: (UiState<Anime>) -> Unit) {
         val anim = Anime(

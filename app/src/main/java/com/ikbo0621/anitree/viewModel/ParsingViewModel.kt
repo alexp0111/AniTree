@@ -9,6 +9,9 @@ import com.ikbo0621.anitree.util.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
+/**
+ * ViewModel for parsing data
+ * */
 @HiltViewModel
 class ParsingViewModel @Inject constructor(
     val repository: ParsingRepository

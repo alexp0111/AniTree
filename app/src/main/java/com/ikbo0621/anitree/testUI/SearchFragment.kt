@@ -42,6 +42,13 @@ class SearchFragment : Fragment() {
         }
     }
 
+    /**
+     * Set up an observer for live data to get result of
+     * parsing from viewModel
+     *
+     * If result is successful -> data contains Anime object
+     * Anime = [title, description, studio, releaseDate, imageUti]
+     * */
     private fun observer() {
         viewModel.anim.observe(viewLifecycleOwner) { state ->
             when (state) {
@@ -66,6 +73,9 @@ class SearchFragment : Fragment() {
         }
     }
 
+    /**
+     * Validation block for input text
+     * */
     fun validation(): Boolean {
         var isValid = true
 
