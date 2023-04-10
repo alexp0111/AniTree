@@ -28,6 +28,7 @@ class SearchFragment : Fragment() {
         binding.searchButton.setOnClickListener {
             val action = SearchFragmentDirections.actionSearchFragmentToAccountFragment()
             Navigation.findNavController(view).navigate(action)
+
         }
     }
 

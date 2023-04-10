@@ -7,33 +7,30 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.Navigation
 
-import com.ikbo0621.anitree.databinding.FragmentAccountBinding
+import com.ikbo0621.anitree.databinding.FragmentSettingsBinding
 
 
-class AccountFragment : Fragment() {
+class SettingsFragment : Fragment() {
 
-    private var _binding: FragmentAccountBinding? = null
+
+    private var _binding: FragmentSettingsBinding? = null
+
     private val binding get() = _binding!!
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        _binding = FragmentAccountBinding.inflate(layoutInflater, container, false)
+        _binding = FragmentSettingsBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        _binding?.backButton?.setOnClickListener {
-            val action = AccountFragmentDirections.actionAccountFragmentToSearchFragment()
+        _binding?.backButton?.setOnClickListener{
+            val action = SettingsFragmentDirections.actionSettingsFragmentToAccountFragment()
             Navigation.findNavController(view).navigate(action)
         }
-        _binding?.avtrButton?.setOnClickListener{
-            val action = AccountFragmentDirections.actionAccountFragmentToSettingsFragment()
-            Navigation.findNavController(view).navigate(action)
-        }
-
     }
 
 
