@@ -27,12 +27,14 @@
 
     <EditText
         android:id="@+id/et_password"
+        android:inputType="textPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="password" />
 
     <EditText
         android:id="@+id/et_password_confirm"
+        android:inputType="textPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Confirm password" />

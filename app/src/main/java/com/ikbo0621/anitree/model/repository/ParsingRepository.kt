@@ -8,4 +8,5 @@ import com.ikbo0621.anitree.util.UiState
  * */
 interface ParsingRepository {
     suspend fun getAnimeWithName(animeTitle: String, result: (UiState<Anime>) -> Unit)
+    suspend fun guessAnime(animeTitle: String, result: (UiState<Anime>) -> Unit)
 }

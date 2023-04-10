@@ -22,6 +22,10 @@ class ParsingViewModel @Inject constructor(
     val anim: LiveData<UiState<Anime>>
         get() = _anim
 
+    private val _guessedAnim = MutableLiveData<UiState<Anime>>()
+    val guessedAnim: LiveData<UiState<Anime>>
+        get() = _guessedAnim
+
     fun getAnimeWithTitle(
         animeTitle: String
     ) {
@@ -30,6 +34,17 @@ class ParsingViewModel @Inject constructor(
             repository.getAnimeWithName(
                 animeTitle = animeTitle,
             ) { _anim.value = it }
+        }
+    }
+
+    fun guessAnime(
+        animeTitle: String
+    ) {
+        _guessedAnim.value = UiState.Loading
+        viewModelScope.launch {
+            repository.guessAnime(
+                animeTitle = animeTitle,
+            ) { _guessedAnim.value = it }
         }
     }
 }

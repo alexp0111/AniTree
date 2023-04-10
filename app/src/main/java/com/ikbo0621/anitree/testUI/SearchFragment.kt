@@ -1,9 +1,11 @@
 package com.ikbo0621.anitree.testUI
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
@@ -18,6 +20,7 @@ class SearchFragment : Fragment() {
 
     private val TAG: String = "SEARCH_FRAGMENT"
     lateinit var binding: FragmentSearchBinding
+    var trimmedTitle = ""
     val viewModel: ParsingViewModel by viewModels()
 
     override fun onCreateView(
@@ -35,13 +38,22 @@ class SearchFragment : Fragment() {
             parentFragmentManager.beginTransaction().addToBackStack("search")
                 .replace(R.id.fragment_container_view, ProfileFragment()).commit()
         }
-        binding.btnFind.setOnClickListener {
+        binding.iv.setOnClickListener {
             if (validation()) {
-                val trimmedTitle = binding.etAnimeTitle.text.toString()
+                trimmedTitle = binding.etAnimeTitle.text.toString()
                     .trim()
                     .replace(" ", "-")
                     .lowercase()
                 viewModel.getAnimeWithTitle(trimmedTitle)
+            }
+        }
+        binding.etAnimeTitle.addTextChangedListener {
+            if (validation()) {
+                trimmedTitle = binding.etAnimeTitle.text.toString()
+                    .trim()
+                    .replace(" ", "%20")
+                    .lowercase()
+                viewModel.guessAnime(trimmedTitle)
             }
         }
     }
@@ -57,21 +69,53 @@ class SearchFragment : Fragment() {
         viewModel.anim.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is UiState.Loading -> {
-                    binding.btnFind.text = "Loading"
-                    binding.btnFind.disable()
+                    //binding.btnFind.text = "Loading"
+                    //binding.btnFind.disable()
                     binding.pb.show()
                 }
                 is UiState.Failure -> {
-                    binding.btnFind.text = "FIND"
-                    binding.btnFind.enabled()
+                    //binding.btnFind.text = "FIND"
+                    //binding.btnFind.enabled()
                     binding.pb.hide()
                     toast(state.error)
                 }
                 is UiState.Success -> {
-                    binding.btnFind.text = "FIND"
-                    binding.btnFind.enabled()
+                    //binding.btnFind.text = "FIND"
+                    //binding.btnFind.enabled()
                     binding.pb.hide()
-                    binding.tvInfo.text = state.data.toString()
+                    binding.tvInfo.text = state.data.title
+
+                    context?.let {
+                        Glide.with(it)
+                            .load(state.data.imageURI)
+                            .into(binding.iv)
+                    }
+                }
+            }
+        }
+
+        viewModel.guessedAnim.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is UiState.Loading -> {
+                    //binding.btnFind.text = "Loading"
+                    //binding.btnFind.disable()
+                    binding.pb.show()
+                }
+                is UiState.Failure -> {
+                    //binding.btnFind.text = "FIND"
+                    //binding.btnFind.enabled()
+                    binding.pb.hide()
+
+                    if (trimmedTitle.isNotEmpty()) {
+                        viewModel.getAnimeWithTitle(trimmedTitle.replace("%20", "-"))
+                        Log.d(TAG, trimmedTitle)
+                    }
+                }
+                is UiState.Success -> {
+                    //binding.btnFind.text = "FIND"
+                    //binding.btnFind.enabled()
+                    binding.pb.hide()
+                    binding.tvInfo.text = state.data.title
 
                     context?.let {
                         Glide.with(it)
