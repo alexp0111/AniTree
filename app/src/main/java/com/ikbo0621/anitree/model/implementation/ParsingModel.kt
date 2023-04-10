@@ -1,6 +1,7 @@
 package com.ikbo0621.anitree.model.implementation
 
 import android.net.Uri
+import android.util.Log
 import androidx.core.net.toUri
 import com.ikbo0621.anitree.model.repository.ParsingRepository
 import com.ikbo0621.anitree.structure.Anime
@@ -22,12 +23,14 @@ class ParsingModel() : ParsingRepository {
      * */
     override suspend fun getAnimeWithName(animeTitle: String, result: (UiState<Anime>) -> Unit) {
 
+
         val anim: Anime = withContext(Dispatchers.IO) {
 
             /**
              * Get html page
              * */
             try {
+                Log.d("Parser", ParserConstants.BASIC_URL + "anime/" + animeTitle)
                 val doc: Document = Jsoup
                     .connect(ParserConstants.BASIC_URL + "anime/" + animeTitle)
                     .get()
@@ -36,23 +39,32 @@ class ParsingModel() : ParsingRepository {
                  * Get necessary elements by classes
                  * */
                 val titleElement: Element = doc.getElementsByAttributeValue("itemprop", "name")[0]
+                Log.d("Parser", "1")
                 val descElement: Element =
                     doc.getElementsByAttributeValue("class", "pure-1 md-3-5")[0]
+                Log.d("Parser", "2")
                 val sectionElement: Element =
                     doc.getElementsByAttributeValue("class", "pure-g entryBar")[0]
+                Log.d("Parser", "3")
                 val imgElement: Element = doc.getElementsByAttributeValue("class", "mainEntry")[0]
+                Log.d("Parser", "4")
 
                 /**
                  * Get info from elements in necessary type
                  * */
                 val approvedAnimeTitle: String = titleElement.text().toString()
+                Log.d("Parser", "5")
                 val description: String = descElement.select("p")[0].text().toString()
+                Log.d("Parser", "6")
                 val studio: String = sectionElement.select("a")[0].text().toString()
-                val releaseDate: String = sectionElement.select("a")[1].text().toString()
+                Log.d("Parser", "7")
+                val releaseDate: String = sectionElement.select("span")[1].text().toString()
+                Log.d("Parser", "8")
                 val imageURI: Uri = imgElement.html()
                     .substringAfter("src=\"")
                     .substringBefore("\">")
                     .toUri()
+                Log.d("Parser", "9")
 
                 /**
                  * Create Anime object
@@ -64,6 +76,8 @@ class ParsingModel() : ParsingRepository {
                     releaseDate,
                     imageURI
                 )
+
+                Log.d("Parser", anim.toString())
 
                 return@withContext anim
             } catch (e: java.lang.Exception) {
@@ -96,7 +110,7 @@ class ParsingModel() : ParsingRepository {
                 val doc: Document = Jsoup
                     .connect(
                         ParserConstants.BASIC_URL
-                                + "anime/all?sort=status_1&order=desc&name="
+                                + "anime/all?sort=average&order=desc&name="
                                 + animeTitle
                     )
                     .get()

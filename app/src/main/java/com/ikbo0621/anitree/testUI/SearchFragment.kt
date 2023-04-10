@@ -11,7 +11,10 @@ import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
 import com.ikbo0621.anitree.R
 import com.ikbo0621.anitree.databinding.FragmentSearchBinding
-import com.ikbo0621.anitree.util.*
+import com.ikbo0621.anitree.util.UiState
+import com.ikbo0621.anitree.util.hide
+import com.ikbo0621.anitree.util.show
+import com.ikbo0621.anitree.util.toast
 import com.ikbo0621.anitree.viewModel.ParsingViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -40,20 +43,28 @@ class SearchFragment : Fragment() {
         }
         binding.iv.setOnClickListener {
             if (validation()) {
-                trimmedTitle = binding.etAnimeTitle.text.toString()
+                trimmedTitle = binding.tvInfo.text.toString()
                     .trim()
                     .replace(" ", "-")
+                    .replace("\'", "")
                     .lowercase()
+                Log.d(TAG,  trimmedTitle)
                 viewModel.getAnimeWithTitle(trimmedTitle)
             }
         }
         binding.etAnimeTitle.addTextChangedListener {
             if (validation()) {
-                trimmedTitle = binding.etAnimeTitle.text.toString()
+                //FIXME: When input is too fast, some random value can be approved here
+                //trimmedTitle = binding.etAnimeTitle.text.toString()
+                //    .trim()
+                //    .replace(" ", "%20")
+                //    .replace("\'", "")
+                //    .lowercase()
+                viewModel.guessAnime(binding.etAnimeTitle.text.toString()
                     .trim()
                     .replace(" ", "%20")
-                    .lowercase()
-                viewModel.guessAnime(trimmedTitle)
+                    .replace("\'", "")
+                    .lowercase())
             }
         }
     }
@@ -83,13 +94,18 @@ class SearchFragment : Fragment() {
                     //binding.btnFind.text = "FIND"
                     //binding.btnFind.enabled()
                     binding.pb.hide()
-                    binding.tvInfo.text = state.data.title
 
-                    context?.let {
-                        Glide.with(it)
-                            .load(state.data.imageURI)
-                            .into(binding.iv)
-                    }
+                    val fragment = AnimeFragment()
+                    val bundle = Bundle()
+                    bundle.putParcelable("anime", state.data)
+                    fragment.arguments = bundle
+
+                    binding.etAnimeTitle.setText("")
+
+                    //FIXME: backPress doesn't work
+
+                    parentFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container_view, fragment).commit()
                 }
             }
         }

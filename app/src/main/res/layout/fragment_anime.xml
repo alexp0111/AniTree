@@ -9,27 +9,33 @@
     tools:context=".testUI.AnimeFragment">
 
     <ImageView
-        android:id="@+id/img_anime"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_launcher_background" />
+        android:id="@+id/iv_anime"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content" />
+
 
     <TextView
         android:id="@+id/tv_anime_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Naruto" />
+        android:text="" />
+
+    <TextView
+        android:id="@+id/tv_anime_studio"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="" />
 
     <TextView
         android:id="@+id/tv_anime_release_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="2002" />
+        android:text="" />
 
     <TextView
         android:id="@+id/tv_anime_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Naruto is a Japanese manga series written and illustrated by Masashi Kishimoto. It tells the story of Naruto Uzumaki, a young ninja who seeks recognition from his peers and dreams of becoming the Hokage, the leader of his village. " />
+        android:text="" />
 
 </LinearLayout>
