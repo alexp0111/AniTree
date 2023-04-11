@@ -47,6 +47,7 @@ class SearchFragment : Fragment() {
                     .trim()
                     .replace(" ", "-")
                     .replace("\'", "")
+                    .replace(":", "")
                     .lowercase()
                 Log.d(TAG,  trimmedTitle)
                 viewModel.getAnimeWithTitle(trimmedTitle)
@@ -54,16 +55,11 @@ class SearchFragment : Fragment() {
         }
         binding.etAnimeTitle.addTextChangedListener {
             if (validation()) {
-                //FIXME: When input is too fast, some random value can be approved here
-                //trimmedTitle = binding.etAnimeTitle.text.toString()
-                //    .trim()
-                //    .replace(" ", "%20")
-                //    .replace("\'", "")
-                //    .lowercase()
                 viewModel.guessAnime(binding.etAnimeTitle.text.toString()
                     .trim()
                     .replace(" ", "%20")
                     .replace("\'", "")
+                    .replace(":", "")
                     .lowercase())
             }
         }

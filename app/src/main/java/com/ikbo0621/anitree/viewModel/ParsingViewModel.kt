@@ -8,6 +8,10 @@ import com.ikbo0621.anitree.model.repository.ParsingRepository
 import com.ikbo0621.anitree.structure.Anime
 import com.ikbo0621.anitree.util.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -26,25 +30,35 @@ class ParsingViewModel @Inject constructor(
     val guessedAnim: LiveData<UiState<Anime>>
         get() = _guessedAnim
 
+    private val channel = Channel<Job>(capacity = Channel.UNLIMITED).apply {
+        GlobalScope.launch {
+            consumeEach { it.join() }
+        }
+    }
+
     fun getAnimeWithTitle(
         animeTitle: String
     ) {
         _anim.value = UiState.Loading
-        viewModelScope.launch {
-            repository.getAnimeWithName(
-                animeTitle = animeTitle,
-            ) { _anim.value = it }
-        }
+        channel.trySend(
+            viewModelScope.launch {
+                repository.getAnimeWithName(
+                    animeTitle = animeTitle,
+                ) { _anim.value = it }
+            }
+        )
     }
 
     fun guessAnime(
         animeTitle: String
     ) {
         _guessedAnim.value = UiState.Loading
-        viewModelScope.launch {
-            repository.guessAnime(
-                animeTitle = animeTitle,
-            ) { _guessedAnim.value = it }
-        }
+        channel.trySend(
+            viewModelScope.launch {
+                repository.guessAnime(
+                    animeTitle = animeTitle,
+                ) { _guessedAnim.value = it }
+            }
+        )
     }
 }
