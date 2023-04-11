@@ -123,7 +123,7 @@ open class TreeViewer(
     private fun addMainStudioText(context: Context, text: String, color: Int) {
         if (mainStudioText == null) {
             val font =
-                Typeface.create(ResourcesCompat.getFont(context, R.font.intro), Typeface.BOLD)
+                Typeface.create(ResourcesCompat.getFont(context, R.font.tilt_warp), Typeface.BOLD)
             mainStudioText = Text(
                 layout.mainStudioTextPosition,
                 String(),
@@ -133,18 +133,18 @@ open class TreeViewer(
                 90f
             )
         }
-        mainStudioText!!.text = text
+        mainStudioText!!.text = text.uppercase()
 
         treeView.addElement(mainStudioText!!)
     }
 
     private fun addSubStudioText(context: Context, text: String, color: Int, index: Int) {
         if (subStudioTexts[index] == null) {
-            val font = ResourcesCompat.getFont(context, R.font.intro)
+            val font = ResourcesCompat.getFont(context, R.font.tilt_warp)
             subStudioTexts[index] =
                 Text(layout.subStudioTextPositions[index], String(), color, font, layout.subStudioTextSize)
         }
-        subStudioTexts[index]!!.text = text
+        subStudioTexts[index]!!.text = text.uppercase()
 
         treeView.addElement(subStudioTexts[index]!!)
     }
@@ -164,11 +164,11 @@ open class TreeViewer(
 
     private fun addMainNameText(context: Context, text: String, color: Int) {
         if (mainNameText == null) {
-            val font = ResourcesCompat.getFont(context, R.font.intro)
+            val font = ResourcesCompat.getFont(context, R.font.tilt_warp)
             mainNameText =
                 Text(layout.mainNameTextPosition, text, color, font, layout.subStudioTextSize, 90f)
         }
-        mainNameText!!.text = text
+        mainNameText!!.text = text.uppercase()
 
         treeView.addElement(mainNameText!!)
     }
@@ -306,82 +306,37 @@ open class TreeViewer(
         private var index = IntArray(0)
         private var restoreElements: ArrayList<TreeElement?> = ArrayList()
 
-        private val step4 = FadeAnimator(contextRef, treeView).apply {
-            type = FadeAnimator.Type.IN
-            doRestore = false
-            duration = 400
-            onEnd = {
-                restoreElements.addAll(elements)
-                for (element in restoreElements) {
-                    element?.alpha = 255
-                }
-                restoreElements.clear()
+        private var step4: FadeAnimator? = null
+        private var step3: MoveAnimator? = null
+        private var step2: FadeAnimator? = null
+        private var step1: FadeAnimator? = null
 
-                treeView.postInvalidate()
-                isAnimating = false
-            }
-        }
-        private val step3 = MoveAnimator(contextRef, treeView).apply {
-            onEnd = {
-                toAnotherLayer(index)
-                step4.elements.addAll(treeView.elements)
-                step4.start()
-            }
-        }
-        private val step2 = FadeAnimator(contextRef, treeView).apply {
-            type = FadeAnimator.Type.OUT
-            onEnd = {
-                val a = 34
-            }
-        }
-        private val step1 = FadeAnimator(contextRef, treeView).apply {
-            type = FadeAnimator.Type.OUT
-            doRestore = false
-            duration = 400
-            onEnd = {
-                restoreElements.addAll(elements)
-                step2.start()
-                step3.start()
-            }
-        }
-
-        private fun addSubDecor(animator: Animator, index: Int) {
-            animator.elements.add(curves[index])
-            animator.elements.add(subNameTexts[index])
-            animator.elements.add(subStudioTexts[index])
-            animator.elements.add(subFrames[index])
+        private fun addSubDecor(animator: Animator?, index: Int) {
+            animator?.elements?.add(curves[index])
+            animator?.elements?.add(subNameTexts[index])
+            animator?.elements?.add(subStudioTexts[index])
+            animator?.elements?.add(subFrames[index])
         }
 
         private fun setElements() {
             for (i in treeView.elements.indices) {
-//                val element = treeView.elements[i]
-//
-//                step3.elements.add(element)
-//                if (mainIconIndex != null && i == mainIconIndex)
-//                    continue
-//
-//                if ((element is Icon && !element.index.contentEquals(index)) || element is SchemeButton)
-//                    step1.elements.add(element)
-//                else if (element !is Curve && element !is Text && element !is Circle)
-//                    step2.elements.add(element)
-
                 val element = treeView.elements[i]
-                step3.elements.add(element)
+                step3?.elements?.add(element)
                 when(element) {
                     is Icon -> {
                         if (mainIconIndex != null && i == mainIconIndex)
                             continue
                         if (element.index.contentEquals(index))
                             continue
-                        step1.elements.add(element)
+                        step1?.elements?.add(element)
                     }
                     is SchemeButton -> {
-                        step1.elements.add(element)
+                        step1?.elements?.add(element)
                     }
                     else -> {
                         if (element is Curve || element is Text || element is Circle)
                             continue
-                        step2.elements.add(element)
+                        step2?.elements?.add(element)
                     }
                 }
             }
@@ -389,16 +344,8 @@ open class TreeViewer(
             if (!index.contentEquals(getPreviousIndex())) {
                 for (i in subFrames.indices) {
                     if (i != index.last()) {
-//                        step1.elements.add(curves[i])
-//                        step1.elements.add(subNameTexts[i])
-//                        step1.elements.add(subStudioTexts[i])
-//                        step1.elements.add(subFrames[i])
                         addSubDecor(step1, i)
                     } else {
-//                        step2.elements.add(curves[i])
-//                        step2.elements.add(subNameTexts[i])
-//                        step2.elements.add(subStudioTexts[i])
-//                        step2.elements.add(subFrames[i])
                         addSubDecor(step2, i)
                     }
                 }
@@ -406,23 +353,59 @@ open class TreeViewer(
                 for (i in subFrames.indices) {
                     addSubDecor(step1, i)
                 }
-//                step1.elements.addAll(curves)
-//                step1.elements.addAll(subNameTexts)
-//                step1.elements.addAll(subStudioTexts)
-//                step1.elements.addAll(subFrames)
             }
-            step2.elements.add(mainStudioText)
-            step2.elements.add(mainNameText)
-            step2.elements.add(mainFrame)
+            step2?.elements?.add(mainStudioText)
+            step2?.elements?.add(mainNameText)
+            step2?.elements?.add(mainFrame)
+        }
+
+        private fun createAnimators() {
+            // Animators must be reset when reused
+            step4 = FadeAnimator(contextRef, treeView).apply {
+                type = FadeAnimator.Type.IN
+                doRestore = false
+                duration = 400
+                onEnd = {
+                    restoreElements.addAll(elements)
+                    for (element in restoreElements) {
+                        element?.alpha = 255
+                    }
+                    restoreElements.clear()
+
+                    treeView.postInvalidate()
+                    isAnimating = false
+                }
+            }
+            step3 = MoveAnimator(contextRef, treeView).apply {
+                onEnd = {
+                    toAnotherLayer(index)
+                    step4?.elements?.addAll(treeView.elements)
+                    step4?.start()
+                }
+            }
+            step2 = FadeAnimator(contextRef, treeView).apply {
+                type = FadeAnimator.Type.OUT
+            }
+            step1 = FadeAnimator(contextRef, treeView).apply {
+                type = FadeAnimator.Type.OUT
+                doRestore = false
+                duration = 400
+                onEnd = {
+                    restoreElements.addAll(elements)
+                    step2?.start()
+                    step3?.start()
+                }
+            }
+            setElements()
         }
 
         fun startAnimation(index: IntArray, dPos: PointF) {
             isAnimating = true
             this.index = index
-            setElements()
+            createAnimators()
 
-            step3.delta = dPos
-            step1.start()
+            step3?.delta = dPos
+            step1?.start()
         }
     }
 }
