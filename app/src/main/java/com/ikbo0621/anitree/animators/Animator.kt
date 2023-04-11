@@ -28,10 +28,6 @@ abstract class Animator(
     }
     var onEnd: (animator: android.animation.Animator) -> Unit = {}
 
-    fun cancel() {
-        animator.cancel()
-    }
-
     open fun start() {
         animator.doOnEnd {
             val context = contextRef.get() as? Activity ?: return@doOnEnd
