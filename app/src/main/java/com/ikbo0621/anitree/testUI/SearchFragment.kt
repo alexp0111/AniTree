@@ -45,7 +45,8 @@ class SearchFragment : Fragment() {
         binding.iv.setOnClickListener {
             if (validation()
                 && viewModel.guessedAnim.value != null
-                && viewModel.guessedAnim.value is UiState.Success) {
+                && viewModel.guessedAnim.value is UiState.Success
+            ) {
 
                 val fragment = AnimeFragment()
                 val bundle = Bundle()

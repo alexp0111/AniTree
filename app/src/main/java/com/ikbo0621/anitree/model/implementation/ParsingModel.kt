@@ -8,6 +8,7 @@ import com.ikbo0621.anitree.structure.Anime
 import com.ikbo0621.anitree.util.ParserConstants
 import com.ikbo0621.anitree.util.UiState
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -105,6 +106,7 @@ class ParsingModel() : ParsingRepository {
         //TODO: Rework logic: get element (just name) -> go with url to anime page & get full info
 
         val anim: Anime = withContext(Dispatchers.IO) {
+            Log.d("PARSER MODEL", animeTitle + " " + System.currentTimeMillis().toString())
 
             /**
              * Get html page
@@ -146,6 +148,10 @@ class ParsingModel() : ParsingRepository {
             } catch (e: java.lang.Exception) {
                 return@withContext Anime()
             }
+        }
+
+        val job = withContext(Dispatchers.IO) {
+            delay(1000)
         }
 
         if (anim.title == "-1") {

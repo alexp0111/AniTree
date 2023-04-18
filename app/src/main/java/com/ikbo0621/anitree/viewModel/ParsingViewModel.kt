@@ -1,6 +1,5 @@
 package com.ikbo0621.anitree.viewModel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,10 +8,7 @@ import com.ikbo0621.anitree.model.repository.ParsingRepository
 import com.ikbo0621.anitree.structure.Anime
 import com.ikbo0621.anitree.util.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -31,35 +27,29 @@ class ParsingViewModel @Inject constructor(
     val guessedAnim: LiveData<UiState<Anime>>
         get() = _guessedAnim
 
-    private val channel = Channel<Job>(capacity = Channel.UNLIMITED).apply {
-        viewModelScope.launch {
-            consumeEach { it.join() }
-        }
-    }
+    private var searchJob: Job? = null
 
     fun getAnimeWithTitle(
         animeTitle: String
     ) {
+        // TODO: Think about necessity
         _anim.value = UiState.Loading
-        channel.trySend(
-            viewModelScope.launch {
-                repository.getAnimeWithName(
-                    animeTitle = animeTitle,
-                ) { _anim.value = it }
-            }
-        )
+        viewModelScope.launch {
+            repository.getAnimeWithName(
+                animeTitle = animeTitle,
+            ) { _anim.value = it }
+        }
     }
 
     fun guessAnime(
         animeTitle: String
     ) {
         _guessedAnim.value = UiState.Loading
-        channel.trySend(
-            viewModelScope.launch {
-                repository.guessAnime(
-                    animeTitle = animeTitle,
-                ) { _guessedAnim.value = it }
-            }
-        )
+        searchJob?.cancel()
+        searchJob = viewModelScope.launch {
+            repository.guessAnime(
+                animeTitle = animeTitle,
+            ) { _guessedAnim.value = it }
+        }
     }
 }
