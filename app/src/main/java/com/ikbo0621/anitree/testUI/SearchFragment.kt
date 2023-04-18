@@ -11,6 +11,7 @@ import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
 import com.ikbo0621.anitree.R
 import com.ikbo0621.anitree.databinding.FragmentSearchBinding
+import com.ikbo0621.anitree.structure.Anime
 import com.ikbo0621.anitree.util.UiState
 import com.ikbo0621.anitree.util.hide
 import com.ikbo0621.anitree.util.show
@@ -42,25 +43,32 @@ class SearchFragment : Fragment() {
                 .replace(R.id.fragment_container_view, ProfileFragment()).commit()
         }
         binding.iv.setOnClickListener {
-            if (validation()) {
-                trimmedTitle = binding.tvInfo.text.toString()
-                    .trim()
-                    .replace(" ", "-")
-                    .replace("\'", "")
-                    .replace(":", "")
-                    .lowercase()
-                Log.d(TAG,  trimmedTitle)
-                viewModel.getAnimeWithTitle(trimmedTitle)
+            if (validation()
+                && viewModel.guessedAnim.value != null
+                && viewModel.guessedAnim.value is UiState.Success) {
+
+                val fragment = AnimeFragment()
+                val bundle = Bundle()
+                bundle.putParcelable(
+                    "anime",
+                    (viewModel.guessedAnim.value as UiState.Success<Anime>).data
+                )
+                fragment.arguments = bundle
+
+                parentFragmentManager.beginTransaction().addToBackStack(null)
+                    .replace(R.id.fragment_container_view, fragment).commit()
             }
         }
         binding.etAnimeTitle.addTextChangedListener {
             if (validation()) {
-                viewModel.guessAnime(binding.etAnimeTitle.text.toString()
-                    .trim()
-                    .replace(" ", "%20")
-                    .replace("\'", "")
-                    .replace(":", "")
-                    .lowercase())
+                viewModel.guessAnime(
+                    binding.etAnimeTitle.text.toString()
+                        .trim()
+                        .replace(" ", "%20")
+                        .replace("\'", "")
+                        .replace(":", "")
+                        .lowercase()
+                )
             }
         }
     }
@@ -73,59 +81,25 @@ class SearchFragment : Fragment() {
      * Anime = [title, description, studio, releaseDate, imageUti]
      * */
     private fun observer() {
-        viewModel.anim.observe(viewLifecycleOwner) { state ->
-            when (state) {
-                is UiState.Loading -> {
-                    //binding.btnFind.text = "Loading"
-                    //binding.btnFind.disable()
-                    binding.pb.show()
-                }
-                is UiState.Failure -> {
-                    //binding.btnFind.text = "FIND"
-                    //binding.btnFind.enabled()
-                    binding.pb.hide()
-                    toast(state.error)
-                }
-                is UiState.Success -> {
-                    //binding.btnFind.text = "FIND"
-                    //binding.btnFind.enabled()
-                    binding.pb.hide()
-
-                    val fragment = AnimeFragment()
-                    val bundle = Bundle()
-                    bundle.putParcelable("anime", state.data)
-                    fragment.arguments = bundle
-
-                    binding.etAnimeTitle.setText("")
-
-                    //FIXME: backPress doesn't work
-
-                    parentFragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container_view, fragment).commit()
-                }
-            }
-        }
-
         viewModel.guessedAnim.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is UiState.Loading -> {
-                    //binding.btnFind.text = "Loading"
-                    //binding.btnFind.disable()
                     binding.pb.show()
                 }
                 is UiState.Failure -> {
-                    //binding.btnFind.text = "FIND"
-                    //binding.btnFind.enabled()
                     binding.pb.hide()
 
                     if (trimmedTitle.isNotEmpty()) {
+
+                        //TODO: TEST
+
                         viewModel.getAnimeWithTitle(trimmedTitle.replace("%20", "-"))
                         Log.d(TAG, trimmedTitle)
+
+                        //TODO: TEST
                     }
                 }
                 is UiState.Success -> {
-                    //binding.btnFind.text = "FIND"
-                    //binding.btnFind.enabled()
                     binding.pb.hide()
                     binding.tvInfo.text = state.data.title
 

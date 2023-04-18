@@ -1,5 +1,6 @@
 package com.ikbo0621.anitree.viewModel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -31,7 +32,7 @@ class ParsingViewModel @Inject constructor(
         get() = _guessedAnim
 
     private val channel = Channel<Job>(capacity = Channel.UNLIMITED).apply {
-        GlobalScope.launch {
+        viewModelScope.launch {
             consumeEach { it.join() }
         }
     }
