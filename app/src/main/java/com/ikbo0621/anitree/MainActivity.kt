@@ -19,10 +19,5 @@ class MainActivity : AppCompatActivity() {
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container_view, LogInFragment())
             .commitAllowingStateLoss()
-
-        //TODO:
-        // 1. DI realisation
-        // 2. Dagger annotations
-        // 3. UserModel methods realisation
     }
 }

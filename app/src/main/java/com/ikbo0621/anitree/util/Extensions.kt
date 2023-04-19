@@ -8,27 +8,27 @@ import androidx.fragment.app.Fragment
 /**
  * Operations with progress bar
  * */
-fun View.hide(){
+fun View.hide() {
     visibility = View.GONE
 }
 
-fun View.show(){
+fun View.show() {
     visibility = View.VISIBLE
 }
 
-fun View.disable(){
+fun View.disable() {
     isEnabled = false
 }
 
-fun View.enabled(){
+fun View.enabled() {
     isEnabled = true
 }
 
 /**
  * Short toast function
  * */
-fun Fragment.toast(msg: String?){
-    Toast.makeText(requireContext(),msg, Toast.LENGTH_LONG).show()
+fun Fragment.toast(msg: String?) {
+    Toast.makeText(requireContext(), msg, Toast.LENGTH_LONG).show()
 }
 
 /**
@@ -36,3 +36,20 @@ fun Fragment.toast(msg: String?){
  * */
 fun String.isValidEmail() =
     isNotEmpty() && android.util.Patterns.EMAIL_ADDRESS.matcher(this).matches()
+
+/**
+ * Transform anime title to request url format
+ * */
+fun String.fitToExactRequest() =
+    this.replace(" - ", "-")
+        .replace(" ", "-")
+        .replace("\'", "")
+        .replace(":", "")
+        .lowercase()
+
+fun String.fitToGuessRequest() =
+    this.trim()
+        .replace(" ", "%20")
+        .replace("\'", "")
+        .replace(":", "")
+        .lowercase()

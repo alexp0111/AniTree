@@ -27,14 +27,15 @@ class ParsingViewModel @Inject constructor(
     val guessedAnim: LiveData<UiState<Anime>>
         get() = _guessedAnim
 
-    private var searchJob: Job? = null
+    private var searchGuessJob: Job? = null
+    private var searchExactJob: Job? = null
 
     fun getAnimeWithTitle(
         animeTitle: String
     ) {
-        // TODO: Think about necessity
         _anim.value = UiState.Loading
-        viewModelScope.launch {
+        searchExactJob?.cancel()
+        searchExactJob = viewModelScope.launch {
             repository.getAnimeWithName(
                 animeTitle = animeTitle,
             ) { _anim.value = it }
@@ -45,8 +46,8 @@ class ParsingViewModel @Inject constructor(
         animeTitle: String
     ) {
         _guessedAnim.value = UiState.Loading
-        searchJob?.cancel()
-        searchJob = viewModelScope.launch {
+        searchGuessJob?.cancel()
+        searchGuessJob = viewModelScope.launch {
             repository.guessAnime(
                 animeTitle = animeTitle,
             ) { _guessedAnim.value = it }

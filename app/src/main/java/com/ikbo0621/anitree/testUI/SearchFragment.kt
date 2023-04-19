@@ -12,10 +12,7 @@ import com.bumptech.glide.Glide
 import com.ikbo0621.anitree.R
 import com.ikbo0621.anitree.databinding.FragmentSearchBinding
 import com.ikbo0621.anitree.structure.Anime
-import com.ikbo0621.anitree.util.UiState
-import com.ikbo0621.anitree.util.hide
-import com.ikbo0621.anitree.util.show
-import com.ikbo0621.anitree.util.toast
+import com.ikbo0621.anitree.util.*
 import com.ikbo0621.anitree.viewModel.ParsingViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -24,7 +21,6 @@ class SearchFragment : Fragment() {
 
     private val TAG: String = "SEARCH_FRAGMENT"
     lateinit var binding: FragmentSearchBinding
-    var trimmedTitle = ""
     val viewModel: ParsingViewModel by viewModels()
 
     override fun onCreateView(
@@ -38,16 +34,17 @@ class SearchFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observer()
+
         binding.btnProfile.setOnClickListener {
             parentFragmentManager.beginTransaction().addToBackStack("search")
                 .replace(R.id.fragment_container_view, ProfileFragment()).commit()
         }
+
         binding.iv.setOnClickListener {
             if (validation()
                 && viewModel.guessedAnim.value != null
                 && viewModel.guessedAnim.value is UiState.Success
             ) {
-
                 val fragment = AnimeFragment()
                 val bundle = Bundle()
                 bundle.putParcelable(
@@ -60,15 +57,11 @@ class SearchFragment : Fragment() {
                     .replace(R.id.fragment_container_view, fragment).commit()
             }
         }
+
         binding.etAnimeTitle.addTextChangedListener {
             if (validation()) {
                 viewModel.guessAnime(
                     binding.etAnimeTitle.text.toString()
-                        .trim()
-                        .replace(" ", "%20")
-                        .replace("\'", "")
-                        .replace(":", "")
-                        .lowercase()
                 )
             }
         }
@@ -84,21 +77,10 @@ class SearchFragment : Fragment() {
     private fun observer() {
         viewModel.guessedAnim.observe(viewLifecycleOwner) { state ->
             when (state) {
-                is UiState.Loading -> {
-                    binding.pb.show()
-                }
+                is UiState.Loading -> binding.pb.show()
                 is UiState.Failure -> {
                     binding.pb.hide()
-
-                    if (trimmedTitle.isNotEmpty()) {
-
-                        //TODO: TEST
-
-                        viewModel.getAnimeWithTitle(trimmedTitle.replace("%20", "-"))
-                        Log.d(TAG, trimmedTitle)
-
-                        //TODO: TEST
-                    }
+                    toast(state.error)
                 }
                 is UiState.Success -> {
                     binding.pb.hide()
@@ -117,7 +99,7 @@ class SearchFragment : Fragment() {
     /**
      * Validation block for input text
      * */
-    fun validation(): Boolean {
+    private fun validation(): Boolean {
         var isValid = true
 
         if (binding.etAnimeTitle.text.isNullOrEmpty()) {
