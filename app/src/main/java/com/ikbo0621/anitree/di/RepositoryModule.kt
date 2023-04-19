@@ -5,8 +5,10 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.gson.Gson
 import com.ikbo0621.anitree.model.implementation.ParsingModel
+import com.ikbo0621.anitree.model.implementation.TreeModel
 import com.ikbo0621.anitree.model.implementation.UserModel
 import com.ikbo0621.anitree.model.repository.ParsingRepository
+import com.ikbo0621.anitree.model.repository.TreeRepository
 import com.ikbo0621.anitree.model.repository.UserRepository
 import dagger.Module
 import dagger.Provides
@@ -18,7 +20,14 @@ import javax.inject.Singleton
 @Module
 object RepositoryModule {
 
-    //TODO: Tree repository
+    @Provides
+    @Singleton
+    fun provideTreeRepository(
+        database: FirebaseFirestore,
+        auth: FirebaseAuth
+    ): TreeRepository {
+        return TreeModel(auth, database)
+    }
 
     @Provides
     @Singleton
@@ -34,6 +43,6 @@ object RepositoryModule {
         appPreferences: SharedPreferences,
         gson: Gson
     ): UserRepository {
-        return UserModel(auth,database,appPreferences,gson)
+        return UserModel(auth, database, appPreferences, gson)
     }
 }
