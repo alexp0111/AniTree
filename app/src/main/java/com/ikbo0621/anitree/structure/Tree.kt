@@ -2,8 +2,10 @@ package com.ikbo0621.anitree.structure
 
 data class Tree(
     var id: String = "",
-    var rootName: String = "",
     var numOfLikes: Int = 0,
-    var children: List<List<String>> = arrayListOf(arrayListOf())
+    var children: List<String> = arrayListOf()
+    // [ root,
+    // 1, 2, 3,
+    // 1.1, 1.2, 1.3, 2.1, 2.2, 2.3, 3.1, 3.2, 3.3 ]
 ) {
 }
