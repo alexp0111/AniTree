@@ -61,6 +61,15 @@ class RValue(
 
         return RValue(-value, type, cloneLimit)
     }
+
+    operator fun times(number: Float): RValue {
+        val cloneLimit = if (limit == null)
+            null
+        else
+            limit!! * number
+        return RValue(value * number, type, cloneLimit)
+    }
+
     public override fun clone(): RValue {
         return RValue(value, type, limit)
     }

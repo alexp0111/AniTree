@@ -1,10 +1,12 @@
 package com.ikbo0621.anitree.tree.builders
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.Paint
 import android.graphics.Paint.Cap
 import android.graphics.PointF
 import android.graphics.Typeface
+import android.graphics.drawable.Drawable
 import androidx.core.content.res.ResourcesCompat
 import com.ikbo0621.anitree.R
 import com.ikbo0621.anitree.animators.Animator
@@ -15,9 +17,7 @@ import com.ikbo0621.anitree.tree.elements.*
 import com.ikbo0621.anitree.tree.elements.buttons.Button
 import com.ikbo0621.anitree.tree.elements.buttons.SchemeButton
 import com.ikbo0621.anitree.tree.positioning.RPosition
-import com.ikbo0621.anitree.tree.positioning.RRect
 import com.ikbo0621.anitree.tree.positioning.RValue
-import com.ikbo0621.anitree.tree.positioning.RValue.Type
 import com.ikbo0621.anitree.tree.structures.TreeData
 import java.lang.ref.WeakReference
 
@@ -29,9 +29,17 @@ open class TreeViewer(
     protected var currentElement = treeData
     protected val animator = JumpAnimator()
 
+    private var authorIcon: Icon? = null
+    private var authorName = String()
+    private var likeIcon: VectorIcon? = null
+    private var activatedLikeIcon: VectorIcon? = null
+    var liked = false
+        protected set
+
     // Preserving elements to optimize rendering
     private var mainStudioText: Text? = null
     private var mainNameText: Text? = null
+    private var authorNameText: Text? = null
     private val subStudioTexts = arrayOf<Text?>(null, null, null)
     private val subNameTexts = arrayOf<Text?>(null, null, null)
     private val curves = arrayOf<Curve?>(null, null, null)
@@ -40,6 +48,37 @@ open class TreeViewer(
 
     init {
         this.toAnotherLayer(intArrayOf())
+    }
+
+    fun setAuthor(bitmap: Bitmap, name: String) {
+        authorIcon = Icon(layout.authorIconPosition, layout.authorIconRadius, bitmap).apply {
+            selectable = false
+        }
+        authorName = name
+    }
+
+    fun setIcons(like: Drawable, activatedLike: Drawable) {
+        val context = contextRef.get() ?: return
+        val color = context.resources.getColor(R.color.elements_color, null)
+
+        likeIcon = VectorIcon(
+            layout.likeButtonPosition,
+            layout.likeButtonRect,
+            like,
+            color
+        )
+        activatedLikeIcon = VectorIcon(
+            layout.likeButtonPosition,
+            layout.likeButtonRect,
+            activatedLike,
+            color
+        )
+    }
+
+    fun switchLikeButton() : Boolean {
+        liked = !liked
+        invalidate()
+        return liked
     }
 
     override fun update() {
@@ -51,6 +90,7 @@ open class TreeViewer(
         addFrames(context)
         addUpperText(context)
         addBackField()
+        likeIcon()
     }
 
     open fun toPreviousLayer() {
@@ -60,7 +100,6 @@ open class TreeViewer(
         val currentIndex = getCurrentIndex()
         if (currentIndex.isEmpty())
             return
-        //val nextIndex = currentIndex.copyOf(currentIndex.size - 1)
         val screenSize = treeView.screenSize ?: return
         val nextPosition = layout.subFramePositions[getCurrentIndex().last()].
             getAbsolute(screenSize.x, screenSize.y)
@@ -166,7 +205,7 @@ open class TreeViewer(
                 layout.subNameTextSize
             )
         }
-        subNameTexts[index]!!.text = text
+        subNameTexts[index]!!.text = text.uppercase()
         subNameTexts[index]!!.textColor = color
 
         treeView.addElement(subNameTexts[index]!!)
@@ -203,6 +242,8 @@ open class TreeViewer(
             addSubStudioText(context, layout.subStudioTextStrings[i], textColor, i)
             addSubNameText(context, layout.subNameTextStrings[i], textColor, i)
         }
+
+        addAuthorLabel(context)
     }
 
     private fun addUpperText(context: Context) {
@@ -277,11 +318,41 @@ open class TreeViewer(
     }
 
     private fun addBackField() {
-        val rect = RRect(
-            RPosition(RValue(0f, Type.X), RValue(0f, Type.Y)),
-            RPosition(RValue(0.4f, Type.SmallSide), RValue(1f, Type.Y))
+        treeView.addElement(Button(RPosition(RValue(), RValue()), layout.backFieldRect))
+    }
+
+    private fun addAuthorLabel(context: Context) {
+        if (authorIcon == null)
+            return
+
+        treeView.addElement(authorIcon!!)
+
+        val color = context.resources.getColor(R.color.elements_color, null)
+        if (authorNameText == null) {
+            val font = Typeface.create(
+                ResourcesCompat.getFont(context, R.font.fira_sans), Typeface.BOLD
+            )
+
+            authorNameText = Text(layout.authorTextPosition, String(), color, font, layout.subNameTextSize)
+        }
+        authorNameText?.text = authorName.uppercase()
+        treeView.addElement(authorNameText!!)
+
+        treeView.addElement(
+            Button(RPosition(RValue(), RValue()), layout.authorButtonRect).apply {
+                index = intArrayOf()
+            }
         )
-        treeView.addElement(Button(RPosition(RValue(), RValue()), rect))
+    }
+
+    private fun likeIcon() {
+        if (likeIcon == null || activatedLikeIcon == null)
+            return
+
+        if (liked)
+            treeView.addElement(activatedLikeIcon!!)
+        else
+            treeView.addElement(likeIcon!!)
     }
 
     private fun createCurveToSubIcon(
@@ -344,15 +415,14 @@ open class TreeViewer(
                 step3?.elements?.add(element)
                 when(element) {
                     is Icon -> {
-                        if (mainIconIndex != null && i == mainIconIndex)
+                        if ((mainIconIndex != null && i == mainIconIndex) ||
+                            element.index.contentEquals(index)) {
+                            step2?.elements?.add(element)
                             continue
-                        if (element.index.contentEquals(index))
-                            continue
+                        }
                         step1?.elements?.add(element)
                     }
-                    is SchemeButton -> {
-                        step1?.elements?.add(element)
-                    }
+                    is SchemeButton -> step1?.elements?.add(element)
                     else -> {
                         if (element is Curve || element is Text || element is Circle)
                             continue

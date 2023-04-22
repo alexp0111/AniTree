@@ -35,7 +35,7 @@ class TreeEditor(
     }
 
     fun addSubElement(name: String, studio: String, bitmap: Bitmap) {
-        if (animator.isAnimating)
+        if (animator.isAnimating || isRemoval)
             return
         isRemoval = false
 

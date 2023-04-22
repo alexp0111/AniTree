@@ -3,11 +3,14 @@ package com.ikbo0621.anitree
 import android.graphics.*
 import android.os.Bundle
 import android.view.Window
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.content.ContextCompat
 import com.ikbo0621.anitree.tree.TreeView
 import com.ikbo0621.anitree.tree.builders.TreeEditor
 import com.ikbo0621.anitree.tree.elements.Icon
+import com.ikbo0621.anitree.tree.elements.VectorIcon
 import com.ikbo0621.anitree.tree.elements.buttons.Button
 import com.ikbo0621.anitree.tree.elements.buttons.CrossButton
 import com.ikbo0621.anitree.tree.elements.buttons.SchemeButton
@@ -38,6 +41,11 @@ class MainActivity : AppCompatActivity() {
         //tree.addSubElement("STEINS;GATE", "WHITEFOX", getRandomBitmap(), intArrayOf(1))
 
         val treeEditor = TreeEditor(treeView, WeakReference(this), tree)
+        treeEditor.setAuthor(getRandomBitmap(), "animebit13")
+        treeEditor.setIcons(
+            ContextCompat.getDrawable(this, R.drawable.like)!!,
+            ContextCompat.getDrawable(this, R.drawable.like_activated)!!
+        )
         treeEditor.invalidate()
 
         treeView.setOnClickListener {
@@ -56,7 +64,19 @@ class MainActivity : AppCompatActivity() {
                 is CrossButton -> {
                     treeEditor.deleteElement(selectedElement.index)
                 }
-                is Button -> treeEditor.toPreviousLayer()
+                is VectorIcon -> {
+                    Toast.makeText(
+                        applicationContext,
+                        "Is liked: ${treeEditor.switchLikeButton()}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                is Button -> {
+                    if (selectedElement.index != null) // author button
+                        Toast.makeText(applicationContext, "Author", Toast.LENGTH_SHORT).show()
+                    else
+                        treeEditor.toPreviousLayer()
+                }
                 else -> treeEditor.showCrossButtons(false)
             }
         }
@@ -104,7 +124,7 @@ class MainActivity : AppCompatActivity() {
         val canvas = Canvas(bitmap)
         val paint = Paint()
         // Just dividing each color component
-        val filter: ColorFilter = LightingColorFilter(
+        val filter = LightingColorFilter(
             Color.rgb(multiply, multiply, multiply), 0
         )
         paint.colorFilter = filter

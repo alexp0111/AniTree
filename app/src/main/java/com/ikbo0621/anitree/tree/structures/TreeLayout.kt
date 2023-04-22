@@ -1,6 +1,7 @@
 package com.ikbo0621.anitree.tree.structures
 
 import com.ikbo0621.anitree.tree.positioning.RPosition
+import com.ikbo0621.anitree.tree.positioning.RRect
 import com.ikbo0621.anitree.tree.positioning.RValue
 
 data class TreeLayout(val offset: RPosition) {
@@ -36,7 +37,7 @@ data class TreeLayout(val offset: RPosition) {
     }
 
     val subStudioTextPositions = ArrayList<RPosition>(3).apply{
-        add(RPosition(RValue(0.16f, RValue.Type.Y), RValue(0.518f, RValue.Type.Y)))
+        add(RPosition(RValue(0.155f, RValue.Type.Y), RValue(0.518f, RValue.Type.Y)))
         add(RPosition(last()).apply { add(RValue(), RValue(0.2f, RValue.Type.Y)) })
         add(RPosition(last()).apply { add(RValue(), RValue(0.2f, RValue.Type.Y)) })
     }
@@ -52,7 +53,7 @@ data class TreeLayout(val offset: RPosition) {
     }
 
     val subNameTextPositions = ArrayList<RPosition>(3).apply{
-        add(RPosition(RValue(0.17f, RValue.Type.Y), RValue(0.546f, RValue.Type.Y)))
+        add(RPosition(RValue(0.16f, RValue.Type.Y), RValue(0.547f, RValue.Type.Y)))
         add(RPosition(last()).apply { add(RValue(), RValue(0.2f, RValue.Type.Y)) })
         add(RPosition(last()).apply { add(RValue(), RValue(0.2f, RValue.Type.Y)) })
     }
@@ -60,4 +61,44 @@ data class TreeLayout(val offset: RPosition) {
     val lineWidth = RValue(0.003f, RValue.Type.Y)
     val subStudioTextStrings = arrayOf("YOUR", "FAVORITE", "ANIME")
     val subNameTextStrings = arrayOf("Help", "Others", "Choose")
+    val backFieldRect = RRect(
+        RPosition(RValue(0f, RValue.Type.X), RValue(0f, RValue.Type.Y)),
+        RPosition(RValue(0.4f, RValue.Type.SmallSide), RValue(1f, RValue.Type.Y))
+    )
+    val authorIconRadius = RValue(
+        subIconRadius.getRelative() * 0.5f,
+        subIconRadius.getType(),
+        RValue(
+            subIconRadius.limit!!.getRelative() * 0.5f,
+            subIconRadius.limit!!.getType()
+        )
+    )
+    val authorIconPosition = RPosition().apply {
+        set(
+            subFramePositions[0].getRelativeX(),
+            mainFramePos.getRelativeY()
+        )
+        add(subIconRadius, -mainIconRadius)
+        add(-authorIconRadius, authorIconRadius)
+    }
+
+    val authorTextPosition = RPosition(authorIconPosition).apply {
+        add(subIconRadius * -2f, authorIconRadius)
+        add(authorIconRadius, RValue())
+    }
+    val authorButtonRect =  RRect(
+        RPosition(authorTextPosition.getRelativeX(), ArrayList()),
+        RPosition(arrayListOf(RValue(1f, RValue.Type.X)), mainIconPos.getRelativeY())
+    )
+    val likeButtonRect = RRect(
+        RPosition(),
+        RPosition(authorIconRadius * 2f, authorIconRadius * 2f)
+    )
+    val likeButtonPosition = RPosition().apply {
+        set(
+            mainFramePos.getRelativeX(),
+            subFramePositions[2].getRelativeY()
+        )
+        add(-mainIconRadius, RValue())
+    }
 }

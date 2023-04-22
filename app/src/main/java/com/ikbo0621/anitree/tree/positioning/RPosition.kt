@@ -48,6 +48,12 @@ class RPosition(
         for (i in offset.valuesY)
             valuesY.add(i.clone())
     }
+
+    fun add(x: ArrayList<RValue>, y: ArrayList<RValue>) {
+        valuesX.addAll(x.clone() as ArrayList<RValue>)
+        valuesY.addAll(y.clone() as ArrayList<RValue>)
+    }
+
     fun getRelativeX() : ArrayList<RValue> {
         return valuesX
     }
