@@ -47,5 +47,9 @@ class Text(
 
         absolutePos = relativePos.getAbsolute(w, h)
         paint.textSize = size.getAbsolute(w, h)
+        val px = size.getAbsolute(w, h)
+        // px = dp * (dpi / 160)
+        val dp = px / (420 / 160)
+
     }
 }

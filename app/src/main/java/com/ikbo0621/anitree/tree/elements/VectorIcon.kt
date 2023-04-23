@@ -21,7 +21,6 @@ class VectorIcon(
     override fun draw(canvas: Canvas) {
         if (color == null)
             return
-        //canvas.drawRect(rectPoints.getAbsoluteRect(screenSize.x, screenSize.y, absolutePos), paint)
         canvas.drawBitmap(
             bitmap,
             null,
@@ -45,8 +44,10 @@ class VectorIcon(
 
         val canvas = Canvas(result)
         drawable.setBounds(0, 0, canvas.width, canvas.height)
-        //drawable.colorFilter = BlendModeColorFilter(color, BlendMode.SRC)
-        drawable.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(color!!, BlendModeCompat.SRC_ATOP)
+        drawable.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
+            color!!,
+            BlendModeCompat.SRC_ATOP
+        )
         drawable.draw(canvas)
 
         return result

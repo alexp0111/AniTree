@@ -34,10 +34,19 @@ class TreeEditor(
         super.updateLayer()
     }
 
+    override fun switchBottomButton() : Boolean {
+        if (!isBottomButtonActivated) {
+            isBottomButtonActivated = true
+            invalidate()
+        }
+        return isBottomButtonActivated
+    }
+
     fun addSubElement(name: String, studio: String, bitmap: Bitmap) {
         if (animator.isAnimating || isRemoval)
             return
         isRemoval = false
+        isBottomButtonActivated = false
 
         val index = getIndex(currentElement)
         currentElement.addSubElement(name, studio, bitmap, index)
@@ -52,6 +61,7 @@ class TreeEditor(
         val elementIndex = index ?: return
         if (elementIndex.contentEquals(currentElement.index)) // Do not remove the main element
             return
+        isBottomButtonActivated = false
 
         for (i in subIcons) {
             if (i.index.contentEquals(elementIndex)) {

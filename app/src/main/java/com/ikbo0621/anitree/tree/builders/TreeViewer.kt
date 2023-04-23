@@ -31,9 +31,9 @@ open class TreeViewer(
 
     private var authorIcon: Icon? = null
     private var authorName = String()
-    private var likeIcon: VectorIcon? = null
-    private var activatedLikeIcon: VectorIcon? = null
-    var liked = false
+    private var bottomIcon: VectorIcon? = null
+    private var activatedBottomIcon: VectorIcon? = null
+    var isBottomButtonActivated = false
         protected set
 
     // Preserving elements to optimize rendering
@@ -57,28 +57,28 @@ open class TreeViewer(
         authorName = name
     }
 
-    fun setIcons(like: Drawable, activatedLike: Drawable) {
+    fun setBottomIcon(icon: Drawable, activatedIcon: Drawable) {
         val context = contextRef.get() ?: return
         val color = context.resources.getColor(R.color.elements_color, null)
 
-        likeIcon = VectorIcon(
+        bottomIcon = VectorIcon(
             layout.likeButtonPosition,
             layout.likeButtonRect,
-            like,
+            icon,
             color
         )
-        activatedLikeIcon = VectorIcon(
+        activatedBottomIcon = VectorIcon(
             layout.likeButtonPosition,
             layout.likeButtonRect,
-            activatedLike,
+            activatedIcon,
             color
         )
     }
 
-    fun switchLikeButton() : Boolean {
-        liked = !liked
+    open fun switchBottomButton() : Boolean {
+        isBottomButtonActivated = !isBottomButtonActivated
         invalidate()
-        return liked
+        return isBottomButtonActivated
     }
 
     override fun update() {
@@ -346,13 +346,13 @@ open class TreeViewer(
     }
 
     private fun likeIcon() {
-        if (likeIcon == null || activatedLikeIcon == null)
+        if (bottomIcon == null || activatedBottomIcon == null)
             return
 
-        if (liked)
-            treeView.addElement(activatedLikeIcon!!)
+        if (isBottomButtonActivated)
+            treeView.addElement(activatedBottomIcon!!)
         else
-            treeView.addElement(likeIcon!!)
+            treeView.addElement(bottomIcon!!)
     }
 
     private fun createCurveToSubIcon(
@@ -409,6 +409,15 @@ open class TreeViewer(
             animator?.elements?.add(subFrames[index])
         }
 
+        private fun deleteButtonsAnimation(animator: Animator?) {
+            animator?.elements?.remove(authorIcon)
+            animator?.elements?.remove(authorNameText)
+            if (isBottomButtonActivated)
+                animator?.elements?.remove(activatedBottomIcon)
+            else
+                animator?.elements?.remove(bottomIcon)
+        }
+
         private fun setElements() {
             for (i in treeView.elements.indices) {
                 val element = treeView.elements[i]
@@ -447,6 +456,14 @@ open class TreeViewer(
             step2?.elements?.add(mainStudioText)
             step2?.elements?.add(mainNameText)
             step2?.elements?.add(mainFrame)
+
+//            step1?.elements?.remove(authorIcon)
+//            step1?.elements?.remove(authorNameText)
+//            step3?.elements?.remove(authorIcon)
+//            step3?.elements?.remove(authorNameText)
+            deleteButtonsAnimation(step1)
+            deleteButtonsAnimation(step2)
+            deleteButtonsAnimation(step3)
         }
 
         private fun createAnimators() {
@@ -470,6 +487,9 @@ open class TreeViewer(
                 onEnd = {
                     toAnotherLayer(index)
                     step4?.elements?.addAll(treeView.elements)
+
+                    deleteButtonsAnimation(step4)
+
                     step4?.start()
                 }
             }
