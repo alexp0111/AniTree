@@ -10,7 +10,6 @@ object DataController {
     val dimens = hashMapOf(
         "text_size" to RValue(0.5f, RValue.Type.Y)
     )
-    private lateinit var defaultValues: HashMap<String, Float>
 
     private const val DIMENS_STORAGE_NAME = "dimens"
     private lateinit var settings: SharedPreferences
@@ -22,17 +21,13 @@ object DataController {
         settings = context.getSharedPreferences(DIMENS_STORAGE_NAME, Context.MODE_PRIVATE)
         editor = settings.edit()
 
-        defaultValues = hashMapOf(
-            "text_size" to context.resources.getDimension(R.dimen.text_size)
-        )
-
         calculateAllDimens(screenSize)
         if (isChanged)
             saveAllDimens()
     }
 
-    fun getDimen(key: String) : Float {
-        return absoluteDimens[key] ?: defaultValues[key]!!
+    fun getDimen(key: String) : Float? {
+        return absoluteDimens[key]
     }
 
     private fun calculateAllDimens(screenSize: Point) {
