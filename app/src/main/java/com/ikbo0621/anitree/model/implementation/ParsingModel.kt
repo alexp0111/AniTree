@@ -10,7 +10,6 @@ import com.ikbo0621.anitree.util.UiState
 import com.ikbo0621.anitree.util.fitToExactRequest
 import com.ikbo0621.anitree.util.fitToGuessRequest
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -91,11 +90,17 @@ class ParsingModel() : ParsingRepository {
     /**
      * Guess anime with argument
      * */
-    override suspend fun guessAnime(animeTitle: String, result: (UiState<Anime>, ArrayList<String>) -> Unit) {
+    override suspend fun guessAnime(
+        animeTitle: String,
+        result: (UiState<Anime>, ArrayList<String>) -> Unit
+    ) {
         val titleForGuessSearch = animeTitle.fitToGuessRequest()
         val titleForExactSearch = animeTitle.fitToExactRequest()
 
-        val anim: Anime = withContext(Dispatchers.IO) {
+        val animPair: Pair<Anime, ArrayList<String>> = withContext(Dispatchers.IO) {
+
+            var guessList = arrayListOf<String>()
+
             Log.d("PARSER MODEL", titleForGuessSearch + " " + System.currentTimeMillis().toString())
 
             /**
@@ -124,6 +129,18 @@ class ParsingModel() : ParsingRepository {
                     .text()
                     .toString().fitToExactRequest()
 
+                for (i in 1..5) {
+                    try {
+                        val titleForGuessList: String = txtElement
+                            .getElementsByAttributeValue("class", "cardName")[i]
+                            .text()
+                            .toString()
+
+                        guessList.add(titleForGuessList)
+                    } catch (_: java.lang.Exception) {
+                    }
+                }
+
                 /**
                  * Create Anime object
                  * */
@@ -134,7 +151,7 @@ class ParsingModel() : ParsingRepository {
                     }
                 }
 
-                return@withContext anim
+                return@withContext anim to guessList
             } catch (e: java.lang.Exception) {
 
                 /**
@@ -150,20 +167,20 @@ class ParsingModel() : ParsingRepository {
                             anim = it.data
                         }
                     }
-                    return@withContext anim
-                } catch (e: java.lang.Exception){
-                    return@withContext Anime()
+                    return@withContext anim to arrayListOf<String>()
+                } catch (e: java.lang.Exception) {
+                    return@withContext Anime() to arrayListOf<String>()
                 }
             }
         }
 
-        if (anim.title == "-1") {
+        if (animPair.first.title == "-1") {
             result.invoke(
                 UiState.Failure("Anime not found"), arrayListOf()
             )
         } else {
             result.invoke(
-                UiState.Success(anim), arrayListOf("Mob psycho 100")
+                UiState.Success(animPair.first), animPair.second
             )
         }
     }

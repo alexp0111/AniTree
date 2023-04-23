@@ -81,7 +81,7 @@ class SearchFragment : Fragment() {
         textGuesses.forEach { textView ->
             textView.setOnClickListener {
                 val animeTitle = textView.text.toString()
-                binding.etAnimeTitle.setText(animeTitle)
+                viewModel.getAnimeWithTitle(animeTitle)
             }
         }
     }
@@ -114,6 +114,9 @@ class SearchFragment : Fragment() {
             }
         }
         viewModel.guessList.observe(viewLifecycleOwner) { arr ->
+            textGuesses.forEach {
+                it.text = ""
+            }
             arr.forEachIndexed { index, s ->
                 if (index < textGuesses.size)
                     textGuesses[index].text = s

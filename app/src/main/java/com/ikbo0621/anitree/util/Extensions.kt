@@ -45,6 +45,8 @@ fun String.fitToExactRequest() =
         .replace(" ", "-")
         .replace("\'", "")
         .replace(":", "")
+        .replace("(", "")
+        .replace(")", "")
         .lowercase()
 
 fun String.fitToGuessRequest() =
@@ -52,4 +54,6 @@ fun String.fitToGuessRequest() =
         .replace(" ", "%20")
         .replace("\'", "")
         .replace(":", "")
+        .replace("(", "")
+        .replace(")", "")
         .lowercase()
