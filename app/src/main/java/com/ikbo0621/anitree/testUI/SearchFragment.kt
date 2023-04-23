@@ -1,10 +1,10 @@
 package com.ikbo0621.anitree.testUI
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -12,7 +12,10 @@ import com.bumptech.glide.Glide
 import com.ikbo0621.anitree.R
 import com.ikbo0621.anitree.databinding.FragmentSearchBinding
 import com.ikbo0621.anitree.structure.Anime
-import com.ikbo0621.anitree.util.*
+import com.ikbo0621.anitree.util.UiState
+import com.ikbo0621.anitree.util.hide
+import com.ikbo0621.anitree.util.show
+import com.ikbo0621.anitree.util.toast
 import com.ikbo0621.anitree.viewModel.ParsingViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -21,6 +24,7 @@ class SearchFragment : Fragment() {
 
     private val TAG: String = "SEARCH_FRAGMENT"
     lateinit var binding: FragmentSearchBinding
+    private var textGuesses = arrayListOf<TextView>()
     val viewModel: ParsingViewModel by viewModels()
 
     override fun onCreateView(
@@ -65,6 +69,21 @@ class SearchFragment : Fragment() {
                 )
             }
         }
+
+        textGuesses = arrayListOf(
+            binding.tvRec1,
+            binding.tvRec2,
+            binding.tvRec3,
+            binding.tvRec4,
+            binding.tvRec5
+        )
+
+        textGuesses.forEach { textView ->
+            textView.setOnClickListener {
+                val animeTitle = textView.text.toString()
+                binding.etAnimeTitle.setText(animeTitle)
+            }
+        }
     }
 
     /**
@@ -92,6 +111,12 @@ class SearchFragment : Fragment() {
                             .into(binding.iv)
                     }
                 }
+            }
+        }
+        viewModel.guessList.observe(viewLifecycleOwner) { arr ->
+            arr.forEachIndexed { index, s ->
+                if (index < textGuesses.size)
+                    textGuesses[index].text = s
             }
         }
     }

@@ -91,7 +91,7 @@ class ParsingModel() : ParsingRepository {
     /**
      * Guess anime with argument
      * */
-    override suspend fun guessAnime(animeTitle: String, result: (UiState<Anime>) -> Unit) {
+    override suspend fun guessAnime(animeTitle: String, result: (UiState<Anime>, ArrayList<String>) -> Unit) {
         val titleForGuessSearch = animeTitle.fitToGuessRequest()
         val titleForExactSearch = animeTitle.fitToExactRequest()
 
@@ -159,11 +159,11 @@ class ParsingModel() : ParsingRepository {
 
         if (anim.title == "-1") {
             result.invoke(
-                UiState.Failure("Anime not found")
+                UiState.Failure("Anime not found"), arrayListOf()
             )
         } else {
             result.invoke(
-                UiState.Success(anim)
+                UiState.Success(anim), arrayListOf("Mob psycho 100")
             )
         }
     }

@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.ikbo0621.anitree.model.repository.ParsingRepository
 import com.ikbo0621.anitree.structure.Anime
 import com.ikbo0621.anitree.util.UiState
+import com.ikbo0621.anitree.util.fitToExactRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -27,18 +28,22 @@ class ParsingViewModel @Inject constructor(
     val guessedAnim: LiveData<UiState<Anime>>
         get() = _guessedAnim
 
+    private val _guessList = MutableLiveData<ArrayList<String>>()
+    val guessList: LiveData<ArrayList<String>>
+        get() = _guessList
+
     private var searchGuessJob: Job? = null
     private var searchExactJob: Job? = null
 
     fun getAnimeWithTitle(
         animeTitle: String
     ) {
-        _anim.value = UiState.Loading
+        _guessedAnim.value = UiState.Loading
         searchExactJob?.cancel()
         searchExactJob = viewModelScope.launch {
             repository.getAnimeWithName(
-                animeTitle = animeTitle,
-            ) { _anim.value = it }
+                animeTitle = animeTitle.fitToExactRequest(),
+            ) { _guessedAnim.value = it }
         }
     }
 
@@ -50,7 +55,10 @@ class ParsingViewModel @Inject constructor(
         searchGuessJob = viewModelScope.launch {
             repository.guessAnime(
                 animeTitle = animeTitle,
-            ) { _guessedAnim.value = it }
+            ) { uiState, strings ->
+                _guessedAnim.value = uiState
+                _guessList.value = strings
+            }
         }
     }
 }
