@@ -25,11 +25,11 @@ class AccountFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        _binding?.backButton?.setOnClickListener {
+        binding.backButton.setOnClickListener {
             val action = AccountFragmentDirections.actionAccountFragmentToSearchFragment()
             Navigation.findNavController(view).navigate(action)
         }
-        _binding?.avtrButton?.setOnClickListener{
+        binding.avtrButton.setOnClickListener{
             val action = AccountFragmentDirections.actionAccountFragmentToSettingsFragment()
             Navigation.findNavController(view).navigate(action)
         }

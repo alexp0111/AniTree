@@ -41,7 +41,9 @@
     <ImageButton
         android:id="@+id/avtrButton"
         android:layout_width="76dp"
+        style="@style/Widget.Material3.MaterialTimePicker.ImageButton"
         android:layout_height="77dp"
+        android:src="@drawable/naruto"
         app:layout_constraintBottom_toTopOf="@+id/back_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

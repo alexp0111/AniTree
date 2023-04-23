@@ -27,7 +27,7 @@ class SettingsFragment : Fragment() {
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        _binding?.backButton?.setOnClickListener{
+        binding.backButton.setOnClickListener{
             val action = SettingsFragmentDirections.actionSettingsFragmentToAccountFragment()
             Navigation.findNavController(view).navigate(action)
         }

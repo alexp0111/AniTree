@@ -22,11 +22,24 @@
     <TextView
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
-        android:layout_height="256dp"
+        android:layout_height="128dp"
         android:layout_marginStart="64dp"
-        android:layout_marginBottom="128dp"
+        android:layout_marginBottom="256dp"
         android:fontFamily="@font/mortendbold"
         android:text="Naruto"
+        android:textColor="@color/light_grey"
+        android:textSize="128sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="128dp"
+        android:layout_marginStart="-16dp"
+        android:layout_marginBottom="108dp"
+        android:fontFamily="@font/mortendbold"
+        android:text="uto"
         android:textColor="@color/light_grey"
         android:textSize="128sp"
         app:layout_constraintBottom_toBottomOf="parent"
