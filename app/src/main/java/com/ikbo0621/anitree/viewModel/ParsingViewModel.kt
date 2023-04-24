@@ -10,6 +10,7 @@ import com.ikbo0621.anitree.util.UiState
 import com.ikbo0621.anitree.util.fitToExactRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -20,6 +21,9 @@ import javax.inject.Inject
 class ParsingViewModel @Inject constructor(
     val repository: ParsingRepository
 ) : ViewModel() {
+
+    private val TAG: String = "PARSING_VIEW_MODEL"
+
     private val _anim = MutableLiveData<UiState<Anime>>()
     val anim: LiveData<UiState<Anime>>
         get() = _anim
@@ -41,6 +45,7 @@ class ParsingViewModel @Inject constructor(
         _guessedAnim.value = UiState.Loading
         searchExactJob?.cancel()
         searchExactJob = viewModelScope.launch {
+            delay(1000) // to not ddos server with each input of letter
             repository.getAnimeWithName(
                 animeTitle = animeTitle.fitToExactRequest(),
             ) { _guessedAnim.value = it }
@@ -53,6 +58,7 @@ class ParsingViewModel @Inject constructor(
         _guessedAnim.value = UiState.Loading
         searchGuessJob?.cancel()
         searchGuessJob = viewModelScope.launch {
+            delay(1000) // to not ddos server with each input of letter
             repository.guessAnime(
                 animeTitle = animeTitle,
             ) { uiState, strings ->
