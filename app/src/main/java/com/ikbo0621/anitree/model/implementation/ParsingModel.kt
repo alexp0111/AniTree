@@ -29,51 +29,70 @@ class ParsingModel() : ParsingRepository {
             /**
              * Get html page
              * */
-            try {
-                Log.d("Parser", ParserConstants.BASIC_URL + "anime/" + animeTitle)
-                val doc: Document = Jsoup
-                    .connect(ParserConstants.BASIC_URL + "anime/" + animeTitle)
-                    .get()
+            Log.d("Parser", ParserConstants.BASIC_URL + "anime/" + animeTitle)
+            val doc: Document = Jsoup
+                .connect(ParserConstants.BASIC_URL + "anime/" + animeTitle)
+                .get()
 
-                /**
-                 * Get necessary elements by classes
-                 * */
-                val titleElement: Element = doc.getElementsByAttributeValue("itemprop", "name")[0]
+
+            var approvedAnimeTitle = ""
+            var description = "-1"
+            var studio = "-1"
+            var releaseDate = "-1"
+            var imageURI = Uri.EMPTY
+
+            // Title
+            val titleElement: Element =
+                doc.getElementsByAttributeValue("itemprop", "name")[0]
+            approvedAnimeTitle = titleElement.text().toString()
+
+
+            // Description
+            try {
                 val descElement: Element =
                     doc.getElementsByAttributeValue("class", "pure-1 md-3-5")[0]
-                val sectionElement: Element =
-                    doc.getElementsByAttributeValue("class", "pure-g entryBar")[0]
-                val imgElement: Element = doc.getElementsByAttributeValue("class", "mainEntry")[0]
+                description = descElement.select("p")[0].text().toString()
+            } catch (_: Exception) {
+            }
 
-                /**
-                 * Get info from elements in necessary type
-                 * */
-                val approvedAnimeTitle: String = titleElement.text().toString()
-                val description: String = descElement.select("p")[0].text().toString()
-                val studio: String = sectionElement.select("a")[0].text().toString()
-                val releaseDate: String = sectionElement.select("span")[1].text().toString()
-                val imageURI: Uri = imgElement.html()
+
+            // Studio & Release date
+            val sectionElement: Element =
+                doc.getElementsByAttributeValue("class", "pure-g entryBar")[0]
+
+            try {
+                studio = sectionElement.select("a")[0].text().toString()
+                releaseDate = sectionElement.select("span")[1].text().toString()
+            } catch (_: Exception) {
+            }
+
+
+            // Image
+            try {
+                val imgElement: Element =
+                    doc.getElementsByAttributeValue("class", "mainEntry")[0]
+                imageURI = imgElement.html()
                     .substringAfter("src=\"")
                     .substringBefore("\">")
                     .toUri()
-
-                /**
-                 * Create Anime object
-                 * */
-                val anim = Anime(
-                    approvedAnimeTitle,
-                    description,
-                    studio,
-                    releaseDate,
-                    imageURI
-                )
-
-                Log.d("Parser", anim.toString())
-
-                return@withContext anim
-            } catch (e: java.lang.Exception) {
-                return@withContext Anime()
+            } catch (_: Exception) {
             }
+
+            /**
+             * Create Anime object
+             * */
+            val anim = Anime(
+                approvedAnimeTitle,
+                description,
+                studio,
+                releaseDate,
+                imageURI
+            )
+
+            Log.d("Parser", anim.toString())
+
+            return@withContext anim
+
         }
 
         if (anim.title == "-1") {
@@ -99,61 +118,36 @@ class ParsingModel() : ParsingRepository {
 
         val animPair: Pair<Anime, ArrayList<String>> = withContext(Dispatchers.IO) {
 
-            var guessList = arrayListOf<String>()
+            val guessList = arrayListOf<String>()
 
             Log.d("PARSER MODEL", titleForGuessSearch + " " + System.currentTimeMillis().toString())
 
             /**
              * Get html page
              * */
-            try {
-                val doc: Document = Jsoup
+            val doc: Document = try {
+                Jsoup
                     .connect(
                         ParserConstants.BASIC_URL
                                 + "anime/all?sort=average&order=desc&name="
                                 + titleForGuessSearch
                     )
                     .get()
+            } catch (e: Exception){
+                // Error 429: request limit
+                Jsoup.parse("")
+            }
 
-                /**
-                 * Get necessary elements by classes
-                 * */
-                val txtElement: Element =
+
+            /**
+             * Get necessary elements by classes
+             * */
+            val txtElement: Element
+            try {
+                txtElement =
                     doc.getElementsByAttributeValue("class", "cardDeck cardGrid")[0]
-
-                /**
-                 * Get info from elements in necessary type
-                 * */
-                val approvedAnimeTitle: String = txtElement
-                    .getElementsByAttributeValue("class", "cardName")[0]
-                    .text()
-                    .toString().fitToExactRequest()
-
-                for (i in 1..5) {
-                    try {
-                        val titleForGuessList: String = txtElement
-                            .getElementsByAttributeValue("class", "cardName")[i]
-                            .text()
-                            .toString()
-
-                        guessList.add(titleForGuessList)
-                    } catch (_: java.lang.Exception) {
-                    }
-                }
-
-                /**
-                 * Create Anime object
-                 * */
-                var anim = Anime()
-                getAnimeWithName(approvedAnimeTitle) {
-                    if (it is UiState.Success) {
-                        anim = it.data
-                    }
-                }
-
-                return@withContext anim to guessList
-            } catch (e: java.lang.Exception) {
-
+            } catch (e: Exception) {
+                Log.d("PARSER", "NOT F")
                 /**
                  * If title not found -> try to exact search
                  * Caused by: guessing exact title do not return result
@@ -169,9 +163,41 @@ class ParsingModel() : ParsingRepository {
                     }
                     return@withContext anim to arrayListOf<String>()
                 } catch (e: java.lang.Exception) {
-                    return@withContext Anime() to arrayListOf<String>()
+                    return@withContext Anime(title = "-1") to arrayListOf<String>()
                 }
             }
+
+            /**
+             * Get info from elements in necessary type
+             * */
+            val approvedAnimeTitle: String = txtElement
+                .getElementsByAttributeValue("class", "cardName")[0]
+                .text()
+                .toString().fitToExactRequest()
+
+            for (i in 1..5) {
+                try {
+                    val titleForGuessList: String =
+                        txtElement.getElementsByAttributeValue("class", "cardName")[i]
+                            .text()
+                            .toString()
+                    guessList.add(titleForGuessList)
+                } catch (_: java.lang.IndexOutOfBoundsException) {
+                    // Number of guesses in site less that 5
+                }
+            }
+
+            /**
+             * Create Anime object
+             * */
+            var anim = Anime()
+            getAnimeWithName(approvedAnimeTitle) {
+                if (it is UiState.Success) {
+                    anim = it.data
+                }
+            }
+
+            return@withContext anim to guessList
         }
 
         if (animPair.first.title == "-1") {
