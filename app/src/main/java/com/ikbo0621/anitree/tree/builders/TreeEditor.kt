@@ -48,7 +48,7 @@ class TreeEditor(
         isBottomButtonActivated = false
 
         val index = getIndex(currentElement)
-        currentElement.addSubElement(name, studio, bitmap, index)
+        treeData.addSubElement(name, studio, bitmap, index)
         super.addSubElement(bitmap, index)
         invalidate()
     }
@@ -88,8 +88,26 @@ class TreeEditor(
         super.toPreviousLayer()
     }
 
-    fun getTree() : TreeData {
-        return treeData
+    fun getTree() : List<String?> {
+        val result = arrayListOf<String?>().apply {
+            ensureCapacity(13)
+            while (size < 13)
+                add(null);
+        }
+
+        result[0] = treeData.name
+
+        val a = currentElement
+
+        for (i in 0 until 3) {
+            result[1 + i] = treeData.tree?.getOrNull(i)?.name
+            val subTree = treeData.tree?.getOrNull(i)?.tree
+            for (j in 0 until 3) {
+                result[(1 + i) * 3 + (1 + j)] = subTree?.getOrNull(j)?.name
+            }
+        }
+
+        return result
     }
 
     fun showCrossButtons(show: Boolean) {
