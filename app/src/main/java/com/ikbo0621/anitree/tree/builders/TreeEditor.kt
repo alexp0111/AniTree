@@ -11,13 +11,12 @@ import com.ikbo0621.anitree.tree.elements.buttons.SchemeButton
 import com.ikbo0621.anitree.tree.positioning.RPosition
 import com.ikbo0621.anitree.tree.positioning.RRect
 import com.ikbo0621.anitree.tree.structures.TreeData
-import java.lang.ref.WeakReference
 
 class TreeEditor(
     treeView: TreeView,
-    contextRef: WeakReference<Context>,
+    context: Context,
     treeData: TreeData,
-) : TreeViewer(treeView, contextRef, treeData) {
+) : TreeViewer(treeView, context, treeData) {
     // Preserving elements to optimize rendering
     private val crossButtons = arrayOf<CrossButton?>(null, null, null)
     private var isRemoval = false

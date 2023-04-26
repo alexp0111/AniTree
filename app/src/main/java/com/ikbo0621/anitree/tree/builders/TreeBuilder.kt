@@ -10,8 +10,9 @@ import java.lang.ref.WeakReference
 
 open class TreeBuilder(
     protected val treeView: TreeView,
-    protected val contextRef: WeakReference<Context>
+    context: Context
 ) {
+    protected val contextRef = WeakReference(context)
     protected var mainIcon: Circle? = null
     protected var subIcons = ArrayList<Circle>(3)
     protected val layout = TreeLayout(RPosition())

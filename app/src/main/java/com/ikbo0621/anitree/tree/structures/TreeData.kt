@@ -1,25 +1,40 @@
 package com.ikbo0621.anitree.tree.structures
 
 import android.graphics.Bitmap
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class TreeData(
     val name: String,
     val studio: String,
     val bitmap: Bitmap,
     var index: IntArray,
     var tree: ArrayList<TreeData>? = null
-) {
+) : Parcelable {
     private fun createTree(name: String, studio: String, bitmap: Bitmap, index: IntArray) {
         tree = ArrayList(3)
         tree!!.add(TreeData(name, studio, bitmap, index))
     }
 
     fun addSubElement(name: String, studio: String, bitmap: Bitmap, index: IntArray) {
-        if (tree == null) {
-            createTree(name, studio, bitmap, index)
-        } else if (tree!!.size < 3) {
-            tree!!.add(TreeData(name, studio, bitmap, index))
+        val parent = getSubElementByIndex(index.copyOfRange(0, index.lastIndex)) ?: return
+        val parentTree = parent.tree
+        
+        if (parentTree == null) {
+            parent.createTree(name, studio, bitmap, index)
+        } else if (parentTree.size < 3) {
+            parentTree.add(TreeData(name, studio, bitmap, index))
         }
+    }
+
+    private fun getSubElementByIndex(index: IntArray) : TreeData? {
+        var result = this
+        for (i in index) {
+            result = result.tree?.getOrNull(i) ?: return null
+        }
+
+        return result
     }
 
     override fun equals(other: Any?): Boolean {

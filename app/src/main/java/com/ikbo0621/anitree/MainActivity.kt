@@ -2,22 +2,18 @@ package com.ikbo0621.anitree
 
 import android.graphics.*
 import android.os.Bundle
-import android.util.DisplayMetrics
 import android.view.Window
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import com.ikbo0621.anitree.tree.TreeView
-import com.ikbo0621.anitree.tree.builders.TreeEditor
 import com.ikbo0621.anitree.tree.builders.TreeViewer
 import com.ikbo0621.anitree.tree.elements.Icon
 import com.ikbo0621.anitree.tree.elements.VectorIcon
 import com.ikbo0621.anitree.tree.elements.buttons.Button
-import com.ikbo0621.anitree.tree.elements.buttons.CrossButton
 import com.ikbo0621.anitree.tree.elements.buttons.SchemeButton
 import com.ikbo0621.anitree.tree.structures.TreeData
-import java.lang.ref.WeakReference
 
 
 class MainActivity : AppCompatActivity() {
@@ -90,12 +86,12 @@ class MainActivity : AppCompatActivity() {
         val tree = TreeData("Main anime", "MainStudio", getRandomBitmap(), IntArray(0))
         tree.addSubElement("0Anime", "Studio0", getRandomBitmap(), intArrayOf(0))
         tree.addSubElement("1Anime", "Studio1", getRandomBitmap(), intArrayOf(1))
+        tree.addSubElement("2Anime", "Studio2", getRandomBitmap(), intArrayOf(1, 0))
+        tree.addSubElement("3Anime", "Studio3", getRandomBitmap(), intArrayOf(1, 1))
         tree.addSubElement("2Anime", "Studio2", getRandomBitmap(), intArrayOf(2))
         tree.addSubElement("3Anime", "Studio3", getRandomBitmap(), intArrayOf(3))
-        tree.tree?.get(1)?.addSubElement("4Anime", "Studio4", getRandomBitmap(), intArrayOf(1, 0))
-        tree.tree?.get(1)?.addSubElement("5Anime", "Studio5", getRandomBitmap(), intArrayOf(1, 1))
 
-        val treeViewer = TreeViewer(treeView, WeakReference(this), tree)
+        val treeViewer = TreeViewer(treeView, this, tree)
         treeViewer.setAuthor(getRandomBitmap(), "animebit13")
         treeViewer.setBottomIcon(
             ContextCompat.getDrawable(this, R.drawable.like)!!,

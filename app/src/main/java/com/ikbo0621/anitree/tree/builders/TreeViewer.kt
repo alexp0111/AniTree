@@ -19,13 +19,12 @@ import com.ikbo0621.anitree.tree.elements.buttons.SchemeButton
 import com.ikbo0621.anitree.tree.positioning.RPosition
 import com.ikbo0621.anitree.tree.positioning.RValue
 import com.ikbo0621.anitree.tree.structures.TreeData
-import java.lang.ref.WeakReference
 
 open class TreeViewer(
     treeView: TreeView,
-    contextRef: WeakReference<Context>,
+    context: Context,
     protected var treeData: TreeData
-) : TreeBuilder(treeView, contextRef) {
+) : TreeBuilder(treeView, context) {
     protected var currentElement = treeData
     protected val animator = JumpAnimator()
 
@@ -117,6 +116,8 @@ open class TreeViewer(
         if (animator.isAnimating || nextElement == null || mainStudioText == null)
             return
         val nextIndex = nextElement.index ?: return
+        if (nextIndex.size > 1) // Tree depth limit
+            return
 
         animator.startAnimation(
             nextIndex,
@@ -457,10 +458,6 @@ open class TreeViewer(
             step2?.elements?.add(mainNameText)
             step2?.elements?.add(mainFrame)
 
-//            step1?.elements?.remove(authorIcon)
-//            step1?.elements?.remove(authorNameText)
-//            step3?.elements?.remove(authorIcon)
-//            step3?.elements?.remove(authorNameText)
             deleteButtonsAnimation(step1)
             deleteButtonsAnimation(step2)
             deleteButtonsAnimation(step3)
