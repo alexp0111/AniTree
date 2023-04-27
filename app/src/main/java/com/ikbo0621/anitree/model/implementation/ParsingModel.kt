@@ -19,6 +19,7 @@ import org.jsoup.nodes.Element
  * Model that provides parsing logic
  * */
 class ParsingModel() : ParsingRepository {
+    private val TAG: String = "PARSING_MODEL"
 
     /**
      * Get anime directly with argument
@@ -27,7 +28,6 @@ class ParsingModel() : ParsingRepository {
         val anim: Anime = withContext(Dispatchers.IO) {
             try {
                 /** Get html page */
-                Log.d("Parser", ParserConstants.BASIC_URL + "anime/" + animeTitle)
                 val doc: Document = Jsoup
                     .connect(ParserConstants.BASIC_URL + "anime/" + animeTitle)
                     .get()
@@ -93,7 +93,7 @@ class ParsingModel() : ParsingRepository {
                 Log.d("Parser", anim.toString())
 
                 return@withContext anim
-            } catch (e: Exception){
+            } catch (e: Exception) {
                 return@withContext Anime()
             }
 
@@ -125,14 +125,6 @@ class ParsingModel() : ParsingRepository {
             val guessList = arrayListOf<String>()
             var approvedAnimeTitle = titleForExactSearch
 
-            Log.d("PARSER MODEL", titleForGuessSearch + " " + System.currentTimeMillis().toString())
-            Log.d(
-                "PARSER MODEL", ParserConstants.BASIC_URL
-                        + "anime/all?sort=average&order=desc&name="
-                        + titleForGuessSearch
-            )
-
-
             try {
                 /** Get html page */
                 val doc = Jsoup
@@ -141,6 +133,7 @@ class ParsingModel() : ParsingRepository {
                                 + "anime/all?sort=average&order=desc&name="
                                 + titleForGuessSearch
                     )
+                    .timeout(ParserConstants.TIMEOUT)
                     .get()
 
 
@@ -168,7 +161,8 @@ class ParsingModel() : ParsingRepository {
                         // Number of guesses in site less that 5
                     }
                 }
-            } catch (_: java.lang.Exception) {
+            } catch (e: Exception) {
+                Log.d(TAG, e.toString())
                 // -> Error in url
                 // -> Anime name is exactly matches
             }

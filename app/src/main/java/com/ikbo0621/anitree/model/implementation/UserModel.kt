@@ -1,6 +1,7 @@
 package com.ikbo0621.anitree.model.implementation
 
 import android.content.SharedPreferences
+import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
@@ -19,6 +20,9 @@ class UserModel(
     val appPreferences: SharedPreferences,
     val gson: Gson
 ) : UserRepository {
+
+    private val TAG: String = "USER_MODEL"
+
     override fun registerUser(
         email: String,
         password: String,
@@ -107,6 +111,7 @@ class UserModel(
                 }
             }.addOnFailureListener {
                 result.invoke(UiState.Failure("Authentication failed, Check email and password"))
+                it.localizedMessage?.let { it1 -> Log.d(TAG, it1) }
             }
     }
 
@@ -130,9 +135,11 @@ class UserModel(
     }
 
     override fun storeSession(id: String, result: (User?) -> Unit) {
+        Log.d(TAG, "1")
         database.collection(FireStoreCollection.USER).document(id)
             .get()
             .addOnCompleteListener {
+                Log.d(TAG, "2")
                 if (it.isSuccessful) {
                     val user = it.result.toObject(User::class.java)
                     appPreferences.edit()

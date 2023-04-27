@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ikbo0621.anitree.model.repository.ParsingRepository
 import com.ikbo0621.anitree.structure.Anime
+import com.ikbo0621.anitree.util.ParserConstants
 import com.ikbo0621.anitree.util.UiState
 import com.ikbo0621.anitree.util.fitToExactRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -45,7 +46,7 @@ class ParsingViewModel @Inject constructor(
         _guessedAnim.value = UiState.Loading
         searchExactJob?.cancel()
         searchExactJob = viewModelScope.launch {
-            delay(1000) // to not ddos server with each input of letter
+            delay(ParserConstants.SEARCH_INPUT_DELAY) // to not ddos server with each input of letter
             repository.getAnimeWithName(
                 animeTitle = animeTitle.fitToExactRequest(),
             ) { _guessedAnim.value = it }
@@ -58,7 +59,7 @@ class ParsingViewModel @Inject constructor(
         _guessedAnim.value = UiState.Loading
         searchGuessJob?.cancel()
         searchGuessJob = viewModelScope.launch {
-            delay(1000) // to not ddos server with each input of letter
+            delay(ParserConstants.SEARCH_INPUT_DELAY) // to not ddos server with each input of letter
             repository.guessAnime(
                 animeTitle = animeTitle,
             ) { uiState, strings ->

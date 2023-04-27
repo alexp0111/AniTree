@@ -1,12 +1,14 @@
 package com.ikbo0621.anitree.util
 
-object FireStoreCollection{
+object FireStoreCollection {
     val USER = "user"
     val TREE = "tree"
 }
 
-object ParserConstants{
+object ParserConstants {
     val BASIC_URL = "https://www.anime-planet.com/"
+    val SEARCH_INPUT_DELAY: Long = 2000 // for coroutine delay
+    val TIMEOUT: Int = 5000 // for Jsoup request
 }
 
 object SharedPrefConstants {
