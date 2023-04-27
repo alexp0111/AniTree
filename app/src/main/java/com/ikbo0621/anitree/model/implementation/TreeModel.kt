@@ -15,9 +15,20 @@ class TreeModel(
     private val TAG: String = "TREE_MODEL"
 
     override fun updateTree(tree: Tree, result: (UiState<Tree>) -> Unit) {
-        val id = database.collection(FireStoreCollection.TREE).document().id
+        val id = database
+            .collection(FireStoreCollection.TREE)
+            .document(tree.children[0].toString())
+            .collection(FireStoreCollection.INNER_PATH)
+            .document()
+            .id
         tree.id = id
-        val document = database.collection(FireStoreCollection.TREE).document(id)
+
+        val document =
+            database.collection(FireStoreCollection.TREE)
+                .document(tree.children[0].toString())
+                .collection(FireStoreCollection.INNER_PATH)
+                .document(id)
+
         document
             .set(tree)
             .addOnSuccessListener {
