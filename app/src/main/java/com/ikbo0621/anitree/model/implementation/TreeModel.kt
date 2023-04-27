@@ -45,6 +45,35 @@ class TreeModel(
             }
     }
 
+    override fun getTreesAccordingTo(animeTitle: String, result: (UiState<List<Tree>>) -> Unit) {
+        database
+            .collection(FireStoreCollection.TREE)
+            .document(animeTitle)
+            .collection(FireStoreCollection.INNER_PATH)
+            .get()
+            .addOnCompleteListener {
+                if (it.isSuccessful) {
+                    val trees = arrayListOf<Tree>()
+                    it.result.documents.forEach { thisTree ->
+                        thisTree.toObject(Tree::class.java).apply {
+                            if (this != null)
+                                trees.add(this)
+                        }
+                    }
+                    result.invoke(UiState.Success(trees))
+                } else {
+                    result.invoke(
+                        UiState.Failure("Task is not successful")
+                    )
+                }
+            }
+            .addOnFailureListener {
+                result.invoke(
+                    UiState.Failure("Something went wrong")
+                )
+            }
+    }
+
     override fun like(tree: Tree, result: (UiState<Tree>) -> Unit) {
         TODO("Not yet implemented")
     }

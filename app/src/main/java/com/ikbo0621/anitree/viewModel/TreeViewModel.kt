@@ -25,6 +25,10 @@ class TreeViewModel @Inject constructor(
     val tree: LiveData<UiState<Tree>>
         get() = _tree
 
+    private val _trees = MutableLiveData<UiState<List<Tree>>>()
+    val trees: LiveData<UiState<List<Tree>>>
+        get() = _trees
+
 
     fun updateTree(
         tree: Tree
@@ -33,5 +37,14 @@ class TreeViewModel @Inject constructor(
         repository.updateTree(
             tree = tree,
         ) { _tree.value = it }
+    }
+
+    fun getTreesAccordingTo(
+        animeTitle: String
+    ) {
+        _trees.value = UiState.Loading
+        repository.getTreesAccordingTo(
+            animeTitle = animeTitle,
+        ) { _trees.value = it }
     }
 }

@@ -67,6 +67,8 @@ class SearchFragment : Fragment() {
                 viewModel.guessAnime(
                     binding.etAnimeTitle.text.toString()
                 )
+            } else {
+                viewModel.cancelSearch()
             }
         }
 
@@ -132,7 +134,6 @@ class SearchFragment : Fragment() {
 
         if (binding.etAnimeTitle.text.isNullOrEmpty()) {
             isValid = false
-            toast("Enter something")
         }
 
         return isValid

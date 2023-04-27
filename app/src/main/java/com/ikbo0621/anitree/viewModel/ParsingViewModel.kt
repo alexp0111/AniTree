@@ -68,4 +68,9 @@ class ParsingViewModel @Inject constructor(
             }
         }
     }
+
+    fun cancelSearch(){
+        searchGuessJob?.cancel()
+        _guessedAnim.value = UiState.Failure("Please, enter something")
+    }
 }

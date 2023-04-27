@@ -40,6 +40,7 @@ class AnimeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         observer()
 
+
         anime = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             arguments?.getParcelable("anime", Anime::class.java)
         } else {
@@ -56,6 +57,10 @@ class AnimeFragment : Fragment() {
         binding.tvAnimeStudio.text = anime?.studio
         binding.tvAnimeReleaseDate.text = anime?.releaseDate
         binding.tvAnimeDescription.text = anime?.description
+
+        //
+
+        treeViewModel.getTreesAccordingTo(anime?.title ?: "-1")
 
 
         //
@@ -82,6 +87,22 @@ class AnimeFragment : Fragment() {
                     binding.pb.hide()
                     // temporary test solution
                     toast(state.data.id)
+                }
+            }
+        }
+
+        treeViewModel.trees.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is UiState.Loading -> binding.pb.show()
+                is UiState.Failure -> {
+                    binding.pb.hide()
+                    toast(state.error)
+                }
+                is UiState.Success -> {
+                    binding.pb.hide()
+                    toast("Success")
+                    // temporary test solution
+                    binding.tvTrees.text = state.data.toString()
                 }
             }
         }
