@@ -1,6 +1,7 @@
 package com.ikbo0621.anitree.testUI
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -39,6 +40,12 @@ class SearchFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         observer()
 
+        try {
+            restore()
+        } catch (e: Exception) {
+            // There is no anime yet
+        }
+
         binding.btnProfile.setOnClickListener {
             parentFragmentManager.beginTransaction().addToBackStack("search")
                 .replace(R.id.fragment_container_view, ProfileFragment()).commit()
@@ -63,12 +70,15 @@ class SearchFragment : Fragment() {
         }
 
         binding.etAnimeTitle.addTextChangedListener {
-            if (validation()) {
-                viewModel.guessAnime(
-                    binding.etAnimeTitle.text.toString()
-                )
-            } else {
-                viewModel.cancelSearch()
+            Log.d(TAG, "triggered")
+            if (binding.etAnimeTitle.isFocused) {
+                if (validation()) {
+                    viewModel.guessAnime(
+                        binding.etAnimeTitle.text.toString()
+                    )
+                } else {
+                    viewModel.cancelSearch()
+                }
             }
         }
 
@@ -86,6 +96,21 @@ class SearchFragment : Fragment() {
                 viewModel.getAnimeWithTitle(animeTitle)
             }
         }
+    }
+
+    /**
+     * Get anime actual liveData
+     * if it exists -> show at ui
+     *
+     * is necessary to reduce the number of requests to the site
+     * */
+    private fun restore() {
+        context?.let {
+            Glide.with(it)
+                .load((viewModel.guessedAnim.value as UiState.Success).data.imageURI)
+                .into(binding.iv)
+        }
+        binding.tvInfo.text = (viewModel.guessedAnim.value as UiState.Success).data.title
     }
 
     /**
