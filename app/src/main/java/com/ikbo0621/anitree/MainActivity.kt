@@ -16,8 +16,12 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        // Keep this code
+
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container_view, LogInFragment())
             .commitAllowingStateLoss()
+
+        // Keep this code
     }
 }
