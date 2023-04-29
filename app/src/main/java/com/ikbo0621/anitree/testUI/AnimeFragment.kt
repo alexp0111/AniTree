@@ -7,7 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.ikbo0621.anitree.R
 import com.ikbo0621.anitree.databinding.FragmentAnimeBinding
 import com.ikbo0621.anitree.structure.Anime
 import com.ikbo0621.anitree.structure.Tree
@@ -27,6 +29,21 @@ class AnimeFragment : Fragment() {
     lateinit var binding: FragmentAnimeBinding
     val treeViewModel: TreeViewModel by viewModels()
     val userViewModel: UserViewModel by viewModels()
+
+    val adapter by lazy {
+        TreeAdapter(
+            onItemClicked = { pos, item ->
+                val fragment = CheckTreeFragment()
+
+                val bundle = Bundle()
+                bundle.putParcelable("tree",item)
+                fragment.arguments = bundle
+
+                parentFragmentManager.beginTransaction().addToBackStack(null)
+                    .replace(R.id.fragment_container_view, fragment).commit()
+            }
+        )
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -61,6 +78,11 @@ class AnimeFragment : Fragment() {
         //
 
         treeViewModel.getTreesAccordingTo(anime?.title ?: "-1")
+
+        val manager = LinearLayoutManager(context)
+        manager.orientation = LinearLayoutManager.HORIZONTAL
+        binding.rvTrees.layoutManager = manager
+        binding.rvTrees.adapter = adapter
 
 
         //
@@ -101,12 +123,18 @@ class AnimeFragment : Fragment() {
                 is UiState.Success -> {
                     binding.pb.hide()
                     toast("Success")
-                    // temporary test solution
-                    binding.tvTrees.text = state.data.toString()
+                    // setting up an recyclerView
+                    adapter.updateList(state.data)
+                    // binding.tvTrees.text = state.data.toString()
                 }
             }
         }
     }
+
+    private fun setUpAnRecycler(data: List<Tree>) {
+
+    }
+
 
     private fun getTestTree(id: String): Tree {
         val children =
