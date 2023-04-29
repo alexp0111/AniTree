@@ -16,9 +16,11 @@
 
     <Button
         android:id="@+id/btn_like"
-        android:text="Like"
-        android:textColor="@color/black"
-        android:backgroundTint="@color/white"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <ProgressBar
+        android:id="@+id/pb"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 

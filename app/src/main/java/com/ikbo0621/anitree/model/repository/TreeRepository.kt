@@ -6,6 +6,6 @@ import com.ikbo0621.anitree.util.UiState
 interface TreeRepository {
     fun updateTree(tree: Tree, result: (UiState<Tree>) -> Unit)
     fun getTreesAccordingTo(animeTitle: String, result: (UiState<List<Tree>>) -> Unit)
-    fun like(tree: Tree, result: (UiState<Tree>) -> Unit)
-    fun dislike(tree: Tree, result: (UiState<Tree>) -> Unit)
+    fun like(treeID: String, state: Boolean, result: (UiState<Boolean>) -> Unit)
+    fun checkIfCurrentUserIsLiker(userID: String, result: (UiState<Boolean>) -> Unit)
 }

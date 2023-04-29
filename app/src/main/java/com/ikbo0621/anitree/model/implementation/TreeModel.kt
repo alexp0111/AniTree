@@ -15,13 +15,18 @@ class TreeModel(
     private val TAG: String = "TREE_MODEL"
 
     override fun updateTree(tree: Tree, result: (UiState<Tree>) -> Unit) {
-        val id = database
-            .collection(FireStoreCollection.TREE)
-            .document(tree.children[0].toString())
-            .collection(FireStoreCollection.INNER_PATH)
-            .document()
-            .id
-        tree.id = id
+        val id: String
+        if (tree.id.isEmpty()){
+            id = database
+                .collection(FireStoreCollection.TREE)
+                .document(tree.children[0].toString())
+                .collection(FireStoreCollection.INNER_PATH)
+                .document()
+                .id
+            tree.id = id
+        } else {
+            id = tree.id
+        }
 
         val document =
             database.collection(FireStoreCollection.TREE)
@@ -74,11 +79,11 @@ class TreeModel(
             }
     }
 
-    override fun like(tree: Tree, result: (UiState<Tree>) -> Unit) {
-        TODO("Not yet implemented")
+    override fun like(treeID: String, state: Boolean, result: (UiState<Boolean>) -> Unit) {
+        result.invoke(UiState.Success(state))
     }
 
-    override fun dislike(tree: Tree, result: (UiState<Tree>) -> Unit) {
-        TODO("Not yet implemented")
+    override fun checkIfCurrentUserIsLiker(userID: String, result: (UiState<Boolean>) -> Unit) {
+        result.invoke(UiState.Success(true))
     }
 }
