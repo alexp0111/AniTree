@@ -17,6 +17,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         // Keep this code
+        // Actual
 
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container_view, LogInFragment())
