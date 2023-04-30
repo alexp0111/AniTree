@@ -16,7 +16,7 @@ class TreeModel(
 
     override fun updateTree(tree: Tree, result: (UiState<Tree>) -> Unit) {
         val id: String
-        if (tree.id.isEmpty()){
+        if (tree.id.isEmpty()) {
             id = database
                 .collection(FireStoreCollection.TREE)
                 .document(tree.children[0].toString())
@@ -79,11 +79,45 @@ class TreeModel(
             }
     }
 
-    override fun like(treeID: String, state: Boolean, result: (UiState<Boolean>) -> Unit) {
+    override fun like(
+        animeTitle: String,
+        treeID: String,
+        userID: String,
+        state: Boolean,
+        result: (UiState<Boolean>) -> Unit
+    ) {
         result.invoke(UiState.Success(state))
     }
 
-    override fun checkIfCurrentUserIsLiker(userID: String, result: (UiState<Boolean>) -> Unit) {
-        result.invoke(UiState.Success(true))
+    override fun checkIfCurrentUserIsLiker(
+        animeTitle: String,
+        treeID: String,
+        userID: String,
+        result: (UiState<Boolean>) -> Unit
+    ) {
+        database
+            .collection(FireStoreCollection.TREE)
+            .document(animeTitle)
+            .collection(FireStoreCollection.INNER_PATH)
+            .document(treeID)
+            .get()
+            .addOnCompleteListener {
+                if (it.isSuccessful) {
+                    it.result.toObject(Tree::class.java).apply {
+                        if (this != null) {
+                            result.invoke(UiState.Success(this.likers.contains(userID)))
+                        }
+                    }
+                } else {
+                    result.invoke(
+                        UiState.Failure("Task is not successful")
+                    )
+                }
+            }
+            .addOnFailureListener {
+                result.invoke(
+                    UiState.Failure("Something went wrong")
+                )
+            }
     }
 }

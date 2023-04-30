@@ -1,7 +1,6 @@
 package com.ikbo0621.anitree.testUI
 
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -52,14 +51,25 @@ class CheckTreeFragment : Fragment() {
 
         userViewModel.getSession {
             if (it != null) {
-                treeViewModel.checkIfCurrentUserIsLiker(it.id)
+                treeViewModel.checkIfCurrentUserIsLiker(
+                    tree!!.children[0].toString(),
+                    tree!!.id,
+                    it.id
+                )
             }
         }
 
         binding.btnLike.setOnClickListener {
             // TODO: check fpr state to pass
-            if (tree != null) {
-                treeViewModel.like(tree!!.id, !BUTTON_STATE)
+            userViewModel.getSession {
+                if (it != null && tree != null) {
+                    treeViewModel.like(
+                        tree!!.children[0].toString(),
+                        tree!!.id,
+                        it.id,
+                        !BUTTON_STATE
+                    )
+                }
             }
         }
     }
@@ -77,9 +87,11 @@ class CheckTreeFragment : Fragment() {
 
                     if (state.data) {
                         binding.btnLike.text = "Liked!"
+                        binding.btnLike.setBackgroundColor(Color.RED)
                         BUTTON_STATE = true
                     } else {
                         binding.btnLike.text = "Like"
+                        binding.btnLike.setBackgroundColor(Color.WHITE)
                         BUTTON_STATE = false
                     }
 

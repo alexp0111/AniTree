@@ -51,21 +51,29 @@ class TreeViewModel @Inject constructor(
     }
 
     fun like(
+        animeTitle: String,
         treeID: String,
+        userID: String,
         state: Boolean
     ) {
         _likeState.value = UiState.Loading
         repository.like(
+            animeTitle = animeTitle,
             treeID = treeID,
+            userID = userID,
             state = state
         ) { _likeState.value = it }
     }
 
     fun checkIfCurrentUserIsLiker(
+        animeTitle: String,
+        treeID: String,
         userID: String
     ) {
         _likeState.value = UiState.Loading
         repository.checkIfCurrentUserIsLiker(
+            animeTitle = animeTitle,
+            treeID = treeID,
             userID = userID,
         ) { _likeState.value = it }
     }
