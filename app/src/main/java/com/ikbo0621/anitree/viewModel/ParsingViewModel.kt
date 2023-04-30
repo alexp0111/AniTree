@@ -1,11 +1,14 @@
 package com.ikbo0621.anitree.viewModel
 
+import android.content.Context
+import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ikbo0621.anitree.model.repository.ParsingRepository
 import com.ikbo0621.anitree.structure.Anime
+import com.ikbo0621.anitree.structure.Tree
 import com.ikbo0621.anitree.util.ParserConstants
 import com.ikbo0621.anitree.util.UiState
 import com.ikbo0621.anitree.util.fitToExactRequest
@@ -37,8 +40,13 @@ class ParsingViewModel @Inject constructor(
     val guessList: LiveData<ArrayList<String>>
         get() = _guessList
 
+    private val _bitmapList = MutableLiveData<UiState<ArrayList<Bitmap?>>?>()
+    val bitmapList: MutableLiveData<UiState<ArrayList<Bitmap?>>?>
+        get() = _bitmapList
+
     private var searchGuessJob: Job? = null
     private var searchExactJob: Job? = null
+    private var getBitmapList: Job? = null
 
     fun getAnimeWithTitle(
         animeTitle: String
@@ -69,7 +77,22 @@ class ParsingViewModel @Inject constructor(
         }
     }
 
-    fun cancelSearch(){
+    fun getBitmapListForTree(
+        tree: Tree,
+        context: Context
+    ) {
+        _bitmapList.value = UiState.Loading
+        getBitmapList = viewModelScope.launch {
+            repository.getBitmapListForTree(
+                tree = tree,
+                context = context
+            ) { images ->
+                _bitmapList.value = images
+            }
+        }
+    }
+
+    fun cancelSearch() {
         searchGuessJob?.cancel()
         _guessedAnim.value = UiState.Failure("Please, enter something")
     }

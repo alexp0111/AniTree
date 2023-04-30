@@ -1,19 +1,28 @@
 package com.ikbo0621.anitree.model.implementation
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.util.Log
 import androidx.core.net.toUri
 import com.ikbo0621.anitree.model.repository.ParsingRepository
 import com.ikbo0621.anitree.structure.Anime
+import com.ikbo0621.anitree.structure.Tree
 import com.ikbo0621.anitree.util.ParserConstants
 import com.ikbo0621.anitree.util.UiState
 import com.ikbo0621.anitree.util.fitToExactRequest
 import com.ikbo0621.anitree.util.fitToGuessRequest
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
+import java.io.IOException
+import java.io.InputStream
+import java.net.URL
+
 
 /**
  * Model that provides parsing logic
@@ -187,5 +196,35 @@ class ParsingModel() : ParsingRepository {
                 UiState.Success(animPair.first), animPair.second
             )
         }
+    }
+
+    override suspend fun getBitmapListForTree(
+        tree: Tree,
+        context: Context,
+        result: (UiState<ArrayList<Bitmap?>>) -> Unit
+    ) {
+        val list  = withContext(Dispatchers.IO) {
+            val list = arrayListOf<Bitmap?>()
+
+
+            tree.urls.forEach {
+                delay((400..700).random().toLong())
+                if (it != null){
+                    val inputStream: InputStream
+                    try {
+                        inputStream = URL(it).openStream()
+                        list.add(BitmapFactory.decodeStream(inputStream))
+                    } catch (e: IOException) {
+                        e.printStackTrace()
+                    }
+                } else {
+                    list.add(null)
+                }
+                Log.d(TAG, System.currentTimeMillis().toString())
+            }
+
+            return@withContext list
+        }
+        result.invoke(UiState.Success(list))
     }
 }

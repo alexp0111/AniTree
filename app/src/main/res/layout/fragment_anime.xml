@@ -58,8 +58,8 @@
                 android:layout_height="wrap_content"
                 android:text="Upload tree" />
 
-            <TextView
-                android:id="@+id/tv_trees"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_trees"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </LinearLayout>
