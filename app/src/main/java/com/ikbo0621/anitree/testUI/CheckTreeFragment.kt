@@ -1,19 +1,24 @@
 package com.ikbo0621.anitree.testUI
 
+import android.graphics.Bitmap
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SimpleAdapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.ikbo0621.anitree.R
 import com.ikbo0621.anitree.databinding.FragmentCheckTreeBinding
 import com.ikbo0621.anitree.structure.Tree
 import com.ikbo0621.anitree.util.UiState
 import com.ikbo0621.anitree.util.hide
 import com.ikbo0621.anitree.util.show
 import com.ikbo0621.anitree.util.toast
+import com.ikbo0621.anitree.viewModel.ParsingViewModel
 import com.ikbo0621.anitree.viewModel.TreeViewModel
 import com.ikbo0621.anitree.viewModel.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -25,6 +30,7 @@ class CheckTreeFragment : Fragment() {
     private var BUTTON_STATE = false
 
     private var tree: Tree? = null // -> Matvey tree
+    private var images: ArrayList<Bitmap>? = null // -> Matvey tree
     lateinit var binding: FragmentCheckTreeBinding
     val treeViewModel: TreeViewModel by viewModels()
     val userViewModel: UserViewModel by viewModels()
@@ -41,10 +47,16 @@ class CheckTreeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         observer()
 
-        tree = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            arguments?.getParcelable("tree", Tree::class.java)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            tree = arguments?.getParcelable("tree", Tree::class.java)
+            images = arguments?.getParcelableArrayList("image_list", Bitmap::class.java)
+            Log.d(TAG, images?.size.toString())
         } else {
-            arguments?.getParcelable("tree")
+            @Suppress("DEPRECATION")
+            tree = arguments?.getParcelable("tree")
+            @Suppress("DEPRECATION")
+            images = arguments?.getParcelableArrayList("image_list")
+            Log.d(TAG, images?.size.toString())
         }
 
         binding.tvTree.text = tree.toString()
@@ -58,6 +70,8 @@ class CheckTreeFragment : Fragment() {
                 )
             }
         }
+
+        binding.ivTree1.setImageBitmap(images?.get(0))
 
         binding.btnLike.setOnClickListener {
             userViewModel.getSession {

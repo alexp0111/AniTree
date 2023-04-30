@@ -1,10 +1,14 @@
 package com.ikbo0621.anitree.model.implementation
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.util.Log
 import androidx.core.net.toUri
 import com.ikbo0621.anitree.model.repository.ParsingRepository
 import com.ikbo0621.anitree.structure.Anime
+import com.ikbo0621.anitree.structure.Tree
 import com.ikbo0621.anitree.util.ParserConstants
 import com.ikbo0621.anitree.util.UiState
 import com.ikbo0621.anitree.util.fitToExactRequest
@@ -14,6 +18,10 @@ import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
+import java.io.IOException
+import java.io.InputStream
+import java.net.URL
+
 
 /**
  * Model that provides parsing logic
@@ -187,5 +195,61 @@ class ParsingModel() : ParsingRepository {
                 UiState.Success(animPair.first), animPair.second
             )
         }
+    }
+
+    override suspend fun getBitmapListForTree(
+        tree: Tree,
+        context: Context,
+        result: (UiState<ArrayList<Bitmap>>) -> Unit
+    ) {
+        val list = arrayListOf<Bitmap>()
+
+        /**
+        val imageUri: Uri = withContext(Dispatchers.IO) {
+        try {
+        /** Get html page */
+        val doc: Document = Jsoup
+        .connect(ParserConstants.BASIC_URL + "anime/" + tree.children[0])
+        .get()
+
+        var imageURI = Uri.EMPTY
+        // Image
+        try {
+        val imgElement: Element =
+        doc.getElementsByAttributeValue("class", "mainEntry")[0]
+        imageURI = imgElement.html()
+        .substringAfter("src=\"")
+        .substringBefore("\">")
+        .toUri()
+        } catch (_: Exception) {
+        // There is no image on site
+        }
+
+        return@withContext imageURI
+        } catch (e: Exception) {
+        return@withContext Uri.EMPTY
+        }
+
+        }
+         */
+
+        val imageUri = "https://cdn.anime-planet.com/anime/primary/naruto-shippuden-1-190x285.jpg"
+        val bitmap: Bitmap? = withContext(Dispatchers.IO) {
+            val inputStream: InputStream
+
+            try {
+                inputStream = URL(imageUri).openStream()
+                return@withContext BitmapFactory.decodeStream(inputStream)
+            } catch (e: IOException) {
+                e.printStackTrace()
+                Log.d(TAG, "NULLLLL")
+                return@withContext null
+            }
+        }
+        if (bitmap != null){
+            list.add(bitmap)
+            Log.d(TAG, "SUCCESS")
+        }
+        result.invoke(UiState.Success(list))
     }
 }

@@ -2,6 +2,7 @@ package com.ikbo0621.anitree.testUI
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +18,7 @@ import com.ikbo0621.anitree.util.UiState
 import com.ikbo0621.anitree.util.hide
 import com.ikbo0621.anitree.util.show
 import com.ikbo0621.anitree.util.toast
+import com.ikbo0621.anitree.viewModel.ParsingViewModel
 import com.ikbo0621.anitree.viewModel.TreeViewModel
 import com.ikbo0621.anitree.viewModel.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -26,21 +28,17 @@ class AnimeFragment : Fragment() {
 
     private val TAG: String = "ANIME_FRAGMENT"
     private var anime: Anime? = null
+    private var bundle: Bundle = Bundle()
     lateinit var binding: FragmentAnimeBinding
     val treeViewModel: TreeViewModel by viewModels()
     val userViewModel: UserViewModel by viewModels()
+    val parsingViewModel: ParsingViewModel by viewModels()
 
     val adapter by lazy {
         TreeAdapter(
             onItemClicked = { pos, item ->
-                val fragment = CheckTreeFragment()
-
-                val bundle = Bundle()
-                bundle.putParcelable("tree",item)
-                fragment.arguments = bundle
-
-                parentFragmentManager.beginTransaction().addToBackStack(null)
-                    .replace(R.id.fragment_container_view, fragment).commit()
+                bundle.putParcelable("tree", item)
+                parsingViewModel.getBitmapListForTree(item, requireContext())
             }
         )
     }
@@ -129,10 +127,26 @@ class AnimeFragment : Fragment() {
                 }
             }
         }
-    }
 
-    private fun setUpAnRecycler(data: List<Tree>) {
+        parsingViewModel.bitmapList.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is UiState.Loading -> binding.pb.show()
+                is UiState.Failure -> {
+                    binding.pb.hide()
+                    toast(state.error)
+                }
+                is UiState.Success -> {
+                    binding.pb.hide()
+                    val fragment = CheckTreeFragment()
 
+                    bundle.putParcelableArrayList("image_list", state.data)
+                    fragment.arguments = bundle
+
+                    parentFragmentManager.beginTransaction().addToBackStack(null)
+                        .replace(R.id.fragment_container_view, fragment).commit()
+                }
+            }
+        }
     }
 
 
