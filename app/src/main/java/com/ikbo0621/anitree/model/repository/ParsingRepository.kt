@@ -12,5 +12,5 @@ import com.ikbo0621.anitree.util.UiState
 interface ParsingRepository {
     suspend fun getAnimeWithName(animeTitle: String, result: (UiState<Anime>) -> Unit)
     suspend fun guessAnime(animeTitle: String, result: (UiState<Anime>, ArrayList<String>) -> Unit)
-    suspend fun getBitmapListForTree(tree: Tree, context: Context, result: (UiState<ArrayList<Bitmap>>) -> Unit)
+    suspend fun getBitmapListForTree(tree: Tree, context: Context, result: (UiState<ArrayList<Bitmap?>>) -> Unit)
 }

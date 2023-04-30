@@ -57,3 +57,4 @@ fun String.fitToGuessRequest() =
         .replace("(", "")
         .replace(")", "")
         .lowercase()
+

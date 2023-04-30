@@ -8,17 +8,15 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.SimpleAdapter
+import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.ikbo0621.anitree.R
 import com.ikbo0621.anitree.databinding.FragmentCheckTreeBinding
 import com.ikbo0621.anitree.structure.Tree
 import com.ikbo0621.anitree.util.UiState
 import com.ikbo0621.anitree.util.hide
 import com.ikbo0621.anitree.util.show
 import com.ikbo0621.anitree.util.toast
-import com.ikbo0621.anitree.viewModel.ParsingViewModel
 import com.ikbo0621.anitree.viewModel.TreeViewModel
 import com.ikbo0621.anitree.viewModel.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -71,7 +69,28 @@ class CheckTreeFragment : Fragment() {
             }
         }
 
-        binding.ivTree1.setImageBitmap(images?.get(0))
+        val ivs = arrayListOf(
+            binding.ivTree1,
+            binding.ivTree2,
+            binding.ivTree3,
+            binding.ivTree4,
+            binding.ivTree5,
+            binding.ivTree6,
+            binding.ivTree7,
+            binding.ivTree8,
+            binding.ivTree9,
+            binding.ivTree10,
+            binding.ivTree11,
+            binding.ivTree12,
+            binding.ivTree13,
+        )
+        ivs.forEachIndexed { index, imageView ->
+            try {
+                imageView.setImageBitmap(images?.get(index))
+            } catch (e: Exception) {
+                Log.d(TAG, "null")
+            }
+        }
 
         binding.btnLike.setOnClickListener {
             userViewModel.getSession {

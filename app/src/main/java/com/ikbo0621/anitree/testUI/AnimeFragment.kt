@@ -2,7 +2,6 @@ package com.ikbo0621.anitree.testUI
 
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -142,9 +141,12 @@ class AnimeFragment : Fragment() {
                     bundle.putParcelableArrayList("image_list", state.data)
                     fragment.arguments = bundle
 
+                    parsingViewModel.bitmapList.value = null
+
                     parentFragmentManager.beginTransaction().addToBackStack(null)
                         .replace(R.id.fragment_container_view, fragment).commit()
                 }
+                else -> {}
             }
         }
     }
@@ -177,8 +179,33 @@ class AnimeFragment : Fragment() {
                 null,
             )
 
+        val urls = arrayListOf(
+            //root
+            "https://cdn.anime-planet.com/anime/primary/naruto-shippuden-1-190x285.jpg?t=1625885757",
+
+            // first layer
+            "https://cdn.anime-planet.com/anime/primary/black-clover-1-285x399.jpg?t=1630356468",
+            "https://cdn.anime-planet.com/anime/primary/my-hero-academia-1-190x285.jpg?t=1625897284",
+            null, // *
+
+            // layer 1.1
+            "https://cdn.anime-planet.com/anime/primary/hunter-x-hunter-2011-1-190x285.jpg?t=1625896160",
+            "https://cdn.anime-planet.com/anime/primary/dragon-ball-1-190x255.jpg?t=1625885364",
+            "https://cdn.anime-planet.com/anime/primary/one-piece-1-190x260.jpg?t=1625885349",
+
+            // layer 1.2
+            "https://cdn.anime-planet.com/anime/primary/bleach-1-190x291.jpg?t=1625885618",
+            null,
+            null,
+
+            // layer 1.2 (* == null -> 1.2 == null, null, null)
+            null,
+            null,
+            null,
+        )
+
         // we do not pass id & likers at the creation
-        val tree = Tree(children = children, authorID = id)
+        val tree = Tree(children = children, urls = urls, authorID = id)
 
         return tree
     }

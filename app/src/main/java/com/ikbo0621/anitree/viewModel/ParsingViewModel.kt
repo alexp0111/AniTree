@@ -40,8 +40,8 @@ class ParsingViewModel @Inject constructor(
     val guessList: LiveData<ArrayList<String>>
         get() = _guessList
 
-    private val _bitmapList = MutableLiveData<UiState<ArrayList<Bitmap>>>()
-    val bitmapList: LiveData<UiState<ArrayList<Bitmap>>>
+    private val _bitmapList = MutableLiveData<UiState<ArrayList<Bitmap?>>?>()
+    val bitmapList: MutableLiveData<UiState<ArrayList<Bitmap?>>?>
         get() = _bitmapList
 
     private var searchGuessJob: Job? = null

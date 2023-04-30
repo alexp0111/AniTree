@@ -1,6 +1,7 @@
 package com.ikbo0621.anitree.structure
 
 import android.os.Parcelable
+import android.util.Log
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -8,6 +9,7 @@ data class Tree(
     var id: String = "",
     var authorID: String = "",
     var children: List<String?> = arrayListOf(),
+    var urls: List<String?> = arrayListOf(),
     var likers: MutableList<String> = arrayListOf()
     // [ root,
     // 1, 2, 3,
@@ -18,6 +20,8 @@ data class Tree(
         var presentation = ""
         presentation += "ID: $id\n"
         presentation += "Author: $authorID\n\n"
+
+        Log.d("TREE", children.toString())
 
         presentation += "${children[0]}\n"
             presentation += "\t${children[1]}\n"

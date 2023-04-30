@@ -1,5 +1,6 @@
 package com.ikbo0621.anitree.model.implementation
 
+import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.ikbo0621.anitree.model.repository.TreeRepository
@@ -61,8 +62,10 @@ class TreeModel(
                     val trees = arrayListOf<Tree>()
                     it.result.documents.forEach { thisTree ->
                         thisTree.toObject(Tree::class.java).apply {
-                            if (this != null)
+                            if (this != null) {
                                 trees.add(this)
+                                Log.d(TAG + "myPair", this.urls[0].toString())
+                            }
                         }
                     }
                     result.invoke(UiState.Success(trees))

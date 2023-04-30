@@ -14,6 +14,7 @@ import com.ikbo0621.anitree.util.UiState
 import com.ikbo0621.anitree.util.fitToExactRequest
 import com.ikbo0621.anitree.util.fitToGuessRequest
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -200,55 +201,29 @@ class ParsingModel() : ParsingRepository {
     override suspend fun getBitmapListForTree(
         tree: Tree,
         context: Context,
-        result: (UiState<ArrayList<Bitmap>>) -> Unit
+        result: (UiState<ArrayList<Bitmap?>>) -> Unit
     ) {
-        val list = arrayListOf<Bitmap>()
+        val list  = withContext(Dispatchers.IO) {
+            val list = arrayListOf<Bitmap?>()
 
-        /**
-        val imageUri: Uri = withContext(Dispatchers.IO) {
-        try {
-        /** Get html page */
-        val doc: Document = Jsoup
-        .connect(ParserConstants.BASIC_URL + "anime/" + tree.children[0])
-        .get()
 
-        var imageURI = Uri.EMPTY
-        // Image
-        try {
-        val imgElement: Element =
-        doc.getElementsByAttributeValue("class", "mainEntry")[0]
-        imageURI = imgElement.html()
-        .substringAfter("src=\"")
-        .substringBefore("\">")
-        .toUri()
-        } catch (_: Exception) {
-        // There is no image on site
-        }
-
-        return@withContext imageURI
-        } catch (e: Exception) {
-        return@withContext Uri.EMPTY
-        }
-
-        }
-         */
-
-        val imageUri = "https://cdn.anime-planet.com/anime/primary/naruto-shippuden-1-190x285.jpg"
-        val bitmap: Bitmap? = withContext(Dispatchers.IO) {
-            val inputStream: InputStream
-
-            try {
-                inputStream = URL(imageUri).openStream()
-                return@withContext BitmapFactory.decodeStream(inputStream)
-            } catch (e: IOException) {
-                e.printStackTrace()
-                Log.d(TAG, "NULLLLL")
-                return@withContext null
+            tree.urls.forEach {
+                delay((400..700).random().toLong())
+                if (it != null){
+                    val inputStream: InputStream
+                    try {
+                        inputStream = URL(it).openStream()
+                        list.add(BitmapFactory.decodeStream(inputStream))
+                    } catch (e: IOException) {
+                        e.printStackTrace()
+                    }
+                } else {
+                    list.add(null)
+                }
+                Log.d(TAG, System.currentTimeMillis().toString())
             }
-        }
-        if (bitmap != null){
-            list.add(bitmap)
-            Log.d(TAG, "SUCCESS")
+
+            return@withContext list
         }
         result.invoke(UiState.Success(list))
     }
