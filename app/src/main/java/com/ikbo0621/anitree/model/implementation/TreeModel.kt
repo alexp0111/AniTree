@@ -83,10 +83,51 @@ class TreeModel(
         animeTitle: String,
         treeID: String,
         userID: String,
-        state: Boolean,
         result: (UiState<Boolean>) -> Unit
     ) {
-        result.invoke(UiState.Success(state))
+        database
+            .collection(FireStoreCollection.TREE)
+            .document(animeTitle)
+            .collection(FireStoreCollection.INNER_PATH)
+            .document(treeID)
+            .get()
+            .addOnCompleteListener {
+                if (it.isSuccessful) {
+                    it.result.toObject(Tree::class.java).apply {
+                        if (this != null) {
+                            if (this.likers.contains(userID)) {
+                                this.likers.remove(userID)
+                            } else {
+                                this.likers.add(userID)
+                            }
+                            updateTree(tree = this) { state ->
+                                when (state) {
+                                    is UiState.Loading -> {}
+                                    is UiState.Failure -> {
+                                        result.invoke(
+                                            UiState.Failure("error while uploading tree")
+                                        )
+                                    }
+                                    is UiState.Success -> {
+                                        result.invoke(
+                                            UiState.Success(state.data.likers.contains(userID))
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    result.invoke(
+                        UiState.Failure("Task is not successful")
+                    )
+                }
+            }
+            .addOnFailureListener {
+                result.invoke(
+                    UiState.Failure("Something went wrong")
+                )
+            }
     }
 
     override fun checkIfCurrentUserIsLiker(

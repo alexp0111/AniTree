@@ -10,7 +10,6 @@ interface TreeRepository {
         animeTitle: String,
         treeID: String,
         userID: String,
-        state: Boolean,
         result: (UiState<Boolean>) -> Unit
     )
 

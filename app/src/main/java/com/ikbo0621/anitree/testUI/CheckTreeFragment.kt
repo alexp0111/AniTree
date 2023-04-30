@@ -60,14 +60,12 @@ class CheckTreeFragment : Fragment() {
         }
 
         binding.btnLike.setOnClickListener {
-            // TODO: check fpr state to pass
             userViewModel.getSession {
                 if (it != null && tree != null) {
                     treeViewModel.like(
                         tree!!.children[0].toString(),
                         tree!!.id,
                         it.id,
-                        !BUTTON_STATE
                     )
                 }
             }
