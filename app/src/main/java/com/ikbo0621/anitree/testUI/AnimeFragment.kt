@@ -204,8 +204,33 @@ class AnimeFragment : Fragment() {
             null,
         )
 
+        val studios = arrayListOf(
+            //root
+            "Pierrot",
+
+            // first layer
+            "Pierrot",
+            "Bones",
+            null, // *
+
+            // layer 1.1
+            "MADHOUSE",
+            "Toei Animation",
+            "Toei Animation",
+
+            // layer 1.2
+            "Pierrot",
+            null,
+            null,
+
+            // layer 1.2 (* == null -> 1.2 == null, null, null)
+            null,
+            null,
+            null,
+        )
+
         // we do not pass id & likers at the creation
-        val tree = Tree(children = children, urls = urls, authorID = id)
+        val tree = Tree(children = children, urls = urls, studios = studios, authorID = id)
 
         return tree
     }
