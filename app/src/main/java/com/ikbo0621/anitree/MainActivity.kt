@@ -9,7 +9,6 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import com.ikbo0621.anitree.tree.TreeView
 import com.ikbo0621.anitree.tree.builders.TreeEditor
-import com.ikbo0621.anitree.tree.builders.TreeViewer
 import com.ikbo0621.anitree.tree.elements.Icon
 import com.ikbo0621.anitree.tree.elements.VectorIcon
 import com.ikbo0621.anitree.tree.elements.buttons.Button
@@ -36,87 +35,87 @@ class MainActivity : AppCompatActivity() {
 
         // Work with tree
         // Test editor
-//        val tree = TreeData("ERASED", "A-1Pictures", getRandomBitmap(), IntArray(0))
-//
-//        val treeEditor = TreeEditor(treeView, this, tree)
-//        treeEditor.setBottomIcon(
-//            ContextCompat.getDrawable(this, R.drawable.save)!!,
-//            ContextCompat.getDrawable(this, R.drawable.confirmation)!!
-//        )
-//        treeEditor.invalidate()
-//
-//        treeView.setOnClickListener {
-//            val selectedElement = (it to treeView).second.selectedElement
-//            if (selectedElement == null) {
-//                treeEditor.showCrossButtons(false)
-//                return@setOnClickListener
-//            }
-//
-//            when(selectedElement) {
-//                is Icon -> treeEditor.toNextLayer(selectedElement)
-//                is SchemeButton -> {
-//                    val name = "${selectedElement.getAbsPos().y.toInt() / 100}Anime"
-//                    treeEditor.addSubElement(name, "RandStudio", getRandomBitmap())
-//                }
-//                is CrossButton -> {
-//                    treeEditor.deleteElement(selectedElement.index)
-//                }
-//                is VectorIcon -> {
-//                    Toast.makeText(
-//                        applicationContext,
-//                        "Is saved: ${treeEditor.switchBottomButton()}",
-//                        Toast.LENGTH_SHORT
-//                    ).show()
-//                }
-//                is Button -> {
-//                    if (selectedElement.index != null) // author button
-//                        Toast.makeText(applicationContext, "Author", Toast.LENGTH_SHORT).show()
-//                    else
-//                        treeEditor.toPreviousLayer()
-//                }
-//                else -> treeEditor.showCrossButtons(false)
-//            }
-//        }
-//
-//        treeView.setOnLongClickListener {
-//            treeEditor.showCrossButtons(true)
-//
-//            return@setOnLongClickListener true
-//        }
+        val tree = TreeData("ERASED", "A-1Pictures", getRandomBitmap(), IntArray(0))
 
-        // Test viewer
-        val tree = TreeData("Main anime", "MainStudio", getRandomBitmap(), IntArray(0))
-        tree.addSubElement("0Anime", "Studio0", getRandomBitmap(), intArrayOf(0))
-        tree.addSubElement("1Anime", "Studio1", getRandomBitmap(), intArrayOf(1))
-        tree.addSubElement("2Anime", "Studio2", getRandomBitmap(), intArrayOf(1, 0))
-        tree.addSubElement("3Anime", "Studio3", getRandomBitmap(), intArrayOf(1, 1))
-        tree.addSubElement("2Anime", "Studio2", getRandomBitmap(), intArrayOf(2))
-        tree.addSubElement("3Anime", "Studio3", getRandomBitmap(), intArrayOf(3))
-
-        val treeViewer = TreeViewer(treeView, this, tree)
-        treeViewer.setAuthor(getRandomBitmap(), "animebit13")
-        treeViewer.setBottomIcon(
-            ContextCompat.getDrawable(this, R.drawable.like)!!,
-            ContextCompat.getDrawable(this, R.drawable.like_activated)!!
+        val treeEditor = TreeEditor(treeView, this, tree)
+        treeEditor.setBottomIcon(
+            ContextCompat.getDrawable(this, R.drawable.save)!!,
+            ContextCompat.getDrawable(this, R.drawable.confirmation)!!
         )
-        treeViewer.invalidate()
+        treeEditor.invalidate()
 
         treeView.setOnClickListener {
-            val selectedElement =
-                (it to treeView).second.selectedElement ?: return@setOnClickListener
+            val selectedElement = (it to treeView).second.selectedElement
+            if (selectedElement == null) {
+                treeEditor.showCrossButtons(false)
+                return@setOnClickListener
+            }
 
             when(selectedElement) {
+                is Icon -> treeEditor.toNextLayer(selectedElement)
+                is SchemeButton -> {
+                    val name = "${selectedElement.getAbsPos().y.toInt() / 100}Anime"
+                    treeEditor.addSubElement(name, "RandStudio", getRandomBitmap())
+                }
+                is CrossButton -> {
+                    treeEditor.deleteElement(selectedElement.index)
+                }
                 is VectorIcon -> {
                     Toast.makeText(
                         applicationContext,
-                        "Is liked: ${treeViewer.switchBottomButton()}",
+                        "Is saved: ${treeEditor.switchBottomButton()}",
                         Toast.LENGTH_SHORT
                     ).show()
                 }
-                is Icon -> treeViewer.toNextLayer(selectedElement)
-                is Button -> treeViewer.toPreviousLayer()
+                is Button -> {
+                    if (selectedElement.index != null) // author button
+                        Toast.makeText(applicationContext, "Author", Toast.LENGTH_SHORT).show()
+                    else
+                        treeEditor.toPreviousLayer()
+                }
+                else -> treeEditor.showCrossButtons(false)
             }
         }
+
+        treeView.setOnLongClickListener {
+            treeEditor.showCrossButtons(true)
+
+            return@setOnLongClickListener true
+        }
+
+        // Test viewer
+//        val tree = TreeData("Main anime", "MainStudio", getRandomBitmap(), IntArray(0))
+//        tree.addSubElement("0Anime", "Studio0", getRandomBitmap(), intArrayOf(0))
+//        tree.addSubElement("1Anime", "Studio1", getRandomBitmap(), intArrayOf(1))
+//        tree.addSubElement("2Anime", "Studio2", getRandomBitmap(), intArrayOf(1, 0))
+//        tree.addSubElement("3Anime", "Studio3", getRandomBitmap(), intArrayOf(1, 1))
+//        tree.addSubElement("2Anime", "Studio2", getRandomBitmap(), intArrayOf(2))
+//        tree.addSubElement("3Anime", "Studio3", getRandomBitmap(), intArrayOf(3))
+//
+//        val treeViewer = TreeViewer(treeView, this, tree)
+//        treeViewer.setAuthor(getRandomBitmap(), "animebit13")
+//        treeViewer.setBottomIcon(
+//            ContextCompat.getDrawable(this, R.drawable.like)!!,
+//            ContextCompat.getDrawable(this, R.drawable.like_activated)!!
+//        )
+//        treeViewer.invalidate()
+//
+//        treeView.setOnClickListener {
+//            val selectedElement =
+//                (it to treeView).second.selectedElement ?: return@setOnClickListener
+//
+//            when(selectedElement) {
+//                is VectorIcon -> {
+//                    Toast.makeText(
+//                        applicationContext,
+//                        "Is liked: ${treeViewer.switchBottomButton()}",
+//                        Toast.LENGTH_SHORT
+//                    ).show()
+//                }
+//                is Icon -> treeViewer.toNextLayer(selectedElement)
+//                is Button -> treeViewer.toPreviousLayer()
+//            }
+//        }
 
         // Test builder
 //        val treeBuilder = TreeBuilder(treeView, WeakReference(this))
