@@ -96,9 +96,6 @@ class TreeEditor(
         }
 
         result[0] = treeData.name
-
-        val a = currentElement
-
         for (i in 0 until 3) {
             result[1 + i] = treeData.tree?.getOrNull(i)?.name
             val subTree = treeData.tree?.getOrNull(i)?.tree
