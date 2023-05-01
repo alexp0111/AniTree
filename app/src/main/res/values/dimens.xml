@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    These are stubs for working in the android studio designer.
+    When the application starts, they will be replaced with absolute values.
+-->
+<resources>
+    <dimen name="text_size">358.8px</dimen>
+    <dimen name="small_text_size">179.4px</dimen>
+    <dimen name="line_width">17.94px</dimen>
+</resources>
