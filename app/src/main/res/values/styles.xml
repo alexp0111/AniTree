@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="edit_text_search_fragment">
+            <item name="android:textSize">36sp</item>
+            <item name="android:textColor">#E5E5E5</item>
+
+    </style>
+</resources>

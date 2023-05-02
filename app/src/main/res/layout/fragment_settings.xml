@@ -25,7 +25,7 @@
         android:layout_height="128dp"
         android:layout_marginStart="64dp"
         android:layout_marginBottom="256dp"
-        android:fontFamily="@font/mortendbold"
+        android:fontFamily="@font/mortendbold__1"
         android:text="Naruto"
         android:textColor="@color/light_grey"
         android:textSize="128sp"
@@ -68,7 +68,7 @@
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:src="@drawable/naruto">
+                    android:src="@drawable/naruto45">
                 </ImageView>
 
             </androidx.cardview.widget.CardView>
@@ -97,7 +97,7 @@
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:src="@drawable/naruto">
+                    android:src="@drawable/naruto45">
                 </ImageView>
 
             </androidx.cardview.widget.CardView>

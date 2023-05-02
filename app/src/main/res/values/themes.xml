@@ -3,15 +3,16 @@
     <style name="Theme.AniTree" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="android:windowFullscreen">true</item>
-        <item name="colorPrimary">@color/crimson</item>
+        <item name="colorPrimary">@color/white</item>
         <item name="colorPrimaryVariant">@color/light_grey</item>
         <item name="colorOnPrimary">@color/dark_grey</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/crimson</item>
+        <item name="colorSecondary">@color/white</item>
         <item name="colorSecondaryVariant">@color/light_grey</item>
         <item name="colorOnSecondary">@color/dark_grey</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
+
 </resources>

@@ -4,4 +4,6 @@
     <string name="search_bar">Let\'s find some journey</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="anime_first_word">ANIME</string>
+    <string name="anime_second_word">Title</string>
 </resources>

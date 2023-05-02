@@ -2,7 +2,8 @@
 <resources>
     <color name="white">#E5E5E5</color>
     <color name="light_grey">#444444</color>
-    <color name="dark_grey">#171717</color>
+    <color name="dark_grey">#0A0A0A</color>
+    <color name="DARK_GREY">#171717</color>
     <color name="pink">#E3A3B4</color>
     <color name="crimson">#DA0038</color>
 </resources>
