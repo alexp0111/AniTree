@@ -21,12 +21,12 @@
 
     <TextView
         android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="128dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginStart="64dp"
         android:layout_marginBottom="256dp"
-        android:fontFamily="@font/mortendbold__1"
-        android:text="Naruto"
+        android:fontFamily="@font/tiltwarp_regular_variable"
+        android:text="NARU"
         android:textColor="@color/light_grey"
         android:textSize="128sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -65,11 +65,7 @@
                 android:layout_width="150dp"
                 android:layout_height="150dp">
 
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/naruto45">
-                </ImageView>
+
 
             </androidx.cardview.widget.CardView>
 
@@ -81,10 +77,6 @@
                 android:layout_width="150dp"
                 android:layout_height="150dp">
 
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/madara"></ImageView>
 
             </androidx.cardview.widget.CardView>
             <View
@@ -94,11 +86,8 @@
                 android:layout_width="150dp"
                 android:layout_height="150dp">
 
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/naruto45">
-                </ImageView>
+
+
 
             </androidx.cardview.widget.CardView>
 
@@ -110,11 +99,7 @@
                 android:layout_width="150dp"
                 android:layout_height="150dp">
 
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/madara">
-                </ImageView>
+
 
             </androidx.cardview.widget.CardView>
 

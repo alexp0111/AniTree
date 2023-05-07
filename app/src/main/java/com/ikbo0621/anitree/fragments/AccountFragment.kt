@@ -29,6 +29,10 @@ class AccountFragment : Fragment() {
             val action = AccountFragmentDirections.actionAccountFragmentToSearchFragment()
             Navigation.findNavController(requireView()).navigate(action)
         }
+        binding.avatar.setOnClickListener{
+            val action = AccountFragmentDirections.actionAccountFragmentToAvatarFragment()
+            Navigation.findNavController(requireView()).navigate(action)
+        }
 
     }
 

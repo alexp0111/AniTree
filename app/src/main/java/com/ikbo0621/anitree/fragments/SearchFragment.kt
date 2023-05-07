@@ -11,8 +11,8 @@ import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ikbo0621.anitree.R
-import com.ikbo0621.anitree.RecyclerViewAdapter.SearchListAdapter
-import com.ikbo0621.anitree.RecyclerViewItems.SearchListItem
+import com.ikbo0621.anitree.RecyclerViewD.RecyclerViewAdapter.SearchListAdapter
+import com.ikbo0621.anitree.RecyclerViewD.RecyclerViewItems.SearchListItem
 import com.ikbo0621.anitree.databinding.FragmentSearchBinding
 
 

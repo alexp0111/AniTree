@@ -1,12 +1,12 @@
-package com.ikbo0621.anitree.RecyclerViewAdapter
+package com.ikbo0621.anitree.RecyclerViewD.RecyclerViewAdapter
 import com.ikbo0621.anitree.R
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.NonNull
 import androidx.recyclerview.widget.RecyclerView
-import com.ikbo0621.anitree.RecyclerViewHolder.SearchListViewHolder
-import com.ikbo0621.anitree.RecyclerViewItems.SearchListItem
+import com.ikbo0621.anitree.RecyclerViewD.RecyclerViewHolder.SearchListViewHolder
+import com.ikbo0621.anitree.RecyclerViewD.RecyclerViewItems.SearchListItem
 
 class SearchListAdapter(private val context: Context, private val items: ArrayList<SearchListItem>) : RecyclerView.Adapter<SearchListViewHolder>() {
 
@@ -20,7 +20,7 @@ class SearchListAdapter(private val context: Context, private val items: ArrayLi
         return items.size
     }
 
-    override fun onBindViewHolder(holder: SearchListViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: SearchListViewHolder , position: Int) {
        val currentItem = items[position]
         holder.textView.text = currentItem.title
     }

@@ -1,4 +1,4 @@
-package com.ikbo0621.anitree.RecyclerViewHolder
+package com.ikbo0621.anitree.RecyclerViewD.RecyclerViewHolder
 
 import android.view.View
 import android.widget.TextView
