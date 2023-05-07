@@ -34,6 +34,9 @@
         <action
             android:id="@+id/action_accountFragment_to_treeRedactorFragment"
             app:destination="@id/treeRedactorFragment" />
+        <action
+            android:id="@+id/action_accountFragment_to_avatarFragment"
+            app:destination="@id/avatarFragment" />
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
@@ -82,5 +85,14 @@
         <action
             android:id="@+id/action_treeViewFragment_to_animeDescriptionFragment"
             app:destination="@id/animeDescriptionFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/avatarFragment"
+        android:name="com.ikbo0621.anitree.fragments.AvatarFragment"
+        android:label="fragment_avatar"
+        tools:layout="@layout/fragment_avatar" >
+        <action
+            android:id="@+id/action_avatarFragment_to_accountFragment"
+            app:destination="@id/accountFragment" />
     </fragment>
 </navigation>

@@ -1,14 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.AnimeDescriptionFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".fragments.AnimeDescriptionFragment"
+    android:background="@color/DARK_GREY">
 
-    <!-- TODO: Update blank fragment layout -->
+
+    <View
+        android:id="@+id/upper_rectangle"
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:background="@color/dark_grey"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Anime description" />
+        android:layout_height="446dp"
+        android:layout_marginStart="-40dp"
+        android:fontFamily="@font/tiltwarp_regular_variable"
+        android:rotation="-90"
+        android:text="ANI"
+        android:textColor="@color/DARK_GREY"
+        android:textSize="200sp"
+        app:layout_constraintBottom_toBottomOf="@id/upper_rectangle"
+        app:layout_constraintStart_toStartOf="parent" />
 
-</FrameLayout>
+    <ImageView
+        android:id="@+id/anime_image"
+        android:layout_width="160dp"
+        android:layout_height="240dp"
+        android:layout_marginTop="60dp"
+        android:layout_marginEnd="20dp"
+        android:src="@color/crimson"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/upperline"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/horizontal_line"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/upper_rectangle" />
+    <View
+        android:id="@+id/left_line"
+        android:layout_width="2dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/vertical_line"
+
+        app:layout_constraintStart_toStartOf="@id/upperline"
+        app:layout_constraintTop_toTopOf="@+id/upperline" />
+
+    <TextView
+        android:id="@+id/anime_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="10dp"
+        android:fontFamily="@font/firasans_semibold"
+        android:text="TextView"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/left_line"
+        app:layout_constraintTop_toBottomOf="@+id/upperline" />
+
+    <View
+        android:id="@+id/tree_rectangle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@color/dark_grey"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/anime_description" />
+
+    <TextView
+        android:id="@+id/tree_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="20dp"
+        android:fontFamily="@font/firasans_semibold"
+        android:text="@string/trees_title"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tree_rectangle" />
+
+    <TextView
+        android:id="@+id/anime_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        android:fontFamily="@font/firasans_semibold"
+        android:text="@string/anime_first_word"
+        app:layout_constraintEnd_toEndOf="@+id/anime_image"
+        app:layout_constraintStart_toStartOf="@+id/anime_image"
+        app:layout_constraintTop_toBottomOf="@+id/anime_image" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

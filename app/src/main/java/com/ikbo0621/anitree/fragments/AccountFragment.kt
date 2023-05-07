@@ -27,11 +27,7 @@ class AccountFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.backButton.setOnClickListener {
             val action = AccountFragmentDirections.actionAccountFragmentToSearchFragment()
-            Navigation.findNavController(view).navigate(action)
-        }
-        binding.avtrButton.setOnClickListener{
-            val action = AccountFragmentDirections.actionAccountFragmentToSettingsFragment()
-            Navigation.findNavController(view).navigate(action)
+            Navigation.findNavController(requireView()).navigate(action)
         }
 
     }
