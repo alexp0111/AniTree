@@ -2,6 +2,7 @@ package com.ikbo0621.anitree.testUI
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +14,7 @@ import com.ikbo0621.anitree.R
 import com.ikbo0621.anitree.databinding.FragmentAnimeBinding
 import com.ikbo0621.anitree.structure.Anime
 import com.ikbo0621.anitree.structure.Tree
+import com.ikbo0621.anitree.structure.TreeConverter
 import com.ikbo0621.anitree.util.UiState
 import com.ikbo0621.anitree.util.hide
 import com.ikbo0621.anitree.util.show
@@ -21,6 +23,10 @@ import com.ikbo0621.anitree.viewModel.ParsingViewModel
 import com.ikbo0621.anitree.viewModel.TreeViewModel
 import com.ikbo0621.anitree.viewModel.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @AndroidEntryPoint
 class AnimeFragment : Fragment() {
@@ -36,8 +42,27 @@ class AnimeFragment : Fragment() {
     val adapter by lazy {
         TreeAdapter(
             onItemClicked = { pos, item ->
-                bundle.putParcelable("tree", item)
-                parsingViewModel.getBitmapListForTree(item, requireContext())
+
+                CoroutineScope(Dispatchers.Main).launch {
+                    val converted = withContext(Dispatchers.IO) {
+                        TreeConverter.convert(item)
+                    }
+
+                    Log.d(TAG, this.toString())
+
+                    binding.pb.hide()
+                    val fragment = CheckTreeFragment()
+
+                    bundle.putParcelable("tree", converted)
+                    bundle.putString("id", item.id)
+                    fragment.arguments = bundle
+
+                    //parsingViewModel.bitmapList.value = null
+
+                    parentFragmentManager.beginTransaction().addToBackStack(null)
+                        .replace(R.id.fragment_container_view, fragment).commit()
+                }
+                //parsingViewModel.getBitmapListForTree(item, requireContext())
             }
         )
     }

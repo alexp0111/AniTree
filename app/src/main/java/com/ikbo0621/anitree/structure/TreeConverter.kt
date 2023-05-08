@@ -2,57 +2,132 @@ package com.ikbo0621.anitree.structure
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.util.Log
 import com.ikbo0621.anitree.tree.structures.TreeData
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 import java.io.IOException
+import java.io.InputStream
 import java.net.URL
 
+private const val TAG = "TREE_CONVERTER"
 
 object TreeConverter {
+
     /**
      * Responsible for converting the structure that we get from
      * the database into the structure displayed by the tree and vice versa
      */
-    fun convert(tree: Tree) : TreeData? {
+    suspend fun convert(tree: Tree): TreeData? {
 
-        if (tree.children[0] == null)
+        // converting data
+        val titles = tree.children
+        val studios = tree.studios
+        Log.d(TAG, System.currentTimeMillis().toString())
+        val bitmaps = decodeBitmapFromURL(tree.urls)
+        Log.d(TAG, System.currentTimeMillis().toString())
+
+        // structure data
+        if (titles[0] == null)
             return null
 
-        val mainBitmap = decodeBitmapFromURL(tree.urls[0]!!) ?: return null
-        val result = TreeData(tree.children[0]!!, "---", mainBitmap, IntArray(0))
+        val mainBitmap = bitmaps[0] ?: return null
+        val result = TreeData(titles[0]!!, studios[0] ?: "", mainBitmap, IntArray(0))
 
         for (i in 0 until 3) {
             val index = i + 1
-            val name = tree.children[index] ?: continue
-            val bitmap = decodeBitmapFromURL(tree.urls[index]) ?: continue
-            result.addSubElement(name, "---", bitmap, intArrayOf(i))
+            val name = titles[index] ?: continue
+            val bitmap = bitmaps[index] ?: continue
+            val studio = studios[index] ?: ""
+
+            result.addSubElement(name, studio, bitmap, intArrayOf(i))
 
             for (j in 0 until 3) {
                 val subIndex = (1 + i) * 3 + (1 + j)
-                val subName = tree.children[subIndex] ?: continue
-                val subBitmap = decodeBitmapFromURL(tree.urls[subIndex]) ?: continue
-                result.addSubElement(subName, "---", subBitmap, intArrayOf(i, j))
+                val subName = titles[subIndex] ?: continue
+                val subBitmap = bitmaps[subIndex] ?: continue
+                val subStudio = studios[subIndex] ?: ""
+
+                result.addSubElement(subName, subStudio, subBitmap, intArrayOf(i, j))
             }
         }
 
         return result
     }
 
-    fun convert(treeData: TreeData) : Tree? {
-        TODO()
+    /**
+     * Convert list of anime to Tree
+     * */
+    fun convert(list: List<Anime?>): Tree {
+        val children: MutableList<String?> = arrayListOf()
+        val studios: MutableList<String?> = arrayListOf()
+        val urls: MutableList<String?> = arrayListOf()
+
+        list.forEachIndexed { ind, anime ->
+            if (anime == null) {
+                children.add(ind, null)
+                studios.add(ind, null)
+                urls.add(ind, null)
+            } else {
+                children.add(ind, anime.title)
+                studios.add(ind, anime.studio)
+                urls.add(ind, anime.imageURI.toString())
+            }
+        }
+        return Tree(
+            children = children,
+            studios = studios,
+            urls = urls
+        )
     }
 
-    private fun decodeBitmapFromURL(url: String?) : Bitmap? {
-        if (url == null)
-            return null
+    /**
+     * Decode one url to the bitmap
+     * */
+    private suspend fun decodeBitmapFromURL(url: String): Bitmap? {
+        val bitmap = withContext(Dispatchers.IO) {
+            var bitmap: Bitmap? = null
 
-        return try {
-            val image = BitmapFactory.decodeStream(
-                URL(url).openConnection().getInputStream()
-            )
-            image
-        } catch (e: IOException) {
-            e.printStackTrace()
-            null
+            val inputStream: InputStream
+            try {
+                inputStream = URL(url).openStream()
+                bitmap = BitmapFactory.decodeStream(inputStream)
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+
+            return@withContext bitmap
         }
+
+        return bitmap
+    }
+
+    /**
+     * Decode list of urls into list of bitmaps
+     * */
+    private suspend fun decodeBitmapFromURL(urls: List<String?>): ArrayList<Bitmap?> {
+        val list = withContext(Dispatchers.IO) {
+            val list = arrayListOf<Bitmap?>()
+
+            urls.forEach {
+                delay((400..700).random().toLong())
+                if (it != null) {
+                    val inputStream: InputStream
+                    try {
+                        inputStream = URL(it).openStream()
+                        list.add(BitmapFactory.decodeStream(inputStream))
+                    } catch (e: IOException) {
+                        e.printStackTrace()
+                    }
+                } else {
+                    list.add(null)
+                }
+                Log.d(TAG, System.currentTimeMillis().toString())
+            }
+
+            return@withContext list
+        }
+        return list
     }
 }

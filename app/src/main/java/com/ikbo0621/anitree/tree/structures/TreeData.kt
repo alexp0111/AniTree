@@ -60,4 +60,10 @@ data class TreeData(
         result = 31 * result + (tree?.hashCode() ?: 0)
         return result
     }
+
+    override fun toString(): String {
+        return "TreeData(name='$name', studio='$studio', bitmap=$bitmap, index=${index.contentToString()}, tree=$tree)"
+    }
+
+
 }

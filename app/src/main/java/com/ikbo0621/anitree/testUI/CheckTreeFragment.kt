@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.ikbo0621.anitree.databinding.FragmentCheckTreeBinding
 import com.ikbo0621.anitree.structure.Tree
+import com.ikbo0621.anitree.tree.structures.TreeData
 import com.ikbo0621.anitree.util.UiState
 import com.ikbo0621.anitree.util.hide
 import com.ikbo0621.anitree.util.show
@@ -27,8 +28,8 @@ class CheckTreeFragment : Fragment() {
     private val TAG: String = "CHECK_TREE_FRAGMENT"
     private var BUTTON_STATE = false
 
-    private var tree: Tree? = null // -> Matvey tree
-    private var images: ArrayList<Bitmap>? = null // -> Matvey tree
+    private var tree: TreeData? = null // -> Matvey tree
+    private var id: String? = null
     lateinit var binding: FragmentCheckTreeBinding
     val treeViewModel: TreeViewModel by viewModels()
     val userViewModel: UserViewModel by viewModels()
@@ -46,15 +47,12 @@ class CheckTreeFragment : Fragment() {
         observer()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            tree = arguments?.getParcelable("tree", Tree::class.java)
-            images = arguments?.getParcelableArrayList("image_list", Bitmap::class.java)
-            Log.d(TAG, images?.size.toString())
+            tree = arguments?.getParcelable("tree", TreeData::class.java)
+            id = arguments?.getString("id")
         } else {
             @Suppress("DEPRECATION")
             tree = arguments?.getParcelable("tree")
-            @Suppress("DEPRECATION")
-            images = arguments?.getParcelableArrayList("image_list")
-            Log.d(TAG, images?.size.toString())
+            id = arguments?.getString("id")
         }
 
         binding.tvTree.text = tree.toString()
@@ -62,8 +60,8 @@ class CheckTreeFragment : Fragment() {
         userViewModel.getSession {
             if (it != null) {
                 treeViewModel.checkIfCurrentUserIsLiker(
-                    tree!!.children[0].toString(),
-                    tree!!.id,
+                    tree!!.name,
+                    id.toString(),
                     it.id
                 )
             }
@@ -86,7 +84,7 @@ class CheckTreeFragment : Fragment() {
         )
         ivs.forEachIndexed { index, imageView ->
             try {
-                imageView.setImageBitmap(images?.get(index))
+                // imageView.setImageBitmap(images?.get(index))
             } catch (e: Exception) {
                 Log.d(TAG, "null")
             }
@@ -96,8 +94,8 @@ class CheckTreeFragment : Fragment() {
             userViewModel.getSession {
                 if (it != null && tree != null) {
                     treeViewModel.like(
-                        tree!!.children[0].toString(),
-                        tree!!.id,
+                        tree!!.name,
+                        id.toString(),
                         it.id,
                     )
                 }
