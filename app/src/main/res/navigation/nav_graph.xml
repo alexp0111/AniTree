@@ -61,6 +61,14 @@
         <action
             android:id="@+id/action_animeDescriptionFragment_to_treeRedactorFragment"
             app:destination="@id/treeRedactorFragment" />
+        <argument
+            android:name="animeTitle"
+            app:argType="string"
+            android:defaultValue="AnimeTitle" />
+        <argument
+            android:name="customVar"
+            app:argType="string"
+            android:defaultValue="Hello" />
     </fragment>
     <fragment
         android:id="@+id/treeRedactorFragment"

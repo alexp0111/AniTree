@@ -1,16 +1,12 @@
 package com.ikbo0621.anitree.fragments
 
-import android.icu.text.CaseMap.Title
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.ikbo0621.anitree.R
 import com.ikbo0621.anitree.RecyclerViewD.RecyclerViewAdapter.SearchListAdapter
 import com.ikbo0621.anitree.RecyclerViewD.RecyclerViewItems.SearchListItem
 import com.ikbo0621.anitree.databinding.FragmentSearchBinding
@@ -51,7 +47,10 @@ class SearchFragment : Fragment() {
             Navigation.findNavController(requireView()).navigate(action)
         }
         binding.animeImage.setOnClickListener {
-            val action = SearchFragmentDirections.actionSearchFragmentToAnimeDescriptionFragment()
+            var animeTitle = binding.searchBar.text.toString()
+            val customVar = "Hello"
+
+            val action = SearchFragmentDirections.actionSearchFragmentToAnimeDescriptionFragment(animeTitle = animeTitle, customVar = customVar)
             Navigation.findNavController(requireView()).navigate(action)
         }
 
