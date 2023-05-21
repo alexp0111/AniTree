@@ -6,7 +6,7 @@
     android:gravity="center"
     android:orientation="vertical"
     android:padding="16dp"
-    tools:context=".testUI.RegistrationFragment">
+    tools:context=".fragments.RegistrationFragment">
 
     <ProgressBar
         android:id="@+id/pb"

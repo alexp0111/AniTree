@@ -1,4 +1,4 @@
-package com.ikbo0621.anitree.testUI
+package com.ikbo0621.anitree.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater

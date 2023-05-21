@@ -57,12 +57,12 @@ class AnimeFragment : Fragment() {
                     bundle.putString("id", item.id)
                     fragment.arguments = bundle
 
-                    //parsingViewModel.bitmapList.value = null
+
 
                     parentFragmentManager.beginTransaction().addToBackStack(null)
                         .replace(R.id.fragment_container_view, fragment).commit()
                 }
-                //parsingViewModel.getBitmapListForTree(item, requireContext())
+
             }
         )
     }
@@ -119,7 +119,7 @@ class AnimeFragment : Fragment() {
         }
     }
 
-    private fun observer() {
+    private fun observer() {//Функция для
         treeViewModel.tree.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is UiState.Loading -> binding.pb.show()

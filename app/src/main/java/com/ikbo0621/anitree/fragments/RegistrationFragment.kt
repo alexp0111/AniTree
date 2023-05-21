@@ -1,4 +1,4 @@
-package com.ikbo0621.anitree.testUI
+package com.ikbo0621.anitree.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,73 +7,67 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.ikbo0621.anitree.R
-import com.ikbo0621.anitree.databinding.FragmentLogInBinding
+import com.ikbo0621.anitree.databinding.FragmentRegistrationBinding
+import com.ikbo0621.anitree.structure.User
+import com.ikbo0621.anitree.testUI.SearchFragment
 import com.ikbo0621.anitree.util.*
 import com.ikbo0621.anitree.viewModel.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
+/**
+ * Registration fragment
+ * that only holds registration functionality
+ * */
 @AndroidEntryPoint
-class LogInFragment : Fragment() {
+class RegistrationFragment : Fragment() {
 
-    private val TAG: String = "LOG_IN_FRAGMENT"
-    lateinit var binding: FragmentLogInBinding
+    private val TAG: String = "REGISTRATION_FRAGMENT"
+    lateinit var binding: FragmentRegistrationBinding
     val viewModel: UserViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentLogInBinding.inflate(layoutInflater)
+        binding = FragmentRegistrationBinding.inflate(layoutInflater)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observer()
-        binding.btnLogIn.setOnClickListener {
+        binding.btnRegister.setOnClickListener {
             if (validation()) {
-                /**
-                 * Log in function call
-                 * */
-                viewModel.login(
+                viewModel.register(
                     email = binding.etEmail.text.toString(),
-                    password = binding.etPassword.text.toString()
+                    password = binding.etPassword.text.toString(),
+                    user = getUserObj()
                 )
             }
-        }
-
-        binding.btnForgotPassword.setOnClickListener {
-            parentFragmentManager.beginTransaction().addToBackStack("log_in")
-                .replace(R.id.fragment_container_view, ForgotPasswordFragment()).commit()
-        }
-
-        binding.btnRegister.setOnClickListener {
-            parentFragmentManager.beginTransaction().addToBackStack("log_in")
-                .replace(R.id.fragment_container_view, RegistrationFragment()).commit()
         }
     }
 
     /**
      * Set up an observer for livedata
-     * to get result of log in operation
+     * to get result of registration operation
      * */
     fun observer() {
-        viewModel.login.observe(viewLifecycleOwner) { state ->
+        viewModel.register.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is UiState.Loading -> {
-                    binding.btnLogIn.text = "Loading"
-                    binding.btnLogIn.disable()
+                    binding.btnRegister.text = "Loading"
+                    binding.btnRegister.disable()
                     binding.pb.show()
                 }
                 is UiState.Failure -> {
-                    binding.btnLogIn.text = "Log In"
-                    binding.btnLogIn.enabled()
+                    binding.btnRegister.text = "Register"
+                    binding.btnRegister.enabled()
                     binding.pb.hide()
                     toast(state.error)
                 }
                 is UiState.Success -> {
-                    binding.btnLogIn.text = "Log In"
-                    binding.btnLogIn.enabled()
+                    binding.btnRegister.text = "Register"
+                    binding.btnRegister.enabled()
                     binding.pb.hide()
                     toast(state.data)
 
@@ -85,10 +79,28 @@ class LogInFragment : Fragment() {
     }
 
     /**
+     * Set up new User object
+     * */
+    private fun getUserObj(): User {
+        return User(
+            id = "",
+            iconId = "",
+            name = binding.etName.text.toString(),
+            favoriteTrees = arrayListOf(),
+            createdTrees = arrayListOf()
+        )
+    }
+
+    /**
      * Validation block for input data
      * */
-    private fun validation(): Boolean {
+    fun validation(): Boolean {
         var isValid = true
+
+        if (binding.etName.text.isNullOrEmpty()) {
+            isValid = false
+            toast(getString(R.string.enter_first_name))
+        }
 
         if (binding.etEmail.text.isNullOrEmpty()) {
             isValid = false
@@ -109,16 +121,6 @@ class LogInFragment : Fragment() {
             }
         }
         return isValid
-    }
-
-    override fun onStart() {
-        super.onStart()
-        viewModel.getSession { user ->
-            if (user != null) {
-                parentFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container_view, SearchFragment()).commit()
-            }
-        }
     }
 
 }

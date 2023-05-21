@@ -32,7 +32,7 @@ class SearchFragment : Fragment() {
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+        super.onViewCreated(view, savedInstanceState)/*
         titleList = arrayOf("Here","Must","Be","Anime","List")
         binding.resultList.layoutManager = LinearLayoutManager(requireContext())
         binding.resultList.setHasFixedSize(true)
@@ -53,7 +53,7 @@ class SearchFragment : Fragment() {
             val action = SearchFragmentDirections.actionSearchFragmentToAnimeDescriptionFragment(animeTitle = animeTitle, customVar = customVar)
             Navigation.findNavController(requireView()).navigate(action)
         }
-
+*/
     }
 
 

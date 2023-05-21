@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.ikbo0621.anitree.R
 import com.ikbo0621.anitree.databinding.FragmentProfileBinding
+import com.ikbo0621.anitree.fragments.LogInFragment
 import com.ikbo0621.anitree.viewModel.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -35,12 +36,11 @@ class ProfileFragment : Fragment() {
             if (it != null) {
                 binding.tvProfileName.text = it.name + "\n" + it.id
             }
-        }
+        }//Важно
 
         binding.btnLogOut.setOnClickListener {
             viewModel.logout {
-                parentFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container_view, LogInFragment()).commit()
+                //Переброска на login Осуществить
             }
         }
     }

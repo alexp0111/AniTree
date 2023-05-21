@@ -46,15 +46,12 @@ class SearchFragment : Fragment() {
             // There is no anime yet
         }
 
-        binding.btnProfile.setOnClickListener {
-            parentFragmentManager.beginTransaction().addToBackStack("search")
-                .replace(R.id.fragment_container_view, ProfileFragment()).commit()
-        }
+
 
         binding.iv.setOnClickListener {
             if (validation()
                 && viewModel.guessedAnim.value != null
-                && viewModel.guessedAnim.value is UiState.Success
+                && viewModel.guessedAnim.value is UiState.Success  //Важно блеать
             ) {
                 val fragment = AnimeFragment()
                 val bundle = Bundle()
@@ -67,7 +64,7 @@ class SearchFragment : Fragment() {
                 parentFragmentManager.beginTransaction().addToBackStack(null)
                     .replace(R.id.fragment_container_view, fragment).commit()
             }
-        }
+        }//оставить
 
         binding.etAnimeTitle.addTextChangedListener {
             Log.d(TAG, "triggered")
@@ -80,7 +77,7 @@ class SearchFragment : Fragment() {
                     viewModel.cancelSearch()
                 }
             }
-        }
+        }//Важно
 
         textGuesses = arrayListOf(
             binding.tvRec1,
@@ -88,14 +85,14 @@ class SearchFragment : Fragment() {
             binding.tvRec3,
             binding.tvRec4,
             binding.tvRec5
-        )
+        )//Важно переделать
 
         textGuesses.forEach { textView ->
             textView.setOnClickListener {
                 val animeTitle = textView.text.toString()
                 viewModel.getAnimeWithTitle(animeTitle)
             }
-        }
+        }//важно
     }
 
     /**

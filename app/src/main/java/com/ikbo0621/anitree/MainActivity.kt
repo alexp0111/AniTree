@@ -2,7 +2,7 @@ package com.ikbo0621.anitree
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.ikbo0621.anitree.testUI.LogInFragment
+import com.ikbo0621.anitree.fragments.LogInFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 
