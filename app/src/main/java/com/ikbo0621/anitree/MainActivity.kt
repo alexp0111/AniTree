@@ -144,7 +144,7 @@ class MainActivity : AppCompatActivity() {
 
         bitmaps.add(
             getDarkenBitmap(
-                Bitmap.createBitmap(190, 190, Bitmap.Config.ARGB_8888).apply {
+                Bitmap.createBitmap(190, 250, Bitmap.Config.ARGB_8888).apply {
                     canvas.setBitmap(this)
                     canvas.drawRGB(255, 0, 0)
                 }
@@ -152,7 +152,7 @@ class MainActivity : AppCompatActivity() {
         )
         bitmaps.add(
             getDarkenBitmap(
-                Bitmap.createBitmap(190, 190, Bitmap.Config.ARGB_8888).apply {
+                Bitmap.createBitmap(190, 250, Bitmap.Config.ARGB_8888).apply {
                     canvas.setBitmap(this)
                     canvas.drawRGB(0, 255, 0)
                 }
@@ -160,7 +160,7 @@ class MainActivity : AppCompatActivity() {
         )
         bitmaps.add(
             getDarkenBitmap(
-                Bitmap.createBitmap(190, 190, Bitmap.Config.ARGB_8888).apply {
+                Bitmap.createBitmap(190, 250, Bitmap.Config.ARGB_8888).apply {
                     canvas.setBitmap(this)
                     canvas.drawRGB(0, 0, 255)
                 }
@@ -169,6 +169,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getRandomBitmap() : Bitmap {
+        val result = bitmaps[(0..2).random()]
+        val canvas = Canvas(result)
+        canvas.drawRect(0.0f, 0.0f, 95.0f, 125.0f, Paint())
         return bitmaps[(0..2).random()]
     }
 }
