@@ -3,6 +3,8 @@ package com.ikbo0621.anitree.tree.elements
 import android.graphics.*
 import com.ikbo0621.anitree.tree.positioning.RPosition
 import com.ikbo0621.anitree.tree.positioning.RValue
+import java.lang.Integer.max
+import java.lang.Integer.min
 
 class Icon(
     relativePos: RPosition,
@@ -56,14 +58,13 @@ class Icon(
         val factor = (2f * absoluteRadius) / bitmap.width
         matrix.postScale(factor, factor)
 
-        return Bitmap.createBitmap(
-            bitmap,
-            0,
-            (bitmap.height - bitmap.width) / 2,
-            bitmap.width,
-            bitmap.width,
-            matrix,
-            true
-        )
+        val minSide = min(bitmap.height, bitmap.width)
+        val maxSide = max(bitmap.height, bitmap.width)
+        val offset = (maxSide - minSide) / 2
+
+        return if (bitmap.height > bitmap.width)
+            Bitmap.createBitmap(bitmap, 0, offset, minSide, minSide, matrix, true)
+        else
+            Bitmap.createBitmap(bitmap, offset, 0, minSide, minSide, matrix, true)
     }
 }
