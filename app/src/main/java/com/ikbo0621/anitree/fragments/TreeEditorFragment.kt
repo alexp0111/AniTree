@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.navigation.Navigation
 import com.ikbo0621.anitree.R
 import com.ikbo0621.anitree.databinding.FragmentTreeEditorBinding
 import com.ikbo0621.anitree.structure.Anime
@@ -36,6 +37,13 @@ class TreeEditorFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentTreeEditorBinding.inflate(inflater, container, false)
+
+        //
+        Navigation.findNavController(requireView()).currentBackStackEntry?.savedStateHandle?.getLiveData<Anime>("anime")
+            ?.observe(viewLifecycleOwner) {
+                // TODO: set new anime
+            }
+        //
 
         val treeEditor = TreeEditor(binding.editorTree, requireActivity(), initialTree!!)
         treeEditor.setBottomIcon(
