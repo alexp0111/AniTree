@@ -1,12 +1,15 @@
-package com.ikbo0621.anitree.testUI
+package com.ikbo0621.anitree.fragments
 
+import android.content.Context
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.ikbo0621.anitree.databinding.ItemTreeBinding
 import com.ikbo0621.anitree.structure.Tree
 
-class TreeAdapter(
+class TreeAdapter(val context: Context,
     val onItemClicked: (Int, Tree) -> Unit
 ) : RecyclerView.Adapter<TreeAdapter.MyViewHolder>() {
 
@@ -17,7 +20,7 @@ class TreeAdapter(
         return MyViewHolder(itemView)
     }
 
-    override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: MyViewHolder , position: Int) {
         val item = list[position]
         holder.bind(item)
     }
@@ -33,7 +36,14 @@ class TreeAdapter(
 
     inner class MyViewHolder(val binding: ItemTreeBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(tree: Tree) {
-            binding.tvSomeInfo.text = tree.toString()
+            binding.authorName.text = tree.authorID
+            Glide.with(context)
+                .load(tree.urls[1])
+                .into(binding.firstChildImageView)
+            binding.likeNumber.text = tree.likers.size.toString()
+            binding.authorName.isSelected = true
+            binding.authorName.ellipsize = TextUtils.TruncateAt.MARQUEE
+
             binding.itemLayout.setOnClickListener { onItemClicked.invoke(adapterPosition, tree) }
         }
     }

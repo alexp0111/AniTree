@@ -1,21 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/item_layout"
-    android:layout_width="match_parent"
+    android:layout_width="180dp"
+    android:background="@color/DARK_GREY"
+
+    android:layout_marginStart="20dp"
+    android:layout_marginEnd="20dp"
+
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/tv_some_info"
-        android:layout_width="wrap_content"
-        android:background="@color/purple_200"
-        android:padding="16dp"
-        android:layout_margin="16dp"
-        android:layout_height="wrap_content"
-        android:textSize="12sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <ImageView
+        android:id="@+id/firstChildImageView"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@color/crimson" />
 
+    <TextView
+        android:id="@+id/authorName"
+        android:layout_width="100dp"
+        android:gravity="right"
+        android:ellipsize="marquee"
+        android:focusable="true"
+        android:singleLine="true"
+        android:layout_height="wrap_content"
+        android:text="Author"
+        android:textColor="@color/white"
+        android:fontFamily="@font/firasans_semibold"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="@+id/firstChildImageView"
+        app:layout_constraintTop_toBottomOf="@+id/firstChildImageView" />
+
+    <ImageView
+        android:id="@+id/likeIV"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginEnd="10dp"
+        app:layout_constraintEnd_toStartOf="@+id/likeNumber"
+        app:layout_constraintTop_toBottomOf="@+id/authorName"
+        app:srcCompat="@drawable/like" />
+
+    <TextView
+        android:id="@+id/likeNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:fontFamily="@font/firasans_semibold"
+        android:gravity="right"
+        android:text="9999"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/likeIV"
+        app:layout_constraintEnd_toEndOf="@+id/authorName" />
 </androidx.constraintlayout.widget.ConstraintLayout>

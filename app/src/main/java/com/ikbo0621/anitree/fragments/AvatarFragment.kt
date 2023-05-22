@@ -32,7 +32,7 @@ class AvatarFragment : Fragment() {
 
     override fun onViewCreated(view: View , savedInstanceState: Bundle?) {
         super.onViewCreated(view , savedInstanceState)
-        val avatarNum = 10
+        val avatarNum = 14
         init(avatarNum)
         setUpTransformer()
         binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){
@@ -67,7 +67,7 @@ class AvatarFragment : Fragment() {
         transformer.addTransformer(MarginPageTransformer(40))
         transformer.addTransformer{ page, position ->
             val r = 1 - abs(position)
-            page.scaleY = 0.85f + r * 0.14f
+            page.scaleY = 0.85f + r * 0.12f
         }
         binding.viewPager.setPageTransformer(transformer)
     }
@@ -85,6 +85,10 @@ class AvatarFragment : Fragment() {
         binding.viewPager.getChildAt(0).overScrollMode = RecyclerView.OVER_SCROLL_NEVER
         binding.viewPager.currentItem = avatarNum
         binding.textView.text = binding.viewPager.currentItem.toString()
+
+        binding.saveBtn.setOnClickListener {
+
+        }
     }
 
 

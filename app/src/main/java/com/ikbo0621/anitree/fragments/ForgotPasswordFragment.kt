@@ -67,8 +67,8 @@ class ForgotPasswordFragment : Fragment() {
                     binding.pb.hide()
                     toast(state.data)
 
-                    parentFragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container_view, LogInFragment()).commit()
+                    /*parentFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container_view, LogInFragment()).commit()*/
                 }
             }
         }

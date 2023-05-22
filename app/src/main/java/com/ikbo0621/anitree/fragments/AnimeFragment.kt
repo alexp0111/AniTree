@@ -1,20 +1,24 @@
-package com.ikbo0621.anitree.testUI
+package com.ikbo0621.anitree.fragments
 
-import android.os.Build
 import android.os.Bundle
+import android.text.TextUtils
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.Navigation
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
-import com.ikbo0621.anitree.R
 import com.ikbo0621.anitree.databinding.FragmentAnimeBinding
+import com.ikbo0621.anitree.databinding.FragmentSearchBinding
 import com.ikbo0621.anitree.structure.Anime
 import com.ikbo0621.anitree.structure.Tree
 import com.ikbo0621.anitree.structure.TreeConverter
+import com.ikbo0621.anitree.fragments.AnimeFragmentArgs
+import com.ikbo0621.anitree.testUI.CheckTreeFragment
 import com.ikbo0621.anitree.util.UiState
 import com.ikbo0621.anitree.util.hide
 import com.ikbo0621.anitree.util.show
@@ -34,13 +38,14 @@ class AnimeFragment : Fragment() {
     private val TAG: String = "ANIME_FRAGMENT"
     private var anime: Anime? = null
     private var bundle: Bundle = Bundle()
-    lateinit var binding: FragmentAnimeBinding
+    private var _binding: FragmentAnimeBinding? = null
+    private val binding get() = _binding!!
     val treeViewModel: TreeViewModel by viewModels()
     val userViewModel: UserViewModel by viewModels()
     val parsingViewModel: ParsingViewModel by viewModels()
 
     val adapter by lazy {
-        TreeAdapter(
+        TreeAdapter(requireContext(),
             onItemClicked = { pos, item ->
 
                 CoroutineScope(Dispatchers.Main).launch {
@@ -57,10 +62,10 @@ class AnimeFragment : Fragment() {
                     bundle.putString("id", item.id)
                     fragment.arguments = bundle
 
+                    val action = AnimeFragmentDirections.actionAnimeFragmentToTreeViewerFragment()
+                    Navigation.findNavController(requireView()).navigate(action)
 
 
-                    parentFragmentManager.beginTransaction().addToBackStack(null)
-                        .replace(R.id.fragment_container_view, fragment).commit()
                 }
 
             }
@@ -71,7 +76,7 @@ class AnimeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentAnimeBinding.inflate(layoutInflater)
+        _binding = FragmentAnimeBinding.inflate(layoutInflater,container,false)
         return binding.root
     }
 
@@ -80,22 +85,26 @@ class AnimeFragment : Fragment() {
         observer()
 
 
-        anime = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            arguments?.getParcelable("anime", Anime::class.java)
-        } else {
-            arguments?.getParcelable("anime")
-        }
 
+        val args: AnimeFragmentArgs by navArgs()
+        anime = args.anime
+        binding.animeTitle.text = anime?.title
+        binding.titleBackground.text = anime?.title?.uppercase()
+        binding.animeTitle.isSelected = true
+        binding.animeTitle.ellipsize = TextUtils.TruncateAt.MARQUEE
+        binding.backButton.setOnClickListener {
+            Navigation.findNavController(requireView()).popBackStack()
+        }
         context?.let {
             Glide.with(it)
                 .load(anime?.imageURI)
-                .into(binding.ivAnime)
+                .into(binding.animeImage)
         }
+        val animeDescription = anime?.title+"\n"+anime?.studio+"\n"+anime?.releaseDate+"\n"+anime?.description
+        binding.animeDescription.text = animeDescription
 
-        binding.tvAnimeTitle.text = anime?.title
-        binding.tvAnimeStudio.text = anime?.studio
-        binding.tvAnimeReleaseDate.text = anime?.releaseDate
-        binding.tvAnimeDescription.text = anime?.description
+
+
 
         //
 
@@ -109,17 +118,19 @@ class AnimeFragment : Fragment() {
 
         //
 
-        binding.btnUploadTree.setOnClickListener {
+        binding.createTreeBtn.setOnClickListener {/*
             userViewModel.getSession {
                 if (it != null) {
                     val tree = getTestTree(it.id)
                     treeViewModel.updateTree(tree)
                 }
-            }
+            }*/
+            val action = AnimeFragmentDirections.actionAnimeFragmentToTreeEditorFragment()
+            Navigation.findNavController(requireView()).navigate(action)
         }
     }
 
-    private fun observer() {//Функция для
+    private fun observer() {
         treeViewModel.tree.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is UiState.Loading -> binding.pb.show()
@@ -168,8 +179,8 @@ class AnimeFragment : Fragment() {
 
                     parsingViewModel.bitmapList.value = null
 
-                    parentFragmentManager.beginTransaction().addToBackStack(null)
-                        .replace(R.id.fragment_container_view, fragment).commit()
+                    //parentFragmentManager.beginTransaction().addToBackStack(null)
+                    //    .replace(R.id.fragment_container_view, fragment).commit()
                 }
                 else -> {}
             }

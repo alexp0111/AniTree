@@ -1,4 +1,4 @@
-package com.ikbo0621.anitree.testUI
+package com.ikbo0621.anitree.fragments
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -61,7 +61,7 @@ class TreeViewerFragment : Fragment() {
         fun newInstance(initialTree: TreeData) =
             TreeEditorFragment().apply {
                 arguments = Bundle().apply {
-                    putParcelable(TREE_PARAM_KEY, initialTree)
+                    putParcelable(TREE_PARAM_KEY , initialTree)
                 }
             }
     }

@@ -14,8 +14,8 @@
             android:id="@+id/action_searchFragment_to_accountFragment"
             app:destination="@id/accountFragment" />
         <action
-            android:id="@+id/action_searchFragment_to_animeDescriptionFragment"
-            app:destination="@id/animeDescriptionFragment" />
+            android:id="@+id/action_searchFragment_to_animeFragment"
+            app:destination="@id/animeFragment" />
     </fragment>
     <fragment
         android:id="@+id/accountFragment"
@@ -23,86 +23,19 @@
         android:label="AccountFragment"
         tools:layout="@layout/fragment_account">
         <action
-            android:id="@+id/action_accountFragment_to_searchFragment"
-            app:destination="@id/searchFragment" />
-        <action
-            android:id="@+id/action_accountFragment_to_settingsFragment"
-            app:destination="@id/settingsFragment" />
-        <action
-            android:id="@+id/action_accountFragment_to_treeViewFragment"
-            app:destination="@id/treeViewFragment" />
-        <action
-            android:id="@+id/action_accountFragment_to_treeRedactorFragment"
-            app:destination="@id/treeRedactorFragment" />
-        <action
             android:id="@+id/action_accountFragment_to_avatarFragment"
             app:destination="@id/avatarFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/settingsFragment"
-        android:name="com.ikbo0621.anitree.fragments.SettingsFragment"
-        android:label="fragment_settings"
-        tools:layout="@layout/fragment_settings" >
         <action
-            android:id="@+id/action_settingsFragment_to_accountFragment"
-            app:destination="@id/accountFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/animeDescriptionFragment"
-        android:name="com.ikbo0621.anitree.fragments.AnimeDescriptionFragment"
-        android:label="fragment_anime_description"
-        tools:layout="@layout/fragment_anime_description" >
-        <action
-            android:id="@+id/action_animeDescriptionFragment_to_searchFragment"
-            app:destination="@id/searchFragment" />
-        <action
-            android:id="@+id/action_animeDescriptionFragment_to_treeViewFragment"
-            app:destination="@id/treeViewFragment" />
-        <action
-            android:id="@+id/action_animeDescriptionFragment_to_treeRedactorFragment"
-            app:destination="@id/treeRedactorFragment" />
-        <argument
-            android:name="animeTitle"
-            app:argType="string"
-            android:defaultValue="AnimeTitle" />
-        <argument
-            android:name="customVar"
-            app:argType="string"
-            android:defaultValue="Hello" />
-    </fragment>
-    <fragment
-        android:id="@+id/treeRedactorFragment"
-        android:name="com.ikbo0621.anitree.fragments.TreeRedactorFragment"
-        android:label="fragment_tree_redactor"
-        tools:layout="@layout/fragment_tree_redactor" >
-        <action
-            android:id="@+id/action_treeRedactorFragment_to_accountFragment"
-            app:destination="@id/accountFragment" />
-        <action
-            android:id="@+id/action_treeRedactorFragment_to_animeDescriptionFragment"
-            app:destination="@id/animeDescriptionFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/treeViewFragment"
-        android:name="com.ikbo0621.anitree.fragments.TreeViewFragment"
-        android:label="fragment_tree_view"
-        tools:layout="@layout/fragment_tree_view" >
-        <action
-            android:id="@+id/action_treeViewFragment_to_accountFragment"
-            app:destination="@id/accountFragment" />
-        <action
-            android:id="@+id/action_treeViewFragment_to_animeDescriptionFragment"
-            app:destination="@id/animeDescriptionFragment" />
+            android:id="@+id/action_accountFragment_to_logInFragment"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true"
+            app:destination="@id/logInFragment" />
     </fragment>
     <fragment
         android:id="@+id/avatarFragment"
         android:name="com.ikbo0621.anitree.fragments.AvatarFragment"
         android:label="fragment_avatar"
-        tools:layout="@layout/fragment_avatar" >
-        <action
-            android:id="@+id/action_avatarFragment_to_accountFragment"
-            app:destination="@id/accountFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_avatar" />
     <fragment
         android:id="@+id/logInFragment"
         android:name="com.ikbo0621.anitree.fragments.LogInFragment"
@@ -122,18 +55,36 @@
         android:id="@+id/registrationFragment"
         android:name="com.ikbo0621.anitree.fragments.RegistrationFragment"
         android:label="fragment_registration"
-        tools:layout="@layout/fragment_registration" >
-        <action
-            android:id="@+id/action_registrationFragment_to_logInFragment"
-            app:destination="@id/logInFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_registration" />
     <fragment
         android:id="@+id/forgotPasswordFragment"
         android:name="com.ikbo0621.anitree.fragments.ForgotPasswordFragment"
         android:label="fragment_forgot_password"
-        tools:layout="@layout/fragment_forgot_password" >
+        tools:layout="@layout/fragment_forgot_password" />
+    <fragment
+        android:id="@+id/animeFragment"
+
+        android:name="com.ikbo0621.anitree.fragments.AnimeFragment"
+        android:label="fragment_anime"
+        tools:layout="@layout/fragment_anime" >
+        <argument
+            android:name="anime"
+            app:argType="com.ikbo0621.anitree.structure.Anime" />
         <action
-            android:id="@+id/action_forgotPasswordFragment_to_logInFragment"
-            app:destination="@id/logInFragment" />
+            android:id="@+id/action_animeFragment_to_treeEditorFragment"
+            app:destination="@id/treeEditorFragment" />
+        <action
+            android:id="@+id/action_animeFragment_to_treeViewerFragment"
+            app:destination="@id/treeViewerFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/treeEditorFragment"
+        android:name="com.ikbo0621.anitree.fragments.TreeEditorFragment"
+        android:label="fragment_tree_editor"
+        tools:layout="@layout/fragment_tree_editor" />
+    <fragment
+        android:id="@+id/treeViewerFragment"
+        android:name="com.ikbo0621.anitree.fragments.TreeViewerFragment"
+        android:label="fragment_tree_viewer"
+        tools:layout="@layout/fragment_tree_viewer" />
 </navigation>

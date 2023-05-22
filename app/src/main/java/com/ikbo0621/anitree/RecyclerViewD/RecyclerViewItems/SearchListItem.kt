@@ -1,5 +1,6 @@
 package com.ikbo0621.anitree.RecyclerViewD.RecyclerViewItems
 
-class SearchListItem(val title: String) {
+class SearchListItem(var text: String) {
+
 
 }

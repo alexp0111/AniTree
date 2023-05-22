@@ -51,4 +51,24 @@
         app:layout_constraintStart_toEndOf="@+id/prev_btn"
         app:layout_constraintTop_toBottomOf="@+id/view_pager" />
 
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="1000dp"
+        android:singleLine="true"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="20dp"
+        android:text="TextView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/next_btn" />
+
+    <Button
+        android:id="@+id/saveBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Save"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -6,10 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.Navigation
 import com.ikbo0621.anitree.R
 import com.ikbo0621.anitree.databinding.FragmentRegistrationBinding
 import com.ikbo0621.anitree.structure.User
-import com.ikbo0621.anitree.testUI.SearchFragment
 import com.ikbo0621.anitree.util.*
 import com.ikbo0621.anitree.viewModel.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -70,9 +70,7 @@ class RegistrationFragment : Fragment() {
                     binding.btnRegister.enabled()
                     binding.pb.hide()
                     toast(state.data)
-
-                    parentFragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container_view, SearchFragment()).commit()
+                    Navigation.findNavController(requireView()).popBackStack()
                 }
             }
         }
