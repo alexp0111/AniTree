@@ -53,17 +53,19 @@ class TreeEditor(
         invalidate()
     }
 
-    fun deleteElement(index: IntArray?) {
+    fun deleteElement(index: IntArray?) : String? {
         if (animator.isAnimating)
-            return
+            return null
         val currentLayer = currentElement
-        val elementIndex = index ?: return
+        val elementIndex = index ?: return null
         if (elementIndex.contentEquals(currentElement.index)) // Do not remove the main element
-            return
+            return null
         isBottomButtonActivated = false
 
+        var deletedItem: String? = ""
         for (i in subIcons) {
             if (i.index.contentEquals(elementIndex)) {
+                deletedItem = currentLayer.tree?.get(subIcons.indexOf(i))?.name
                 currentLayer.tree?.removeAt(subIcons.indexOf(i))
                 break
             }
@@ -75,6 +77,8 @@ class TreeEditor(
         }
 
         updateLayer()
+
+        return deletedItem
     }
 
     override fun toNextLayer(nextElement: Icon?) {
