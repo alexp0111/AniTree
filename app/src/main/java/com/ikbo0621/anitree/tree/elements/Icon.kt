@@ -51,19 +51,19 @@ class Icon(
     }
 
     // The size of the bitmap must be equal to the size of the icon on the screen
+    // The size of the bitmap must be equal to the size of the icon on the screen
     private fun scaleBitmapToSquare(bitmap: Bitmap, absoluteRadius: Float) : Bitmap {
         val matrix = Matrix()
         val factor = (2f * absoluteRadius) / bitmap.width
         matrix.postScale(factor, factor)
 
-        return Bitmap.createBitmap(
-            bitmap,
-            0,
-            (bitmap.height - bitmap.width) / 2,
-            bitmap.width,
-            bitmap.width,
-            matrix,
-            true
-        )
+        val minSide = Integer.min(bitmap.height, bitmap.width)
+        val maxSide = Integer.max(bitmap.height, bitmap.width)
+        val offset = (maxSide - minSide) / 2
+
+        return if (bitmap.height > bitmap.width)
+            Bitmap.createBitmap(bitmap, 0, offset, minSide, minSide, matrix, true)
+        else
+            Bitmap.createBitmap(bitmap, offset, 0, minSide, minSide, matrix, true)
     }
 }
