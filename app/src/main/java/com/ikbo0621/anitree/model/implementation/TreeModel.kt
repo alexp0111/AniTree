@@ -1,5 +1,6 @@
 package com.ikbo0621.anitree.model.implementation
 
+import android.os.Bundle
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -17,6 +18,7 @@ class TreeModel(
 
     override fun updateTree(tree: Tree, result: (UiState<Tree>) -> Unit) {
         val id: String
+
         if (tree.id.isEmpty()) {
             id = database
                 .collection(FireStoreCollection.TREE)

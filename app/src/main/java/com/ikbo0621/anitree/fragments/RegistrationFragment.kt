@@ -82,7 +82,7 @@ class RegistrationFragment : Fragment() {
     private fun getUserObj(): User {
         return User(
             id = "",
-            iconId = "",
+            iconId = "0",
             name = binding.etName.text.toString(),
             favoriteTrees = arrayListOf(),
             createdTrees = arrayListOf()

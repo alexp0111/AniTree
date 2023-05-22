@@ -28,6 +28,22 @@ class UserViewModel @Inject constructor(
     val forgotPassword: LiveData<UiState<String>>
         get() = _forgotPassword
 
+    private val _user = MutableLiveData<UiState<String>>()
+    val user: LiveData<UiState<String>>
+        get() = _user
+
+    // Update User
+    // get by id
+
+    fun updateUserInfo(
+        user: User
+    ) {
+        _user.value = UiState.Loading
+        repository.updateUserInfoAndStore(
+            user = user
+        ) { _user.value = it }
+    }
+
 
     fun register(
         email: String,

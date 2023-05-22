@@ -13,6 +13,7 @@ import com.ikbo0621.anitree.R
 import com.ikbo0621.anitree.databinding.FragmentAccountBinding
 import com.ikbo0621.anitree.structure.TreeConverter
 import com.ikbo0621.anitree.testUI.CheckTreeFragment
+import com.ikbo0621.anitree.util.fillImageList
 import com.ikbo0621.anitree.util.hide
 import com.ikbo0621.anitree.viewModel.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -76,12 +77,15 @@ class AccountFragment : Fragment() {
         }
         binding.myTreesRecyclerView.adapter = adapter
         binding.myFavouritesRecyclerView.adapter = adapter
-        setUpAvatar()
         viewModel.getSession {
             if (it != null) {
-
                 binding.firstName.text = it.name.substring(0,3).uppercase()
                 binding.secondName.text = it.name.substring(0,3).uppercase()
+
+                var avatarList = ArrayList<Int>()
+                fillImageList(avatarList)
+
+                binding.avatar.setImageResource(avatarList[it.iconId.toInt()])
             }
         }//Важно
 
@@ -93,10 +97,6 @@ class AccountFragment : Fragment() {
             }
         }
 
-    }
-
-    private fun setUpAvatar() {
-        binding.avatar.setImageResource(R.drawable.l)
     }
 
 
