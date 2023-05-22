@@ -1,17 +1,22 @@
 package com.ikbo0621.anitree.testUI
 
 import android.os.Bundle
+import android.text.TextUtils
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.Navigation
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.ikbo0621.anitree.R
+import com.ikbo0621.anitree.RecyclerViewD.RecyclerViewAdapter.SearchListAdapter
+import com.ikbo0621.anitree.RecyclerViewD.RecyclerViewItems.SearchListItem
 import com.ikbo0621.anitree.databinding.FragmentSearchBinding
+import com.ikbo0621.anitree.databinding.FragmentSearchTreeBinding
 import com.ikbo0621.anitree.structure.Anime
 import com.ikbo0621.anitree.util.UiState
 import com.ikbo0621.anitree.util.hide
@@ -21,60 +26,57 @@ import com.ikbo0621.anitree.viewModel.ParsingViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class SearchFragment : Fragment() {
+class SearchTreeFragment : Fragment(), SearchListAdapter.Listener {
 
     private val TAG: String = "SEARCH_FRAGMENT"
-    lateinit var binding: FragmentSearchBinding
-    private var textGuesses = arrayListOf<TextView>()
+
+    private lateinit var titleGuessesArrayList: ArrayList<SearchListItem>
+    private lateinit var titleList: Array<String>
+
+    private var _binding: FragmentSearchTreeBinding? = null
+    private val binding get() = _binding!!
+
     val viewModel: ParsingViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentSearchBinding.inflate(layoutInflater)
+        _binding = FragmentSearchTreeBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observer()
-
+        binding.animeSecondWord.ellipsize = TextUtils.TruncateAt.MARQUEE
+        binding.animeSecondWord.isSelected = true
         try {
             restore()
         } catch (e: Exception) {
             // There is no anime yet
         }
 
-        binding.btnProfile.setOnClickListener {
-            parentFragmentManager.beginTransaction().addToBackStack("search")
-                .replace(R.id.fragment_container_view, ProfileFragment()).commit()
-        }
 
-        binding.iv.setOnClickListener {
+
+        binding.animeImage.setOnClickListener {
             if (validation()
                 && viewModel.guessedAnim.value != null
                 && viewModel.guessedAnim.value is UiState.Success
             ) {
-                val fragment = AnimeFragment()
-                val bundle = Bundle()
-                bundle.putParcelable(
-                    "anime",
-                    (viewModel.guessedAnim.value as UiState.Success<Anime>).data
-                )
-                fragment.arguments = bundle
+                val anime = (viewModel.guessedAnim.value as UiState.Success<Anime>).data
 
-                parentFragmentManager.beginTransaction().addToBackStack(null)
-                    .replace(R.id.fragment_container_view, fragment).commit()
+                //val action = SearchFragmentDirections.actionSearchFragmentToAnimeFragment(anime = anime)
+               // Navigation.findNavController(requireView()).navigate(action)
             }
         }
 
-        binding.etAnimeTitle.addTextChangedListener {
+        binding.searchBar.addTextChangedListener {
             Log.d(TAG, "triggered")
-            if (binding.etAnimeTitle.isFocused) {
+            if (binding.searchBar.isFocused) {
                 if (validation()) {
                     viewModel.guessAnime(
-                        binding.etAnimeTitle.text.toString()
+                        binding.searchBar.text.toString()
                     )
                 } else {
                     viewModel.cancelSearch()
@@ -82,21 +84,26 @@ class SearchFragment : Fragment() {
             }
         }
 
-        textGuesses = arrayListOf(
-            binding.tvRec1,
-            binding.tvRec2,
-            binding.tvRec3,
-            binding.tvRec4,
-            binding.tvRec5
-        )
 
-        textGuesses.forEach { textView ->
-            textView.setOnClickListener {
-                val animeTitle = textView.text.toString()
-                viewModel.getAnimeWithTitle(animeTitle)
-            }
-        }
+        fillRecyclerView(true)
+
+
     }
+
+    private fun fillRecyclerView(flag: Boolean) {
+        titleList = if(flag) arrayOf()
+        else arrayOf("" , "" , "" , "" , "")
+        binding.resultList.layoutManager = LinearLayoutManager(requireContext())
+        binding.resultList.setHasFixedSize(true)
+        titleGuessesArrayList = arrayListOf()
+        for (i in titleList) {
+            titleGuessesArrayList.add(SearchListItem(i))
+        }
+        binding.resultList.adapter =
+            SearchListAdapter(requireContext() , titleGuessesArrayList , this)
+    }
+
+
 
     /**
      * Get anime actual liveData
@@ -108,9 +115,11 @@ class SearchFragment : Fragment() {
         context?.let {
             Glide.with(it)
                 .load((viewModel.guessedAnim.value as UiState.Success).data.imageURI)
-                .into(binding.iv)
+                .into(binding.animeImage)
         }
-        binding.tvInfo.text = (viewModel.guessedAnim.value as UiState.Success).data.title
+        val animeTitle = (viewModel.guessedAnim.value as UiState.Success).data.title
+        binding.animeFirstWord.text = animeTitle.uppercase()
+        binding.animeSecondWord.text = animeTitle.substring(animeTitle.indexOf(" ")+1)
     }
 
     /**
@@ -130,25 +139,30 @@ class SearchFragment : Fragment() {
                 }
                 is UiState.Success -> {
                     binding.pb.hide()
-                    binding.tvInfo.text = state.data.title
+                    binding.animeFirstWord.text = state.data.title.uppercase()
+                    binding.animeSecondWord.text = state.data.title.substring(state.data.title.indexOf(" ")+1)
+
 
                     context?.let {
                         Glide.with(it)
                             .load(state.data.imageURI)
-                            .into(binding.iv)
+                            .into(binding.animeImage)
                     }
                 }
             }
         }
         viewModel.guessList.observe(viewLifecycleOwner) { arr ->
-            textGuesses.forEach {
+            titleGuessesArrayList.forEach {
                 it.text = ""
             }
+            fillRecyclerView(false)
             arr.forEachIndexed { index, s ->
-                if (index < textGuesses.size)
-                    textGuesses[index].text = s
+                if (index < titleGuessesArrayList.size)
+                    titleGuessesArrayList[index].text = s
+
             }
         }
+
     }
 
     /**
@@ -157,10 +171,19 @@ class SearchFragment : Fragment() {
     private fun validation(): Boolean {
         var isValid = true
 
-        if (binding.etAnimeTitle.text.isNullOrEmpty()) {
+        if (binding.searchBar.text.isNullOrEmpty()) {
             isValid = false
         }
 
         return isValid
     }
+
+    override fun OnClick(searchListItem: SearchListItem) {
+        val animeTitle = searchListItem.text.toString()
+        viewModel.getAnimeWithTitle(animeTitle)
+        binding.animeFirstWord.text = animeTitle.uppercase()
+        binding.animeSecondWord.text = animeTitle.substring(animeTitle.indexOf(" ")+1)
+    }
+
+
 }

@@ -1,4 +1,4 @@
-package com.ikbo0621.anitree.testUI
+package com.ikbo0621.anitree.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,11 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.Navigation
 import com.ikbo0621.anitree.R
 import com.ikbo0621.anitree.databinding.FragmentLogInBinding
 import com.ikbo0621.anitree.util.*
 import com.ikbo0621.anitree.viewModel.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import java.lang.Exception
 
 @AndroidEntryPoint
 class LogInFragment : Fragment() {
@@ -20,15 +22,15 @@ class LogInFragment : Fragment() {
     val viewModel: UserViewModel by viewModels()
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater , container: ViewGroup? ,
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentLogInBinding.inflate(layoutInflater)
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onViewCreated(view: View , savedInstanceState: Bundle?) {
+        super.onViewCreated(view , savedInstanceState)
         observer()
         binding.btnLogIn.setOnClickListener {
             if (validation()) {
@@ -36,21 +38,20 @@ class LogInFragment : Fragment() {
                  * Log in function call
                  * */
                 viewModel.login(
-                    email = binding.etEmail.text.toString(),
+                    email = binding.etEmail.text.toString() ,
                     password = binding.etPassword.text.toString()
                 )
             }
         }
-
         binding.btnForgotPassword.setOnClickListener {
-            parentFragmentManager.beginTransaction().addToBackStack("log_in")
-                .replace(R.id.fragment_container_view, ForgotPasswordFragment()).commit()
+            val action = LogInFragmentDirections.actionLogInFragmentToForgotPasswordFragment()
+            Navigation.findNavController(requireView()).navigate(action)
+        }
+        binding.btnRegister.setOnClickListener {
+            val action = LogInFragmentDirections.actionLogInFragmentToRegistrationFragment()
+            Navigation.findNavController(requireView()).navigate(action)
         }
 
-        binding.btnRegister.setOnClickListener {
-            parentFragmentManager.beginTransaction().addToBackStack("log_in")
-                .replace(R.id.fragment_container_view, RegistrationFragment()).commit()
-        }
     }
 
     /**
@@ -77,8 +78,9 @@ class LogInFragment : Fragment() {
                     binding.pb.hide()
                     toast(state.data)
 
-                    parentFragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container_view, SearchFragment()).commit()
+                    val action = LogInFragmentDirections.actionLogInFragmentToSearchFragment()
+                    Navigation.findNavController(requireView()).navigate(action)
+
                 }
             }
         }
@@ -115,10 +117,11 @@ class LogInFragment : Fragment() {
         super.onStart()
         viewModel.getSession { user ->
             if (user != null) {
-                parentFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container_view, SearchFragment()).commit()
+
+                val action = LogInFragmentDirections.actionLogInFragmentToSearchFragment()
+                Navigation.findNavController(requireView()).navigate(action)
             }
         }
     }
-
 }
+

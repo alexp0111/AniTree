@@ -97,6 +97,30 @@ class UserModel(
             }
     }
 
+    override fun updateUserInfoAndStore(user: User, result: (UiState<String>) -> Unit) {
+        val document = database.collection(FireStoreCollection.USER).document(user.id)
+        document
+            .set(user)
+            .addOnSuccessListener {
+                storeSession(id = user.id) {
+                    if (it == null) {
+                        result.invoke(UiState.Failure("Failed to store"))
+                    } else {
+                        result.invoke(
+                            UiState.Success("User has been update successfully")
+                        )
+                    }
+                }
+            }
+            .addOnFailureListener {
+                result.invoke(
+                    UiState.Failure(
+                        it.localizedMessage
+                    )
+                )
+            }
+    }
+
     override fun loginUser(email: String, password: String, result: (UiState<String>) -> Unit) {
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->

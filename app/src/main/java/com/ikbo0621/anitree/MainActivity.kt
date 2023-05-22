@@ -2,7 +2,8 @@ package com.ikbo0621.anitree
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.ikbo0621.anitree.testUI.LogInFragment
+import androidx.navigation.fragment.NavHostFragment
+import com.ikbo0621.anitree.fragments.LogInFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -19,9 +20,9 @@ class MainActivity : AppCompatActivity() {
         // Keep this code
         // Actual
 
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container_view, LogInFragment())
-            .commitAllowingStateLoss()
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        val navController = navHostFragment.navController
 
         // Keep this code
     }

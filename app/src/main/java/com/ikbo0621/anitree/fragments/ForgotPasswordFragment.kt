@@ -1,4 +1,4 @@
-package com.ikbo0621.anitree.testUI
+package com.ikbo0621.anitree.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -67,8 +67,8 @@ class ForgotPasswordFragment : Fragment() {
                     binding.pb.hide()
                     toast(state.data)
 
-                    parentFragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container_view, LogInFragment()).commit()
+                    /*parentFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container_view, LogInFragment()).commit()*/
                 }
             }
         }

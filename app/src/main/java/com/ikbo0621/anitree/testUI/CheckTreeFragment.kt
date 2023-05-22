@@ -23,7 +23,7 @@ import com.ikbo0621.anitree.viewModel.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class CheckTreeFragment : Fragment() {
+class CheckTreeFragment : Fragment() {//Ненужное говно
 
     private val TAG: String = "CHECK_TREE_FRAGMENT"
     private var BUTTON_STATE = false

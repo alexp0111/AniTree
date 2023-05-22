@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/logInFragment">
+
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.ikbo0621.anitree.fragments.SearchFragment"
+        android:label="SearchFragment"
+        tools:layout="@layout/fragment_search">
+        <action
+            android:id="@+id/action_searchFragment_to_accountFragment"
+            app:destination="@id/accountFragment" />
+        <action
+            android:id="@+id/action_searchFragment_to_animeFragment"
+            app:destination="@id/animeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/accountFragment"
+        android:name="com.ikbo0621.anitree.fragments.AccountFragment"
+        android:label="AccountFragment"
+        tools:layout="@layout/fragment_account">
+        <action
+            android:id="@+id/action_accountFragment_to_avatarFragment"
+            app:destination="@id/avatarFragment" />
+        <action
+            android:id="@+id/action_accountFragment_to_logInFragment"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true"
+            app:destination="@id/logInFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/avatarFragment"
+        android:name="com.ikbo0621.anitree.fragments.AvatarFragment"
+        android:label="fragment_avatar"
+        tools:layout="@layout/fragment_avatar" />
+    <fragment
+        android:id="@+id/logInFragment"
+        android:name="com.ikbo0621.anitree.fragments.LogInFragment"
+        android:label="fragment_log_in"
+        tools:layout="@layout/fragment_log_in" >
+        <action
+            android:id="@+id/action_logInFragment_to_registrationFragment"
+            app:destination="@id/registrationFragment" />
+        <action
+            android:id="@+id/action_logInFragment_to_forgotPasswordFragment"
+            app:destination="@id/forgotPasswordFragment" />
+        <action
+            android:id="@+id/action_logInFragment_to_searchFragment"
+            app:destination="@id/searchFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/registrationFragment"
+        android:name="com.ikbo0621.anitree.fragments.RegistrationFragment"
+        android:label="fragment_registration"
+        tools:layout="@layout/fragment_registration" />
+    <fragment
+        android:id="@+id/forgotPasswordFragment"
+        android:name="com.ikbo0621.anitree.fragments.ForgotPasswordFragment"
+        android:label="fragment_forgot_password"
+        tools:layout="@layout/fragment_forgot_password" />
+    <fragment
+        android:id="@+id/animeFragment"
+
+        android:name="com.ikbo0621.anitree.fragments.AnimeFragment"
+        android:label="fragment_anime"
+        tools:layout="@layout/fragment_anime" >
+        <argument
+            android:name="anime"
+            app:argType="com.ikbo0621.anitree.structure.Anime" />
+        <action
+            android:id="@+id/action_animeFragment_to_treeEditorFragment"
+            app:destination="@id/treeEditorFragment" />
+        <action
+            android:id="@+id/action_animeFragment_to_treeViewerFragment"
+            app:destination="@id/treeViewerFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/treeEditorFragment"
+        android:name="com.ikbo0621.anitree.fragments.TreeEditorFragment"
+        android:label="fragment_tree_editor"
+        tools:layout="@layout/fragment_tree_editor" >
+        <action
+            android:id="@+id/action_treeEditorFragment_to_searchTreeFragment"
+            app:destination="@id/searchTreeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/treeViewerFragment"
+        android:name="com.ikbo0621.anitree.fragments.TreeViewerFragment"
+        android:label="fragment_tree_viewer"
+        tools:layout="@layout/fragment_tree_viewer" >
+        <argument
+            android:name="bundle"
+            app:argType="android.os.Bundle" />
+    </fragment>
+    <fragment
+        android:id="@+id/searchTreeFragment"
+        android:name="com.ikbo0621.anitree.testUI.SearchTreeFragment"
+        android:label="SearchTreeFragment" />
+</navigation>
