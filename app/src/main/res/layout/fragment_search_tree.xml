@@ -85,42 +85,7 @@
             app:layout_constraintStart_toStartOf="@+id/search_frame"
             app:layout_constraintTop_toTopOf="@+id/search_frame" />
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/anime_card"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_alignParentStart="true"
 
-            android:layout_alignParentTop="true"
-
-            android:layout_marginTop="60dp"
-            android:layout_marginEnd="35dp"
-            app:cardCornerRadius="30dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-
-            >
-
-            <ImageView
-                android:id="@+id/avatar"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:src="@color/crimson"
-                />
-        </androidx.cardview.widget.CardView>
-        <View
-
-            android:id="@+id/round_frame"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="65dp"
-            android:layout_marginEnd="40dp"
-
-            android:background="@drawable/round_frame"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
 
 
@@ -203,31 +168,6 @@
             app:layout_constraintTop_toTopOf="@+id/result_background" />
 
 
-
-        <ImageView
-            android:id="@+id/anime_image"
-            android:layout_width="160dp"
-            android:layout_height="240dp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="40dp"
-            android:src="@color/crimson"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/search_background" />
-
-        <View
-            android:id="@+id/anime_frame"
-            android:layout_width="160dp"
-            android:layout_height="240dp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="60dp"
-            android:layout_marginEnd="20dp"
-            android:background="@drawable/anime_frame"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/search_background" />
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/result_list"
             android:layout_width="match_parent"
@@ -240,15 +180,50 @@
 
         <ProgressBar
             android:id="@+id/pb"
-            android:progressTint="@color/light_grey"
             style="?android:attr/progressBarStyle"
-            android:visibility="invisible"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@+id/anime_image"
+            android:progressTint="@color/light_grey"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/result_topline"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/search_background" />
+        <androidx.cardview.widget.CardView
+            android:id="@+id/anime_card"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_alignParentStart="true"
+
+            android:layout_alignParentTop="true"
+
+            android:layout_marginEnd="30dp"
+            android:layout_marginBottom="10dp"
+            app:cardCornerRadius="100dp"
+            app:layout_constraintBottom_toBottomOf="@+id/round_frame"
+
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <ImageView
+                android:id="@+id/anime_image"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:src="@color/crimson" />
+        </androidx.cardview.widget.CardView>
+
+        <View
+
+            android:id="@+id/round_frame"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginEnd="40dp"
+            android:layout_marginBottom="-60dp"
+
+            android:background="@drawable/round_frame"
+            app:layout_constraintBottom_toTopOf="@+id/result_background"
+            app:layout_constraintEnd_toEndOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
