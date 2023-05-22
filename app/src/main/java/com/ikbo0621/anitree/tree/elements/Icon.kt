@@ -3,6 +3,8 @@ package com.ikbo0621.anitree.tree.elements
 import android.graphics.*
 import com.ikbo0621.anitree.tree.positioning.RPosition
 import com.ikbo0621.anitree.tree.positioning.RValue
+import java.lang.Integer.max
+import java.lang.Integer.min
 
 class Icon(
     relativePos: RPosition,
@@ -51,14 +53,13 @@ class Icon(
     }
 
     // The size of the bitmap must be equal to the size of the icon on the screen
-    // The size of the bitmap must be equal to the size of the icon on the screen
     private fun scaleBitmapToSquare(bitmap: Bitmap, absoluteRadius: Float) : Bitmap {
         val matrix = Matrix()
         val factor = (2f * absoluteRadius) / bitmap.width
         matrix.postScale(factor, factor)
 
-        val minSide = Integer.min(bitmap.height, bitmap.width)
-        val maxSide = Integer.max(bitmap.height, bitmap.width)
+        val minSide = min(bitmap.height, bitmap.width)
+        val maxSide = max(bitmap.height, bitmap.width)
         val offset = (maxSide - minSide) / 2
 
         return if (bitmap.height > bitmap.width)
