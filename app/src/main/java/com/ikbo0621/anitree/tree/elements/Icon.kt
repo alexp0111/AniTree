@@ -29,7 +29,7 @@ class Icon(
     }
 
     private fun cropBitmapToCircle(bitmap: Bitmap, absoluteRadius: Float) : Bitmap {
-        val scaledBitmap = scaleBitmap(bitmap, absoluteRadius)
+        val scaledBitmap = scaleBitmapToSquare(bitmap, absoluteRadius)
         val dest = Bitmap.createBitmap(scaledBitmap.width, scaledBitmap.height, Bitmap.Config.ARGB_8888)
 
         val canvas = Canvas(dest)
@@ -51,11 +51,19 @@ class Icon(
     }
 
     // The size of the bitmap must be equal to the size of the icon on the screen
-    private fun scaleBitmap(bitmap: Bitmap, absoluteRadius: Float) : Bitmap {
+    private fun scaleBitmapToSquare(bitmap: Bitmap, absoluteRadius: Float) : Bitmap {
         val matrix = Matrix()
         val factor = (2f * absoluteRadius) / bitmap.width
         matrix.postScale(factor, factor)
 
-        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+        return Bitmap.createBitmap(
+            bitmap,
+            0,
+            (bitmap.height - bitmap.width) / 2,
+            bitmap.width,
+            bitmap.width,
+            matrix,
+            true
+        )
     }
 }
