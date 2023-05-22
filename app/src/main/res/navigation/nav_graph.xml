@@ -86,5 +86,9 @@
         android:id="@+id/treeViewerFragment"
         android:name="com.ikbo0621.anitree.fragments.TreeViewerFragment"
         android:label="fragment_tree_viewer"
-        tools:layout="@layout/fragment_tree_viewer" />
+        tools:layout="@layout/fragment_tree_viewer" >
+        <argument
+            android:name="bundle"
+            app:argType="android.os.Bundle" />
+    </fragment>
 </navigation>

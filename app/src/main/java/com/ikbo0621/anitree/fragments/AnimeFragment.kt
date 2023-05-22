@@ -37,7 +37,6 @@ class AnimeFragment : Fragment() {
 
     private val TAG: String = "ANIME_FRAGMENT"
     private var anime: Anime? = null
-    private var bundle: Bundle = Bundle()
     private var _binding: FragmentAnimeBinding? = null
     private val binding get() = _binding!!
     val treeViewModel: TreeViewModel by viewModels()
@@ -56,16 +55,15 @@ class AnimeFragment : Fragment() {
                     Log.d(TAG, this.toString())
 
                     binding.pb.hide()
-                    val fragment = CheckTreeFragment()
+                    val fragment = TreeViewerFragment()
 
+                    val bundle= Bundle()
                     bundle.putParcelable("tree", converted)
                     bundle.putString("id", item.id)
                     fragment.arguments = bundle
 
-                    val action = AnimeFragmentDirections.actionAnimeFragmentToTreeViewerFragment()
+                    val action = AnimeFragmentDirections.actionAnimeFragmentToTreeViewerFragment(bundle = bundle)
                     Navigation.findNavController(requireView()).navigate(action)
-
-
                 }
 
             }
@@ -163,28 +161,28 @@ class AnimeFragment : Fragment() {
             }
         }
 
-        parsingViewModel.bitmapList.observe(viewLifecycleOwner) { state ->
-            when (state) {
-                is UiState.Loading -> binding.pb.show()
-                is UiState.Failure -> {
-                    binding.pb.hide()
-                    toast(state.error)
-                }
-                is UiState.Success -> {
-                    binding.pb.hide()
-                    val fragment = CheckTreeFragment()
-
-                    bundle.putParcelableArrayList("image_list", state.data)
-                    fragment.arguments = bundle
-
-                    parsingViewModel.bitmapList.value = null
-
-                    //parentFragmentManager.beginTransaction().addToBackStack(null)
-                    //    .replace(R.id.fragment_container_view, fragment).commit()
-                }
-                else -> {}
-            }
-        }
+        //parsingViewModel.bitmapList.observe(viewLifecycleOwner) { state ->
+        //    when (state) {
+        //        is UiState.Loading -> binding.pb.show()
+        //        is UiState.Failure -> {
+        //            binding.pb.hide()
+        //            toast(state.error)
+        //        }
+        //        is UiState.Success -> {
+        //            binding.pb.hide()
+        //            val fragment = CheckTreeFragment()
+//
+        //            bundle.putParcelableArrayList("image_list", state.data)
+        //            fragment.arguments = bundle
+//
+        //            parsingViewModel.bitmapList.value = null
+//
+        //            //parentFragmentManager.beginTransaction().addToBackStack(null)
+        //            //    .replace(R.id.fragment_container_view, fragment).commit()
+        //        }
+        //        else -> {}
+        //    }
+        //}
     }
 
 

@@ -48,8 +48,8 @@ class AccountFragment : Fragment() {
                     bundle.putString("id", item.id)
                     fragment.arguments = bundle
 
-                    val action = AnimeFragmentDirections.actionAnimeFragmentToTreeViewerFragment()
-                    Navigation.findNavController(requireView()).navigate(action)
+                    // val action = AnimeFragmentDirections.actionAnimeFragmentToTreeViewerFragment()
+                    // Navigation.findNavController(requireView()).navigate(action)
 
 
                 }

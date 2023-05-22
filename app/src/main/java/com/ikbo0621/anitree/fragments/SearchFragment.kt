@@ -17,11 +17,9 @@ import com.ikbo0621.anitree.RecyclerViewD.RecyclerViewAdapter.SearchListAdapter
 import com.ikbo0621.anitree.RecyclerViewD.RecyclerViewItems.SearchListItem
 import com.ikbo0621.anitree.databinding.FragmentSearchBinding
 import com.ikbo0621.anitree.structure.Anime
-import com.ikbo0621.anitree.util.UiState
-import com.ikbo0621.anitree.util.hide
-import com.ikbo0621.anitree.util.show
-import com.ikbo0621.anitree.util.toast
+import com.ikbo0621.anitree.util.*
 import com.ikbo0621.anitree.viewModel.ParsingViewModel
+import com.ikbo0621.anitree.viewModel.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -36,6 +34,7 @@ class SearchFragment : Fragment(), SearchListAdapter.Listener {
     private val binding get() = _binding!!
 
     val viewModel: ParsingViewModel by viewModels()
+    val userViewModel: UserViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -106,7 +105,14 @@ class SearchFragment : Fragment(), SearchListAdapter.Listener {
     }
 
     private fun setUpAvatar() {
-        binding.avatar.setImageResource(R.drawable.l)
+        userViewModel.getSession {
+            if (it != null){
+                var avatarList = ArrayList<Int>()
+                fillImageList(avatarList)
+
+                binding.avatar.setImageResource(avatarList[it.iconId.toInt()])
+            }
+        }
     }
 
     /**

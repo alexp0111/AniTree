@@ -119,8 +119,8 @@ class AvatarFragment : Fragment() {
         handler = Handler(Looper.myLooper()!!)
         var avatarList = ArrayList<Int>()
         fillImageList(avatarList)
-        var adapter = AvatarAdapter(avatarList, binding.viewPager)
 
+        var adapter = AvatarAdapter(avatarList, binding.viewPager)
         binding.viewPager.adapter = adapter
         binding.viewPager.offscreenPageLimit = 3
         binding.viewPager.clipToPadding = false
