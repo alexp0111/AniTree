@@ -1,4 +1,4 @@
-package com.ikbo0621.anitree.fragments
+package com.ikbo0621.anitree.testUI
 
 import android.os.Bundle
 import android.text.TextUtils
@@ -6,7 +6,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -17,6 +16,7 @@ import com.ikbo0621.anitree.R
 import com.ikbo0621.anitree.RecyclerViewD.RecyclerViewAdapter.SearchListAdapter
 import com.ikbo0621.anitree.RecyclerViewD.RecyclerViewItems.SearchListItem
 import com.ikbo0621.anitree.databinding.FragmentSearchBinding
+import com.ikbo0621.anitree.databinding.FragmentSearchTreeBinding
 import com.ikbo0621.anitree.structure.Anime
 import com.ikbo0621.anitree.util.UiState
 import com.ikbo0621.anitree.util.hide
@@ -26,17 +26,15 @@ import com.ikbo0621.anitree.viewModel.ParsingViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class SearchFragment : Fragment(), SearchListAdapter.Listener {
+class SearchTreeFragment : Fragment(), SearchListAdapter.Listener {
 
     private val TAG: String = "SEARCH_FRAGMENT"
 
     private lateinit var titleGuessesArrayList: ArrayList<SearchListItem>
     private lateinit var titleList: Array<String>
-    val imageList = ArrayList<Int>()
 
-    private var _binding: FragmentSearchBinding ? = null
+    private var _binding: FragmentSearchTreeBinding? = null
     private val binding get() = _binding!!
-    var count = 0
 
     val viewModel: ParsingViewModel by viewModels()
 
@@ -44,7 +42,7 @@ class SearchFragment : Fragment(), SearchListAdapter.Listener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentSearchBinding.inflate(layoutInflater, container, false)
+        _binding = FragmentSearchTreeBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
 
@@ -59,37 +57,7 @@ class SearchFragment : Fragment(), SearchListAdapter.Listener {
             // There is no anime yet
         }
 
-        imageList.add(R.drawable.agressive_retsuko)
-        imageList.add(R.drawable.asta)
-        imageList.add(R.drawable.baki)
-        imageList.add(R.drawable.bebop)
-        imageList.add(R.drawable.berserk)
-        imageList.add(R.drawable.dazai)
-        imageList.add(R.drawable.denji)
-        imageList.add(R.drawable.diavolo)
-        imageList.add(R.drawable.eren)
-        imageList.add(R.drawable.gojo)
-        imageList.add(R.drawable.hisoka)
-        imageList.add(R.drawable.itadori)
-        imageList.add(R.drawable.izuku)
-        imageList.add(R.drawable.jotaro)
-        imageList.add(R.drawable.l)
-        imageList.add(R.drawable.lite)
-        imageList.add(R.drawable.luffy)
-        imageList.add(R.drawable.misato)
-        imageList.add(R.drawable.naruto)
-        imageList.add(R.drawable.rey)
-        imageList.add(R.drawable.saiki)
-        imageList.add(R.drawable.stone)
-        imageList.add(R.drawable.tandjiro)
-        imageList.add(R.drawable.vinland)
-        setUpAvatar()
 
-        binding.avatar.setOnClickListener {
-            //val action = SearchFragmentDirections.actionSearchFragmentToAccountFragment()
-            //Navigation.findNavController(requireView()).navigate(action)
-            setUpAvatar(count++)
-        }
 
         binding.animeImage.setOnClickListener {
             if (validation()
@@ -97,8 +65,9 @@ class SearchFragment : Fragment(), SearchListAdapter.Listener {
                 && viewModel.guessedAnim.value is UiState.Success
             ) {
                 val anime = (viewModel.guessedAnim.value as UiState.Success<Anime>).data
-                val action = SearchFragmentDirections.actionSearchFragmentToAnimeFragment(anime = anime)
-                Navigation.findNavController(requireView()).navigate(action)
+
+                //val action = SearchFragmentDirections.actionSearchFragmentToAnimeFragment(anime = anime)
+               // Navigation.findNavController(requireView()).navigate(action)
             }
         }
 
@@ -134,12 +103,7 @@ class SearchFragment : Fragment(), SearchListAdapter.Listener {
             SearchListAdapter(requireContext() , titleGuessesArrayList , this)
     }
 
-    private fun setUpAvatar() {
-        binding.avatar.setImageResource(R.drawable.baki)
-    }
-    private fun setUpAvatar(pos: Int) {
-        binding.avatar.setImageResource(imageList[pos%23])
-    }
+
 
     /**
      * Get anime actual liveData
