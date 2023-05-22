@@ -32,9 +32,6 @@ class UserViewModel @Inject constructor(
     val user: LiveData<UiState<String>>
         get() = _user
 
-    // Update User
-    // get by id
-
     fun updateUserInfo(
         user: User
     ) {
@@ -84,5 +81,9 @@ class UserViewModel @Inject constructor(
 
     fun getSession(result: (User?) -> Unit){
         repository.getSession(result)
+    }
+
+    fun getUserById(id: String, result: (User?) -> Unit){
+        repository.getUserById(id, result)
     }
 }

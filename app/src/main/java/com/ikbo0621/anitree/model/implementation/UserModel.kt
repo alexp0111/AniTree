@@ -187,4 +187,20 @@ class UserModel(
             result.invoke(user)
         }
     }
+
+    override fun getUserById(id: String, result: (User?) -> Unit) {
+        database.collection(FireStoreCollection.USER).document(id)
+            .get()
+            .addOnCompleteListener {
+                if (it.isSuccessful) {
+                    val user = it.result.toObject(User::class.java)
+                    result.invoke(user)
+                } else {
+                    result.invoke(null)
+                }
+            }
+            .addOnFailureListener {
+                result.invoke(null)
+            }
+    }
 }

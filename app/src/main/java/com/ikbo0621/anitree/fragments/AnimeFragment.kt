@@ -1,5 +1,8 @@
 package com.ikbo0621.anitree.fragments
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
@@ -19,10 +22,7 @@ import com.ikbo0621.anitree.structure.Tree
 import com.ikbo0621.anitree.structure.TreeConverter
 import com.ikbo0621.anitree.fragments.AnimeFragmentArgs
 import com.ikbo0621.anitree.testUI.CheckTreeFragment
-import com.ikbo0621.anitree.util.UiState
-import com.ikbo0621.anitree.util.hide
-import com.ikbo0621.anitree.util.show
-import com.ikbo0621.anitree.util.toast
+import com.ikbo0621.anitree.util.*
 import com.ikbo0621.anitree.viewModel.ParsingViewModel
 import com.ikbo0621.anitree.viewModel.TreeViewModel
 import com.ikbo0621.anitree.viewModel.UserViewModel
@@ -52,12 +52,30 @@ class AnimeFragment : Fragment() {
                         TreeConverter.convert(item)
                     }
 
+                    val bundle= Bundle()
+
+                    userViewModel.getUserById(item.authorID){
+                        if (it != null){
+                            bundle.putString("author_name", it.name)
+
+                            val arrayList = arrayListOf<Int>()
+                            fillImageList(arrayList)
+
+                            val x = arrayList[it.iconId.toInt()]
+                            val icon = BitmapFactory.decodeResource(resources, x)
+                            bundle.putParcelable("author_image", icon)
+                        } else {
+                            bundle.putString("author_name", "none")
+                        }
+                    }
+
+                    bundle.putString("tree_id", item.id)
+
                     Log.d(TAG, this.toString())
 
                     binding.pb.hide()
                     val fragment = TreeViewerFragment()
 
-                    val bundle= Bundle()
                     bundle.putParcelable("tree", converted)
                     bundle.putString("id", item.id)
                     fragment.arguments = bundle
