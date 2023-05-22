@@ -59,7 +59,7 @@ object TreeConverter {
     /**
      * Convert list of anime to Tree
      * */
-    fun convert(list: List<Anime?>): Tree {
+    fun convert(id: String = "", list: List<Anime?>): Tree {
         val children: MutableList<String?> = arrayListOf()
         val studios: MutableList<String?> = arrayListOf()
         val urls: MutableList<String?> = arrayListOf()
@@ -76,6 +76,7 @@ object TreeConverter {
             }
         }
         return Tree(
+            id = id,
             children = children,
             studios = studios,
             urls = urls

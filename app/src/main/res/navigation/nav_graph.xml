@@ -85,6 +85,9 @@
         <action
             android:id="@+id/action_treeEditorFragment_to_searchTreeFragment"
             app:destination="@id/searchTreeFragment" />
+        <argument
+            android:name="bundle"
+            app:argType="android.os.Bundle" />
     </fragment>
     <fragment
         android:id="@+id/treeViewerFragment"

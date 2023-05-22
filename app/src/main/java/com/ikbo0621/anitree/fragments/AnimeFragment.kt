@@ -1,8 +1,6 @@
 package com.ikbo0621.anitree.fragments
 
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
@@ -16,12 +14,9 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.ikbo0621.anitree.databinding.FragmentAnimeBinding
-import com.ikbo0621.anitree.databinding.FragmentSearchBinding
 import com.ikbo0621.anitree.structure.Anime
 import com.ikbo0621.anitree.structure.Tree
 import com.ikbo0621.anitree.structure.TreeConverter
-import com.ikbo0621.anitree.fragments.AnimeFragmentArgs
-import com.ikbo0621.anitree.testUI.CheckTreeFragment
 import com.ikbo0621.anitree.util.*
 import com.ikbo0621.anitree.viewModel.ParsingViewModel
 import com.ikbo0621.anitree.viewModel.TreeViewModel
@@ -52,10 +47,10 @@ class AnimeFragment : Fragment() {
                         TreeConverter.convert(item)
                     }
 
-                    val bundle= Bundle()
+                    val bundle = Bundle()
 
-                    userViewModel.getUserById(item.authorID){
-                        if (it != null){
+                    userViewModel.getUserById(item.authorID) {
+                        if (it != null) {
                             bundle.putString("author_name", it.name)
 
                             val arrayList = arrayListOf<Int>()
@@ -80,7 +75,8 @@ class AnimeFragment : Fragment() {
                     bundle.putString("id", item.id)
                     fragment.arguments = bundle
 
-                    val action = AnimeFragmentDirections.actionAnimeFragmentToTreeViewerFragment(bundle = bundle)
+                    val action =
+                        AnimeFragmentDirections.actionAnimeFragmentToTreeViewerFragment(bundle = bundle)
                     Navigation.findNavController(requireView()).navigate(action)
                 }
 
@@ -92,14 +88,13 @@ class AnimeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentAnimeBinding.inflate(layoutInflater,container,false)
+        _binding = FragmentAnimeBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observer()
-
 
 
         val args: AnimeFragmentArgs by navArgs()
@@ -116,10 +111,9 @@ class AnimeFragment : Fragment() {
                 .load(anime?.imageURI)
                 .into(binding.animeImage)
         }
-        val animeDescription = anime?.title+"\n"+anime?.studio+"\n"+anime?.releaseDate+"\n"+anime?.description
+        val animeDescription =
+            anime?.title + "\n" + anime?.studio + "\n" + anime?.releaseDate + "\n" + anime?.description
         binding.animeDescription.text = animeDescription
-
-
 
 
         //
@@ -134,15 +128,33 @@ class AnimeFragment : Fragment() {
 
         //
 
-        binding.createTreeBtn.setOnClickListener {/*
-            userViewModel.getSession {
-                if (it != null) {
-                    val tree = getTestTree(it.id)
-                    treeViewModel.updateTree(tree)
+        binding.createTreeBtn.setOnClickListener {
+            CoroutineScope(Dispatchers.Main).launch {
+                var tree = Tree()
+                userViewModel.getSession {
+                    if (it != null && anime != null) {
+                        tree = Tree(
+                            authorID = it.id,
+                            children = listOf(anime!!.title),
+                            studios = listOf(anime!!.studio),
+                            urls = listOf(anime!!.imageURI.toString()),
+                        )
+                    }
                 }
-            }*/
-            val action = AnimeFragmentDirections.actionAnimeFragmentToTreeEditorFragment()
-            Navigation.findNavController(requireView()).navigate(action)
+
+                val converted = withContext(Dispatchers.IO) {
+                    TreeConverter.convert(tree)
+                }
+                val bundle = Bundle()
+                val fragment = TreeViewerFragment()
+
+                bundle.putParcelable("tree", converted)
+                fragment.arguments = bundle
+
+                val action =
+                    AnimeFragmentDirections.actionAnimeFragmentToTreeEditorFragment(bundle = bundle)
+                Navigation.findNavController(requireView()).navigate(action)
+            }
         }
     }
 
