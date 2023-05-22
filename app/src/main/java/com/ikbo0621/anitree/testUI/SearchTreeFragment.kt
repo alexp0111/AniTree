@@ -66,8 +66,8 @@ class SearchTreeFragment : Fragment(), SearchListAdapter.Listener {
             ) {
                 val anime = (viewModel.guessedAnim.value as UiState.Success<Anime>).data
 
-                //val action = SearchFragmentDirections.actionSearchFragmentToAnimeFragment(anime = anime)
-               // Navigation.findNavController(requireView()).navigate(action)
+                Navigation.findNavController(requireView()).previousBackStackEntry?.savedStateHandle?.set("anime", anime)
+                Navigation.findNavController(requireView()).popBackStack()
             }
         }
 
