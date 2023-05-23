@@ -122,9 +122,12 @@ class TreeEditorFragment : Fragment() {
 
                     Log.d("EDITOR", deletedTitle.toString())
 
-                    deletedTitle?.let { deleted ->
-                        listOfAnime.forEachIndexed { index, anime ->
-                            if (anime != null && anime.title == deleted) listOfAnime.removeAt(index)
+                    if (deletedTitle != null) {
+                        for (anime in listOfAnime) {
+                            if (anime != null && anime.title == deletedTitle) {
+                                listOfAnime.remove(anime)
+                                break
+                            }
                         }
                     }
                 }
