@@ -128,7 +128,7 @@ open class TreeViewer(
         )
     }
 
-    private fun toAnotherLayer(index: IntArray) {
+    fun toAnotherLayer(index: IntArray) {
         var resultLayer = treeData
         for (i in index) {
             resultLayer = resultLayer.tree?.getOrNull(i) ?: return
@@ -150,7 +150,7 @@ open class TreeViewer(
         invalidate()
     }
 
-    private fun getCurrentIndex() : IntArray {
+    fun getCurrentIndex() : IntArray {
         return currentElement.index
     }
 

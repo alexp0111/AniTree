@@ -34,6 +34,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 private const val TREE_PARAM_KEY = "initialTree"
+private const val TREE_ELEMENT_INDEX_KEY = "treeElementIndex"
 
 @AndroidEntryPoint
 class TreeEditorFragment : Fragment() {
@@ -44,6 +45,7 @@ class TreeEditorFragment : Fragment() {
     private var listOfAnime: ArrayList<Anime?> = ArrayList()
 
     private var treeId: String = ""
+    private var currentTreeElementIndex: IntArray? = null
 
     val userViewModel: UserViewModel by viewModels()
     val treeViewModel: TreeViewModel by viewModels()
@@ -60,6 +62,7 @@ class TreeEditorFragment : Fragment() {
             initialAnime = args.bundle.getParcelable("anime")
         }
         listOfAnime.add(initialAnime)
+        currentTreeElementIndex = savedInstanceState?.getIntArray(TREE_ELEMENT_INDEX_KEY)
     }
 
     override fun onCreateView(
@@ -71,6 +74,8 @@ class TreeEditorFragment : Fragment() {
         observer()
 
         val treeEditor = TreeEditor(binding.editorTree, requireActivity(), initialTree!!)
+        if (currentTreeElementIndex != null)
+            treeEditor.toAnotherLayer(currentTreeElementIndex!!)
         treeEditor.setBottomIcon(
             ContextCompat.getDrawable(requireActivity(), R.drawable.save)!!,
             ContextCompat.getDrawable(requireActivity(), R.drawable.confirmation)!!
@@ -134,6 +139,7 @@ class TreeEditorFragment : Fragment() {
                 is Button -> treeEditor.toPreviousLayer()
                 else -> treeEditor.showCrossButtons(false) // Empty space
             }
+            currentTreeElementIndex = treeEditor.getCurrentIndex()
         }
 
         binding.editorTree.setOnLongClickListener {
@@ -144,6 +150,13 @@ class TreeEditorFragment : Fragment() {
 
 
         return binding.root
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        if (currentTreeElementIndex == null)
+            return
+        outState.putIntArray(TREE_ELEMENT_INDEX_KEY, currentTreeElementIndex)
     }
 
     private fun refactorListWithHierarchy(
