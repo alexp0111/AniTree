@@ -3,6 +3,7 @@ package com.ikbo0621.anitree.fragments
 import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -44,7 +45,9 @@ class TreeViewerFragment : Fragment() {
         if (Build.VERSION.SDK_INT == 33) {
             initialTree = args.bundle.getParcelable("tree", TreeData::class.java)
             bitmap = args.bundle.getParcelable("author_image", Bitmap::class.java)
+            Log.d("VIWER", bitmap.toString())
             authorName = args.bundle.getString("author_name")
+            Log.d("VIWER", authorName.toString())
             treeID = args.bundle.getString("tree_id")
         } else {
             initialTree = args.bundle.getParcelable("tree")

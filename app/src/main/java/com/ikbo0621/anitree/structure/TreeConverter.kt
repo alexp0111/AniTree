@@ -86,7 +86,7 @@ object TreeConverter {
     /**
      * Decode one url to the bitmap
      * */
-    private suspend fun decodeBitmapFromURL(url: String): Bitmap? {
+    suspend fun decodeBitmapFromURL(url: String): Bitmap? {
         val bitmap = withContext(Dispatchers.IO) {
             var bitmap: Bitmap? = null
 

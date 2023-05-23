@@ -41,7 +41,6 @@ class AnimeFragment : Fragment() {
     val adapter by lazy {
         TreeAdapter(requireContext(),
             onItemClicked = { pos, item ->
-
                 CoroutineScope(Dispatchers.Main).launch {
                     val converted = withContext(Dispatchers.IO) {
                         TreeConverter.convert(item)
@@ -52,6 +51,7 @@ class AnimeFragment : Fragment() {
                     userViewModel.getUserById(item.authorID) {
                         if (it != null) {
                             bundle.putString("author_name", it.name)
+                            Log.d("ANIME", it.name)
 
                             val arrayList = arrayListOf<Int>()
                             fillImageList(arrayList)
@@ -59,25 +59,26 @@ class AnimeFragment : Fragment() {
                             val x = arrayList[it.iconId.toInt()]
                             val icon = BitmapFactory.decodeResource(resources, x)
                             bundle.putParcelable("author_image", icon)
+
+                            bundle.putString("tree_id", item.id)
+
+                            Log.d(TAG, this.toString())
+
+                            binding.pb.hide()
+                            val fragment = TreeViewerFragment()
+
+                            bundle.putParcelable("tree", converted)
+                            fragment.arguments = bundle
+
+                            val action =
+                                AnimeFragmentDirections.actionAnimeFragmentToTreeViewerFragment(
+                                    bundle = bundle
+                                )
+                            Navigation.findNavController(requireView()).navigate(action)
                         } else {
                             bundle.putString("author_name", "none")
                         }
                     }
-
-                    bundle.putString("tree_id", item.id)
-
-                    Log.d(TAG, this.toString())
-
-                    binding.pb.hide()
-                    val fragment = TreeViewerFragment()
-
-                    bundle.putParcelable("tree", converted)
-                    bundle.putString("id", item.id)
-                    fragment.arguments = bundle
-
-                    val action =
-                        AnimeFragmentDirections.actionAnimeFragmentToTreeViewerFragment(bundle = bundle)
-                    Navigation.findNavController(requireView()).navigate(action)
                 }
 
             }
@@ -135,9 +136,9 @@ class AnimeFragment : Fragment() {
                     if (it != null && anime != null) {
                         tree = Tree(
                             authorID = it.id,
-                            children = listOf(anime!!.title),
-                            studios = listOf(anime!!.studio),
-                            urls = listOf(anime!!.imageURI.toString()),
+                            children = listOf(anime!!.title) + List(12) { null },
+                            studios = listOf(anime!!.studio) + List(12) { null },
+                            urls = listOf(anime!!.imageURI.toString()) + List(12) { null },
                         )
                     }
                 }
@@ -149,6 +150,7 @@ class AnimeFragment : Fragment() {
                 val fragment = TreeViewerFragment()
 
                 bundle.putParcelable("tree", converted)
+                bundle.putParcelable("anime", anime)
                 fragment.arguments = bundle
 
                 val action =
