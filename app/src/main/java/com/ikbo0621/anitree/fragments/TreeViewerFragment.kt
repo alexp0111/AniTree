@@ -110,10 +110,19 @@ class TreeViewerFragment : Fragment() {
                     toast(state.error)
                 }
                 is UiState.Success -> {
-                    if (state.data) {
-                        if (!treeViewer.isBottomButtonActivated) treeViewer.switchBottomButton()
-                    } else {
-                        if (treeViewer.isBottomButtonActivated) treeViewer.switchBottomButton()
+
+                    if (state.data) if (!treeViewer.isBottomButtonActivated) treeViewer.switchBottomButton()
+                    else if (treeViewer.isBottomButtonActivated) treeViewer.switchBottomButton()
+
+                    userViewModel.getSession {
+                        if (it != null && treeID != null) {
+                            if (state.data && !it.favoriteTrees.contains(treeID)) {
+                                it.favoriteTrees.add(treeID!!)
+                            } else if (!state.data && it.favoriteTrees.contains(treeID)) {
+                                it.favoriteTrees.remove(treeID!!)
+                            }
+                            userViewModel.updateUserInfo(it)
+                        }
                     }
                 }
             }

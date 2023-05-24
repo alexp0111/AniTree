@@ -36,7 +36,6 @@ class AnimeFragment : Fragment() {
     private val binding get() = _binding!!
     val treeViewModel: TreeViewModel by viewModels()
     val userViewModel: UserViewModel by viewModels()
-    val parsingViewModel: ParsingViewModel by viewModels()
 
     val adapter by lazy {
         TreeAdapter(requireContext(),
@@ -121,6 +120,8 @@ class AnimeFragment : Fragment() {
 
         treeViewModel.getTreesAccordingTo(anime?.title ?: "-1")
 
+        //
+
         val manager = LinearLayoutManager(context)
         manager.orientation = LinearLayoutManager.HORIZONTAL
         binding.rvTrees.layoutManager = manager
@@ -192,29 +193,6 @@ class AnimeFragment : Fragment() {
                 }
             }
         }
-
-        //parsingViewModel.bitmapList.observe(viewLifecycleOwner) { state ->
-        //    when (state) {
-        //        is UiState.Loading -> binding.pb.show()
-        //        is UiState.Failure -> {
-        //            binding.pb.hide()
-        //            toast(state.error)
-        //        }
-        //        is UiState.Success -> {
-        //            binding.pb.hide()
-        //            val fragment = CheckTreeFragment()
-//
-        //            bundle.putParcelableArrayList("image_list", state.data)
-        //            fragment.arguments = bundle
-//
-        //            parsingViewModel.bitmapList.value = null
-//
-        //            //parentFragmentManager.beginTransaction().addToBackStack(null)
-        //            //    .replace(R.id.fragment_container_view, fragment).commit()
-        //        }
-        //        else -> {}
-        //    }
-        //}
     }
 
 

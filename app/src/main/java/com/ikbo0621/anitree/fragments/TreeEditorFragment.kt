@@ -136,12 +136,18 @@ class TreeEditorFragment : Fragment() {
                     }
                 }
                 is VectorIcon -> { // Save button
-                    treeViewModel.updateTree(
-                        TreeConverter.convert(
-                            treeId,
-                            refactorListWithHierarchy(listOfAnime, treeEditor)
-                        )
-                    )
+                    userViewModel.getSession {
+                        if (it != null) {
+                            var tree = TreeConverter.convert(
+                                treeId,
+                                refactorListWithHierarchy(listOfAnime, treeEditor)
+                            )
+                            tree.authorID = it.id
+
+                            treeViewModel.updateTree(tree)
+                        }
+
+                    }
                 }
                 is Button -> treeEditor.toPreviousLayer()
                 else -> treeEditor.showCrossButtons(false) // Empty space
@@ -196,6 +202,12 @@ class TreeEditorFragment : Fragment() {
                     toast(state.error)
                 }
                 is UiState.Success -> {
+                    userViewModel.getSession {
+                        if (it != null && !it.createdTrees.contains(state.data.id)) {
+                            it.createdTrees.add(state.data.id)
+                            userViewModel.updateUserInfo(it)
+                        }
+                    }
                     treeId = state.data.id
                     toast("Tree is uploaded")
                 }

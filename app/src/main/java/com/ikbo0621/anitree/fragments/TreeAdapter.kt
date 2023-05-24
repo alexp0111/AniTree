@@ -36,7 +36,7 @@ class TreeAdapter(val context: Context,
 
     inner class MyViewHolder(val binding: ItemTreeBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(tree: Tree) {
-            binding.authorName.text = tree.authorID
+            binding.authorName.text = tree.children[1]
             Glide.with(context)
                 .load(tree.urls[1])
                 .into(binding.firstChildImageView)

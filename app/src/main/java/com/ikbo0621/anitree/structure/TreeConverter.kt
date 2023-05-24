@@ -112,8 +112,8 @@ object TreeConverter {
             val list = arrayListOf<Bitmap?>()
 
             urls.forEach {
-                delay((400..700).random().toLong())
                 if (it != null) {
+                    delay((400..700).random().toLong())
                     val inputStream: InputStream
                     try {
                         inputStream = URL(it).openStream()

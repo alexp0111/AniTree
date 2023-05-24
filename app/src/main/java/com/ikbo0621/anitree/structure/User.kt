@@ -4,8 +4,8 @@ data class User(
     var id: String = "",
     var iconId: String = "",
     var name: String = "",
-    var favoriteTrees: List<Tree> = arrayListOf(),
-    var createdTrees: List<Tree> = arrayListOf()
+    var favoriteTrees: MutableList<String> = arrayListOf(),
+    var createdTrees: MutableList<String> = arrayListOf()
 ){
     override fun toString(): String {
         return "User(id='$id', iconId='$iconId', name='$name', favoriteTrees=$favoriteTrees, createdTrees=$createdTrees)"
