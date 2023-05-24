@@ -96,4 +96,9 @@ class ParsingViewModel @Inject constructor(
         searchGuessJob?.cancel()
         _guessedAnim.value = UiState.Failure("Please, enter something")
     }
+
+    fun clearAnimeValue() {
+        searchGuessJob?.cancel()
+        _guessedAnim.value = UiState.Failure("empty")
+    }
 }

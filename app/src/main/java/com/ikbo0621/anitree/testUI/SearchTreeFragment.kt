@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -38,6 +39,11 @@ class SearchTreeFragment : Fragment(), SearchListAdapter.Listener {
 
     val viewModel: ParsingViewModel by viewModels()
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel.clearAnimeValue()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -64,7 +70,11 @@ class SearchTreeFragment : Fragment(), SearchListAdapter.Listener {
                 && viewModel.guessedAnim.value != null
                 && viewModel.guessedAnim.value is UiState.Success
             ) {
-                val anime = (viewModel.guessedAnim.value as UiState.Success<Anime>).data
+                val anime = if (viewModel.guessedAnim.value is UiState.Failure){
+                    Anime()
+                } else {
+                    (viewModel.guessedAnim.value as UiState.Success<Anime>).data
+                }
 
                 Navigation.findNavController(requireView()).previousBackStackEntry?.savedStateHandle?.set("anime", anime)
                 Navigation.findNavController(requireView()).popBackStack()
@@ -133,7 +143,7 @@ class SearchTreeFragment : Fragment(), SearchListAdapter.Listener {
         viewModel.guessedAnim.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is UiState.Loading -> binding.pb.show()
-                is UiState.Failure -> {
+                is UiState.Failure -> { //TODO: start fix
                     binding.pb.hide()
                     toast(state.error)
                 }

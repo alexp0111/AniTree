@@ -88,15 +88,19 @@ class TreeEditorFragment : Fragment() {
             ?.savedStateHandle
             ?.getLiveData<Anime>("anime")
             ?.observe(viewLifecycleOwner) {
-                CoroutineScope(Dispatchers.Main).launch {
-                    val converted = withContext(Dispatchers.IO) {
-                        TreeConverter.decodeBitmapFromURL(it.imageURI.toString())
-                    }
+                if (it.title != "-1") {
+                    CoroutineScope(Dispatchers.Main).launch {
+                        val converted = withContext(Dispatchers.IO) {
+                            TreeConverter.decodeBitmapFromURL(it.imageURI.toString())
+                        }
 
-                    listOfAnime.add(it)
+                        listOfAnime.add(it)
 
-                    if (converted != null) {
-                        treeEditor.addSubElement(it.title, it.studio, converted)
+                        if (converted != null) {
+                            treeEditor.addSubElement(it.title, it.studio, converted)
+                        }
+
+                        findNavController().currentBackStackEntry?.savedStateHandle?.remove<Anime>("anime")
                     }
                 }
             }
