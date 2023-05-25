@@ -1,5 +1,6 @@
 package com.ikbo0621.anitree.fragments
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -13,6 +14,7 @@ import androidx.viewpager2.widget.CompositePageTransformer
 import androidx.viewpager2.widget.MarginPageTransformer
 import androidx.viewpager2.widget.ViewPager2
 import com.ikbo0621.anitree.AvatarAdapter
+import com.ikbo0621.anitree.R
 import com.ikbo0621.anitree.databinding.FragmentAvatarBinding
 import com.ikbo0621.anitree.util.UiState
 import com.ikbo0621.anitree.util.fillImageList
@@ -29,16 +31,16 @@ class AvatarFragment : Fragment() {
 
     val userViewModel: UserViewModel by viewModels()
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater , container: ViewGroup? ,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        _binding = FragmentAvatarBinding.inflate(layoutInflater, container, false)
+        _binding = FragmentAvatarBinding.inflate(layoutInflater , container , false)
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onViewCreated(view: View , savedInstanceState: Bundle?) {
+        super.onViewCreated(view , savedInstanceState)
 
         observer()
 
@@ -52,26 +54,117 @@ class AvatarFragment : Fragment() {
         }
 
         binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            @SuppressLint("ResourceAsColor")
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                binding.textView.text = binding.viewPager.currentItem.toString()
+                when (binding.viewPager.currentItem) {
+                    0 -> {
+                        binding.firstName.text = "Retsuko"
+                        binding.secondName.text = "uko"
+                    }
+                    1 -> {
+                        binding.firstName.text = "Asta"
+                        binding.secondName.text = "sta"
+                    }
+                    2 -> {
+                        binding.firstName.text = "Hanma"
+                        binding.secondName.text = "aki"
+                    }
+                    3 -> {
+                        binding.firstName.text = "Cowboy"
+                        binding.secondName.text = "bop"
+                    }
+                    4 -> {
+                        binding.firstName.text = "Berserk"
+                        binding.secondName.text = ""
+                    }
+                    5 -> {
+                        binding.firstName.text = "Da"
+                        binding.secondName.text = "zai"
+                    }
+                    6 -> {
+                        binding.firstName.text = "De"
+                        binding.secondName.text = "nji"
+                    }
+                    7 -> {
+                        binding.firstName.text = "Diav"
+                        binding.secondName.text = "olo"
+
+                    }
+                    8 -> {
+                        binding.firstName.text = "Eren"
+                        binding.secondName.text = "ger"
+                    }
+                    9 -> {
+                        binding.firstName.text = "Go"
+                        binding.secondName.text = "Jo"
+                    }
+                    10 -> {
+                        binding.firstName.text = "hz"
+                        binding.secondName.text = "hz"
+                    }
+                    11 -> {
+                        binding.firstName.text = "hz"
+                        binding.secondName.text = "hz"
+                    }
+                    12 -> {
+                        binding.firstName.text = "hz"
+                        binding.secondName.text = "hz"
+                    }
+                    13 -> {
+                        binding.firstName.text = "KUJo"
+                        binding.secondName.text = "aro"
+                    }
+                    14 -> {
+                        binding.firstName.text = "LLL"
+                        binding.secondName.text = "LLL"
+                    }
+                    15 -> {
+                        binding.firstName.text = "KIRA"
+                        binding.secondName.text = "ira"
+                    }
+                    16 -> {
+                        binding.firstName.text = "Luffy"
+                        binding.secondName.text = "ffy"
+                    }
+                    17 -> {
+                        binding.firstName.text = "MIS"
+                        binding.secondName.text = "ATO"
+                    }
+                    18 -> {
+                        binding.firstName.text = "Nar"
+                        binding.secondName.text = "UTO"
+                    }
+                    19 -> {
+                        binding.firstName.text = "Ayanami"
+                        binding.secondName.text = "REY"
+                    }
+
+                    20 -> {
+                        binding.firstName.text = "Sai"
+                        binding.secondName.text = "ki"
+                    }
+                    21 -> {
+                        binding.firstName.text = "Dr.St"
+                        binding.secondName.text = "one"
+                    }
+                    22 -> {
+                        binding.firstName.text = "Tanj"
+                        binding.secondName.text = "iro"
+                    }
+                    23 -> {
+                        binding.firstName.text = "Thor"
+                        binding.secondName.text = "finn"
+                    }
+                }
             }
         })
-        binding.nextBtn.setOnClickListener {
-            if (binding.viewPager.currentItem < 23) {
-                handler.postDelayed(runnableNext, 50)
-            }
-        }
-        binding.prevBtn.setOnClickListener {
-            if (binding.viewPager.currentItem > 0) {
-                handler.postDelayed(runnablePrev, 50)
-            }
-        }
+
 
         binding.saveBtn.setOnClickListener {
             userViewModel.getSession { curUser ->
                 if (curUser != null) {
-                    curUser.iconId = binding.textView.text.toString()
+                    curUser.iconId = binding.viewPager.currentItem.toString()
                     userViewModel.updateUserInfo(curUser)
                 }
             }
@@ -108,25 +201,128 @@ class AvatarFragment : Fragment() {
     private fun setUpTransformer() {
         val transformer = CompositePageTransformer()
         transformer.addTransformer(MarginPageTransformer(40))
-        transformer.addTransformer { page, position ->
+        transformer.addTransformer { page , position ->
             val r = 1 - abs(position)
             page.scaleY = 0.85f + r * 0.12f
         }
         binding.viewPager.setPageTransformer(transformer)
+
     }
 
+    @SuppressLint("ResourceAsColor")
     private fun init(avatarNum: Int) {
         handler = Handler(Looper.myLooper()!!)
         var avatarList = ArrayList<Int>()
         fillImageList(avatarList)
 
-        var adapter = AvatarAdapter(avatarList, binding.viewPager)
+        var adapter = AvatarAdapter(avatarList , binding.viewPager)
         binding.viewPager.adapter = adapter
         binding.viewPager.offscreenPageLimit = 3
         binding.viewPager.clipToPadding = false
         binding.viewPager.clipChildren = false
         binding.viewPager.getChildAt(0).overScrollMode = RecyclerView.OVER_SCROLL_NEVER
         binding.viewPager.currentItem = avatarNum
-        binding.textView.text = binding.viewPager.currentItem.toString()
+        when (binding.viewPager.currentItem) {
+            0 -> {
+                binding.firstName.text = "Retsuko"
+                binding.secondName.text = "uko"
+            }
+            1 -> {
+                binding.firstName.text = "Asta"
+                binding.secondName.text = "sta"
+            }
+            2 -> {
+                binding.firstName.text = "Hanma"
+                binding.secondName.text = "aki"
+            }
+            3 -> {
+                binding.firstName.text = "Cowboy"
+                binding.secondName.text = "bop"
+            }
+            4 -> {
+                binding.firstName.text = "Berserk"
+                binding.secondName.text = ""
+            }
+            5 -> {
+                binding.firstName.text = "Da"
+                binding.secondName.text = "zai"
+            }
+            6 -> {
+                binding.firstName.text = "De"
+                binding.secondName.text = "nji"
+            }
+            7 -> {
+                binding.firstName.text = "Diav"
+                binding.secondName.text = "olo"
+
+            }
+            8 -> {
+                binding.firstName.text = "Eren"
+                binding.secondName.text = "ger"
+            }
+            9 -> {
+                binding.firstName.text = "Go"
+                binding.secondName.text = "Jo"
+            }
+            10 -> {
+                binding.firstName.text = "hz"
+                binding.secondName.text = "hz"
+            }
+            11 -> {
+                binding.firstName.text = "hz"
+                binding.secondName.text = "hz"
+            }
+            12 -> {
+                binding.firstName.text = "hz"
+                binding.secondName.text = "hz"
+            }
+            13 -> {
+                binding.firstName.text = "KUJo"
+                binding.secondName.text = "aro"
+            }
+            14 -> {
+                binding.firstName.text = "LLL"
+                binding.secondName.text = "LLL"
+            }
+            15 -> {
+                binding.firstName.text = "KIRA"
+                binding.secondName.text = "ira"
+            }
+            16 -> {
+                binding.firstName.text = "Luffy"
+                binding.secondName.text = "ffy"
+            }
+            17 -> {
+                binding.firstName.text = "MIS"
+                binding.secondName.text = "ATO"
+            }
+            18 -> {
+                binding.firstName.text = "Nar"
+                binding.secondName.text = "UTO"
+            }
+            19 -> {
+                binding.firstName.text = "Ayanami"
+                binding.secondName.text = "REY"
+            }
+
+            20 -> {
+                binding.firstName.text = "Sai"
+                binding.secondName.text = "ki"
+            }
+            21 -> {
+                binding.firstName.text = "Dr.St"
+                binding.secondName.text = "one"
+            }
+            22 -> {
+                binding.firstName.text = "Tanj"
+                binding.secondName.text = "iro"
+            }
+            23 -> {
+                binding.firstName.text = "Thor"
+                binding.secondName.text = "finn"
+            }
+
+        }
+        //binding.textView.text = binding.viewPager.currentItem.toString()
     }
 }

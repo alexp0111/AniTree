@@ -10,7 +10,7 @@
         android:id="@+id/avatar_image"
         android:layout_width="300dp"
         android:layout_height="300dp"
-        android:scaleType="fitXY"
+        android:scaleType="centerCrop"
         android:src="@drawable/l"
         android:background="@color/dark_grey"
         />

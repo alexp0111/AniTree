@@ -13,6 +13,7 @@ import com.ikbo0621.anitree.databinding.FragmentAccountBinding
 import com.ikbo0621.anitree.structure.TreeConverter
 import com.ikbo0621.anitree.testUI.CheckTreeFragment
 import com.ikbo0621.anitree.util.fillImageList
+import com.ikbo0621.anitree.util.hide
 import com.ikbo0621.anitree.viewModel.ParsingViewModel
 import com.ikbo0621.anitree.viewModel.TreeViewModel
 import com.ikbo0621.anitree.viewModel.UserViewModel
@@ -34,21 +35,21 @@ class AccountFragment : Fragment() {
 
 
     val myTreeAdapter by lazy {
-        TreeAdapter(requireContext(),
-            onItemClicked = { pos, item ->
+        TreeAdapter(requireContext() ,
+            onItemClicked = { pos , item ->
                 // TODO: to editor
                 CoroutineScope(Dispatchers.Main).launch {
                     val converted = withContext(Dispatchers.IO) {
                         TreeConverter.convert(item)
                     }
 
-                    Log.d(TAG, this.toString())
+                    Log.d(TAG , this.toString())
 
-                    // binding.pb.hide()
+                    binding.pb.hide()
                     val fragment = CheckTreeFragment()
 
-                    bundle.putParcelable("tree", converted)
-                    bundle.putString("id", item.id)
+                    bundle.putParcelable("tree" , converted)
+                    bundle.putString("id" , item.id)
                     fragment.arguments = bundle
 
                     // val action = AnimeFragmentDirections.actionAnimeFragmentToTreeViewerFragment()
@@ -62,21 +63,21 @@ class AccountFragment : Fragment() {
     }
 
     val favTreeAdapter by lazy {
-        TreeAdapter(requireContext(),
-            onItemClicked = { pos, item ->
+        TreeAdapter(requireContext() ,
+            onItemClicked = { pos , item ->
                 // TODO: to viewer
                 CoroutineScope(Dispatchers.Main).launch {
                     val converted = withContext(Dispatchers.IO) {
                         TreeConverter.convert(item)
                     }
 
-                    Log.d(TAG, this.toString())
+                    Log.d(TAG , this.toString())
 
-                    // binding.pb.hide()
+                    binding.pb.hide()
                     val fragment = CheckTreeFragment()
 
-                    bundle.putParcelable("tree", converted)
-                    bundle.putString("id", item.id)
+                    bundle.putParcelable("tree" , converted)
+                    bundle.putString("id" , item.id)
                     fragment.arguments = bundle
 
                     // val action = AnimeFragmentDirections.actionAnimeFragmentToTreeViewerFragment()
@@ -90,17 +91,17 @@ class AccountFragment : Fragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater , container: ViewGroup? ,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        _binding = FragmentAccountBinding.inflate(layoutInflater, container, false)
+        _binding = FragmentAccountBinding.inflate(layoutInflater , container , false)
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        observer()
+    override fun onViewCreated(view: View , savedInstanceState: Bundle?) {
+        super.onViewCreated(view , savedInstanceState)
+       // observer()
 
         // Button back
         binding.backButton.setOnClickListener {
@@ -117,8 +118,8 @@ class AccountFragment : Fragment() {
         val manager = LinearLayoutManager(context)
         manager.orientation = LinearLayoutManager.HORIZONTAL
 
-        binding.myTreesRecyclerView.layoutManager = manager
-        binding.myFavouritesRecyclerView.layoutManager = manager
+      //  binding.myTreesRecyclerView.layoutManager = manager
+       // binding.myFavouritesRecyclerView.layoutManager = manager
 
         binding.myTreesRecyclerView.adapter = myTreeAdapter
         binding.myFavouritesRecyclerView.adapter = favTreeAdapter
@@ -135,8 +136,8 @@ class AccountFragment : Fragment() {
         // set up user image
         userViewModel.getSession {
             if (it != null) {
-                binding.firstName.text = it.name.substring(0, 3).uppercase()
-                binding.secondName.text = it.name.substring(0, 3).uppercase()
+                binding.firstName.text = it.name.substring(0 , 3).uppercase()
+                binding.secondName.text = it.name.substring(0 , 3).uppercase()
 
                 var avatarList = ArrayList<Int>()
                 fillImageList(avatarList)

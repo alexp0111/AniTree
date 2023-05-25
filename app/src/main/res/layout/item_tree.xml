@@ -16,6 +16,8 @@
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:layout_marginTop="20dp"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -23,9 +25,10 @@
 
     <TextView
         android:id="@+id/authorName"
-        android:layout_width="100dp"
-        android:gravity="right"
+        android:layout_width="150dp"
+        android:gravity="left"
         android:ellipsize="marquee"
+        android:marqueeRepeatLimit="marquee_forever"
         android:focusable="true"
         android:singleLine="true"
         android:layout_height="wrap_content"

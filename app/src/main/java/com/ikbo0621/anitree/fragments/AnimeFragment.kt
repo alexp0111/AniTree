@@ -111,9 +111,11 @@ class AnimeFragment : Fragment() {
                 .load(anime?.imageURI)
                 .into(binding.animeImage)
         }
-        val animeDescription =
-            anime?.title + "\n" + anime?.studio + "\n" + anime?.releaseDate + "\n" + anime?.description
-        binding.animeDescription.text = animeDescription
+
+        binding.animeDescription.text = anime?.description
+        binding.animeDescriptionStudio.text = anime?.studio
+        binding.animeDescriptionYears.text = anime?.releaseDate
+        binding.animeDescriptionTitle.text = anime?.title
 
 
         //

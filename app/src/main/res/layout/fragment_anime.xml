@@ -6,7 +6,8 @@
 
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.AnimeFragment">
+    tools:context=".fragments.AnimeFragment"
+    android:scrollbars="none">
     <androidx.constraintlayout.widget.ConstraintLayout
 
         android:layout_width="match_parent"
@@ -31,19 +32,20 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="-80dp"
             android:layout_marginBottom="100dp"
-            android:singleLine="true"
+            android:ellipsize="none"
             android:fontFamily="@font/tiltwarp_regular_variable"
             android:rotation="-90"
-            android:text="ANIME"
-
-            android:ellipsize="none"
             android:scrollbars="horizontal|vertical"
+
+            android:singleLine="true"
+            android:text="ANIME"
 
 
             android:textColor="@color/DARK_GREY"
             android:textSize="200sp"
             app:layout_constraintBottom_toBottomOf="@id/upper_rectangle"
             app:layout_constraintStart_toStartOf="parent" />
+
         <View
             android:id="@+id/anime_frame_2"
             android:layout_width="160dp"
@@ -104,7 +106,7 @@
             app:layout_constraintTop_toTopOf="@+id/upperline" />
 
         <TextView
-            android:id="@+id/anime_description"
+            android:id="@+id/anime_description_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="40dp"
@@ -112,16 +114,58 @@
             android:layout_marginEnd="10dp"
             android:fontFamily="@font/firasans_semibold"
             android:text="TextView"
-            android:textSize="20sp"
+            android:textSize="24sp"
             android:textColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/left_line"
             app:layout_constraintTop_toBottomOf="@+id/upperline" />
+        <TextView
+            android:id="@+id/anime_description_studio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginEnd="10dp"
+            android:fontFamily="@font/firasans_semibold"
+            android:text="TextView"
+            android:textSize="24sp"
+            android:textColor="@color/light_grey"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/left_line"
+            app:layout_constraintTop_toBottomOf="@+id/anime_description_title" />
+        <TextView
+            android:id="@+id/anime_description_years"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginEnd="10dp"
+            android:fontFamily="@font/firasans_semibold"
+            android:text="TextView"
+            android:textSize="18sp"
+            android:textColor="@color/light_grey"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/left_line"
+            app:layout_constraintTop_toBottomOf="@+id/anime_description_studio" />
+        <TextView
+            android:id="@+id/anime_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginEnd="10dp"
+            android:fontFamily="@font/firasans_semibold"
+            android:text="TextView"
+            android:textSize="18sp"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/left_line"
+            app:layout_constraintTop_toBottomOf="@+id/anime_description_years" />
 
         <View
             android:id="@+id/tree_rectangle"
             android:layout_width="match_parent"
-            android:layout_height="500dp"
+            android:layout_height="350dp"
             android:layout_marginTop="20dp"
             android:background="@color/dark_grey"
             app:layout_constraintEnd_toEndOf="parent"

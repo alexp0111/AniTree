@@ -7,68 +7,87 @@
     tools:context=".fragments.AvatarFragment"
     android:background="@color/dark_grey">
 
+    <View
+        android:id="@+id/avatar_frame_2"
+        android:layout_width="260dp"
+        android:layout_height="300dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="-20dp"
+        android:layout_marginStart="30dp"
+        android:background="@drawable/anime_frame"
+        app:layout_constraintEnd_toEndOf="@id/view_pager"
+        app:layout_constraintStart_toStartOf="@id/view_pager"
+        app:layout_constraintTop_toTopOf="@id/view_pager" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/view_pager"
         android:layout_width="0dp"
         android:layout_height="300dp"
-        android:layout_marginTop="100dp"
+
         android:paddingStart="80dp"
         android:paddingEnd="80dp"
+        android:layout_marginTop="100dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/prev_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="30dp"
-        android:text="prev"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view_pager" />
-
-    <Button
-        android:id="@+id/next_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:layout_marginEnd="20dp"
-        android:text="next"
-
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view_pager" />
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:text="Anime"
-        android:textColor="@color/white"
-        app:layout_constraintEnd_toStartOf="@+id/next_btn"
-        app:layout_constraintStart_toEndOf="@+id/prev_btn"
-        app:layout_constraintTop_toBottomOf="@+id/view_pager" />
-
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_width="1000dp"
-        android:singleLine="true"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="40dp"
+    <View
+        android:id="@+id/avatar_frame_1"
+        android:layout_width="260dp"
+        android:layout_height="300dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
         android:layout_marginTop="20dp"
-        android:text="TextView"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/next_btn" />
+        android:layout_marginEnd="30dp"
+        android:background="@drawable/anime_frame"
+        app:layout_constraintEnd_toEndOf="@id/view_pager"
+        app:layout_constraintStart_toStartOf="@id/view_pager"
+        app:layout_constraintTop_toTopOf="@id/view_pager" />
 
     <Button
         android:id="@+id/saveBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Save"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="60dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view_pager" />
+
+    <TextView
+        android:id="@+id/first_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-80dp"
+        android:text="TextView"
+        android:textColor="@color/DARK_GREY"
+        android:fontFamily="@font/tiltwarp_regular_variable"
+        android:textSize="200dp"
+        android:layout_marginStart="200dp"
+        android:textAllCaps="true"
+        android:ellipsize="none"
+        android:singleLine="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/saveBtn" />
+
+    <TextView
+        android:id="@+id/second_name"
+        android:layout_marginTop="-150dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:gravity="left"
+        android:textColor="@color/DARK_GREY"
+        android:fontFamily="@font/tiltwarp_regular_variable"
+        android:textSize="200dp"
+        android:layout_marginEnd="200dp"
+        android:textAllCaps="true"
+        android:ellipsize="none"
+        android:singleLine="true"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/first_name" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
