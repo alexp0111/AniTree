@@ -6,6 +6,9 @@ import com.ikbo0621.anitree.util.UiState
 interface TreeRepository {
     fun updateTree(tree: Tree, result: (UiState<Tree>) -> Unit)
     fun getTreesAccordingTo(animeTitle: String, result: (UiState<List<Tree>>) -> Unit)
+    fun getTreesFor(createdTrees: List<String>, result: (UiState<List<Tree>>) -> Unit)
+
+
     fun like(
         animeTitle: String,
         treeID: String,

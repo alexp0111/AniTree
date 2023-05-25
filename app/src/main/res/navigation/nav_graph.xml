@@ -30,6 +30,12 @@
             app:popUpTo="@id/nav_graph"
             app:popUpToInclusive="true"
             app:destination="@id/logInFragment" />
+        <action
+            android:id="@+id/action_accountFragment_to_treeEditorFragment"
+            app:destination="@id/treeEditorFragment" />
+        <action
+            android:id="@+id/action_accountFragment_to_treeViewerFragment"
+            app:destination="@id/treeViewerFragment" />
     </fragment>
     <fragment
         android:id="@+id/avatarFragment"

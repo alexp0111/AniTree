@@ -27,6 +27,14 @@ class TreeViewModel @Inject constructor(
     val trees: LiveData<UiState<List<Tree>>>
         get() = _trees
 
+    private val _myTrees = MutableLiveData<UiState<List<Tree>>>()
+    val myTrees: LiveData<UiState<List<Tree>>>
+        get() = _myTrees
+
+    private val _favTrees = MutableLiveData<UiState<List<Tree>>>()
+    val favTrees: LiveData<UiState<List<Tree>>>
+        get() = _favTrees
+
     private val _likeState = MutableLiveData<UiState<Boolean>>()
     val likeState: LiveData<UiState<Boolean>>
         get() = _likeState
@@ -48,6 +56,24 @@ class TreeViewModel @Inject constructor(
         repository.getTreesAccordingTo(
             animeTitle = animeTitle,
         ) { _trees.value = it }
+    }
+
+    fun getTreesFor(
+        uCreatedTrees: List<String>
+    ) {
+        _myTrees.value = UiState.Loading
+        repository.getTreesFor(
+            createdTrees = uCreatedTrees,
+        ) { _myTrees.value = it }
+    }
+
+    fun getFavTreesFor(
+        uFavTrees: List<String>
+    ) {
+        _favTrees.value = UiState.Loading
+        repository.getTreesFor(
+            createdTrees = uFavTrees,
+        ) { _favTrees.value = it }
     }
 
     fun like(

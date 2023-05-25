@@ -3,7 +3,6 @@ package com.ikbo0621.anitree.fragments
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,7 +17,6 @@ import com.ikbo0621.anitree.structure.Anime
 import com.ikbo0621.anitree.structure.Tree
 import com.ikbo0621.anitree.structure.TreeConverter
 import com.ikbo0621.anitree.util.*
-import com.ikbo0621.anitree.viewModel.ParsingViewModel
 import com.ikbo0621.anitree.viewModel.TreeViewModel
 import com.ikbo0621.anitree.viewModel.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -45,41 +43,34 @@ class AnimeFragment : Fragment() {
                         TreeConverter.convert(item)
                     }
 
-                    val bundle = Bundle()
-
                     userViewModel.getUserById(item.authorID) {
                         if (it != null) {
-                            bundle.putString("author_name", it.name)
-                            Log.d("ANIME", it.name)
-
                             val arrayList = arrayListOf<Int>()
                             fillImageList(arrayList)
 
-                            val x = arrayList[it.iconId.toInt()]
-                            val icon = BitmapFactory.decodeResource(resources, x)
-                            bundle.putParcelable("author_image", icon)
+                            val icon = BitmapFactory.decodeResource(
+                                resources,
+                                arrayList[it.iconId.toInt()]
+                            )
 
-                            bundle.putString("tree_id", item.id)
-
-                            Log.d(TAG, this.toString())
-
-                            binding.pb.hide()
                             val fragment = TreeViewerFragment()
-
+                            val bundle = Bundle()
+                            bundle.putString("author_name", it.name)
+                            bundle.putParcelable("author_image", icon)
+                            bundle.putString("tree_id", item.id)
                             bundle.putParcelable("tree", converted)
                             fragment.arguments = bundle
+
+                            binding.pb.hide()
 
                             val action =
                                 AnimeFragmentDirections.actionAnimeFragmentToTreeViewerFragment(
                                     bundle = bundle
                                 )
                             Navigation.findNavController(requireView()).navigate(action)
-                        } else {
-                            bundle.putString("author_name", "none")
                         }
                     }
                 }
-
             }
         )
     }

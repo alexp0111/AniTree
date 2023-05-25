@@ -84,6 +84,34 @@ class TreeModel(
             }
     }
 
+    override fun getTreesFor(createdTrees: List<String>, result: (UiState<List<Tree>>) -> Unit) {
+        database.collectionGroup("trees")
+            .get()
+            .addOnCompleteListener {
+                if (it.isSuccessful) {
+                    val trees = arrayListOf<Tree>()
+                    it.result.documents.forEach { thisTree ->
+                        thisTree.toObject(Tree::class.java).apply {
+                            if (this != null && createdTrees.contains(this.id)) {
+                                trees.add(this)
+                                Log.d(TAG + "myPair", this.urls[0].toString())
+                            }
+                        }
+                    }
+                    result.invoke(UiState.Success(trees))
+                } else {
+                    result.invoke(
+                        UiState.Failure("Task is not successful")
+                    )
+                }
+            }
+            .addOnFailureListener {
+                result.invoke(
+                    UiState.Failure("Something went wrong")
+                )
+            }
+    }
+
     override fun like(
         animeTitle: String,
         treeID: String,

@@ -110,9 +110,12 @@ class TreeViewerFragment : Fragment() {
                     toast(state.error)
                 }
                 is UiState.Success -> {
-
-                    if (state.data) if (!treeViewer.isBottomButtonActivated) treeViewer.switchBottomButton()
-                    else if (treeViewer.isBottomButtonActivated) treeViewer.switchBottomButton()
+                    Log.d("VIEWER", state.data.toString())
+                    if (state.data) {
+                        if (!treeViewer.isBottomButtonActivated) treeViewer.switchBottomButton()
+                    } else if (treeViewer.isBottomButtonActivated) {
+                        treeViewer.switchBottomButton()
+                    }
 
                     userViewModel.getSession {
                         if (it != null && treeID != null) {
