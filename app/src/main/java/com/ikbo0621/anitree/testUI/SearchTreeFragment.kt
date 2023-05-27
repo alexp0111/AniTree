@@ -6,7 +6,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationSet
+import android.view.animation.AnimationUtils
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -27,7 +31,7 @@ import com.ikbo0621.anitree.viewModel.ParsingViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class SearchTreeFragment : Fragment(), SearchListAdapter.Listener {
+class SearchTreeFragment : Fragment() , SearchListAdapter.Listener {
 
     private val TAG: String = "SEARCH_FRAGMENT"
 
@@ -45,15 +49,57 @@ class SearchTreeFragment : Fragment(), SearchListAdapter.Listener {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater , container: ViewGroup? ,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentSearchTreeBinding.inflate(layoutInflater, container, false)
+        _binding = FragmentSearchTreeBinding.inflate(layoutInflater , container , false)
+        animationsInit()
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    private fun animationsInit() {
+
+        val slideLeftAnimator: Animation =
+            AnimationUtils.loadAnimation(requireContext() , R.anim.slide_out_left)
+
+        val alphaInAnimator = AnimationUtils.loadAnimation(requireContext() , R.anim.alpha_in)
+
+        val animeFrameAnimator =
+            AnimationUtils.loadAnimation(requireContext() , R.anim.search_fragment_anime_frame_anim)
+
+        val slideLeftAnimatorWithOffset =
+            AnimationUtils.loadAnimation(requireContext() , R.anim.slide_out_left)
+        slideLeftAnimatorWithOffset.startOffset = 200
+
+        val avatarFrameSlideLeftDownAnimator =
+            AnimationUtils.loadAnimation(requireContext() , R.anim.search_fragment_round_frame_anim)
+        avatarFrameSlideLeftDownAnimator.startOffset = 500
+
+        val avatarAnimatorSet = AnimationSet(true)
+        avatarAnimatorSet.addAnimation(slideLeftAnimator)
+        avatarAnimatorSet.addAnimation(avatarFrameSlideLeftDownAnimator)
+
+        val animeFrameAnimatorSet = AnimationSet(true)
+        animeFrameAnimatorSet.addAnimation(animeFrameAnimator)
+
+
+        binding.apply {
+            binding.searchBar.animation = slideLeftAnimatorWithOffset
+            binding.leftLine.animation = slideLeftAnimator
+            binding.upperline.animation = slideLeftAnimator
+            binding.underline.animation = slideLeftAnimator
+            binding.avatarCard.animation = slideLeftAnimator
+            binding.roundFrame.animation = avatarAnimatorSet
+            binding.resultTopline.animation = alphaInAnimator
+            binding.animeFirstWord.animation = slideLeftAnimator
+            binding.animeSecondWord.animation = slideLeftAnimatorWithOffset
+            binding.animeImage.animation = slideLeftAnimator
+
+        }
+    }
+
+    override fun onViewCreated(view: View , savedInstanceState: Bundle?) {
+        super.onViewCreated(view , savedInstanceState)
         observer()
         binding.animeSecondWord.ellipsize = TextUtils.TruncateAt.MARQUEE
         binding.animeSecondWord.isSelected = true
@@ -70,19 +116,22 @@ class SearchTreeFragment : Fragment(), SearchListAdapter.Listener {
                 && viewModel.guessedAnim.value != null
                 && viewModel.guessedAnim.value is UiState.Success
             ) {
-                val anime = if (viewModel.guessedAnim.value is UiState.Failure){
+                val anime = if (viewModel.guessedAnim.value is UiState.Failure) {
                     Anime()
                 } else {
                     (viewModel.guessedAnim.value as UiState.Success<Anime>).data
                 }
 
-                Navigation.findNavController(requireView()).previousBackStackEntry?.savedStateHandle?.set("anime", anime)
+                Navigation.findNavController(requireView()).previousBackStackEntry?.savedStateHandle?.set(
+                    "anime" ,
+                    anime
+                )
                 Navigation.findNavController(requireView()).popBackStack()
             }
         }
 
         binding.searchBar.addTextChangedListener {
-            Log.d(TAG, "triggered")
+            Log.d(TAG , "triggered")
             if (binding.searchBar.isFocused) {
                 if (validation()) {
                     viewModel.guessAnime(
@@ -101,7 +150,7 @@ class SearchTreeFragment : Fragment(), SearchListAdapter.Listener {
     }
 
     private fun fillRecyclerView(flag: Boolean) {
-        titleList = if(flag) arrayOf()
+        titleList = if (flag) arrayOf()
         else arrayOf("" , "" , "" , "" , "")
         binding.resultList.layoutManager = LinearLayoutManager(requireContext())
         binding.resultList.setHasFixedSize(true)
@@ -112,7 +161,6 @@ class SearchTreeFragment : Fragment(), SearchListAdapter.Listener {
         binding.resultList.adapter =
             SearchListAdapter(requireContext() , titleGuessesArrayList , this)
     }
-
 
 
     /**
@@ -129,7 +177,7 @@ class SearchTreeFragment : Fragment(), SearchListAdapter.Listener {
         }
         val animeTitle = (viewModel.guessedAnim.value as UiState.Success).data.title
         binding.animeFirstWord.text = animeTitle.uppercase()
-        binding.animeSecondWord.text = animeTitle.substring(animeTitle.indexOf(" ")+1)
+        binding.animeSecondWord.text = animeTitle.substring(animeTitle.indexOf(" ") + 1)
     }
 
     /**
@@ -142,7 +190,17 @@ class SearchTreeFragment : Fragment(), SearchListAdapter.Listener {
     private fun observer() {
         viewModel.guessedAnim.observe(viewLifecycleOwner) { state ->
             when (state) {
-                is UiState.Loading -> binding.pb.show()
+                is UiState.Loading -> {
+                    binding.pb.show()
+                    val alphaOutAnimation = AnimationUtils.loadAnimation(requireContext(),R.anim.alpha_out)
+                    alphaOutAnimation.setAnimationListener(alphaOutAnimationListener())
+                    binding.apply {
+                        binding.animeImage.startAnimation(alphaOutAnimation)
+                        binding.animeFirstWord.startAnimation(alphaOutAnimation)
+                        binding.animeSecondWord.startAnimation(alphaOutAnimation)
+                        binding.avatarCard.startAnimation(alphaOutAnimation)
+                    }
+                }
                 is UiState.Failure -> { //TODO: start fix
                     binding.pb.hide()
                     toast(state.error)
@@ -150,7 +208,8 @@ class SearchTreeFragment : Fragment(), SearchListAdapter.Listener {
                 is UiState.Success -> {
                     binding.pb.hide()
                     binding.animeFirstWord.text = state.data.title.uppercase()
-                    binding.animeSecondWord.text = state.data.title.substring(state.data.title.indexOf(" ")+1)
+                    binding.animeSecondWord.text =
+                        state.data.title.substring(state.data.title.indexOf(" ") + 1)
 
 
                     context?.let {
@@ -158,6 +217,13 @@ class SearchTreeFragment : Fragment(), SearchListAdapter.Listener {
                             .load(state.data.imageURI)
                             .into(binding.animeImage)
                     }
+                    val alphaInAnimation =
+                        AnimationUtils.loadAnimation(requireContext() , R.anim.alpha_in)
+                    alphaInAnimation.setAnimationListener(alphaInAnimationListener())
+                    binding.animeImage.startAnimation(alphaInAnimation)
+                    binding.animeFirstWord.startAnimation(alphaInAnimation)
+                    binding.animeSecondWord.startAnimation(alphaInAnimation)
+                    binding.avatarCard.startAnimation(alphaInAnimation)
                 }
             }
         }
@@ -166,7 +232,7 @@ class SearchTreeFragment : Fragment(), SearchListAdapter.Listener {
                 it.text = ""
             }
             fillRecyclerView(false)
-            arr.forEachIndexed { index, s ->
+            arr.forEachIndexed { index , s ->
                 if (index < titleGuessesArrayList.size)
                     titleGuessesArrayList[index].text = s
 
@@ -192,7 +258,43 @@ class SearchTreeFragment : Fragment(), SearchListAdapter.Listener {
         val animeTitle = searchListItem.text.toString()
         viewModel.getAnimeWithTitle(animeTitle)
         binding.animeFirstWord.text = animeTitle.uppercase()
-        binding.animeSecondWord.text = animeTitle.substring(animeTitle.indexOf(" ")+1)
+        binding.animeSecondWord.text = animeTitle.substring(animeTitle.indexOf(" ") + 1)
+    }
+
+    inner class alphaOutAnimationListener : Animation.AnimationListener {
+        override fun onAnimationStart(animation: Animation?) {
+
+        }
+
+        override fun onAnimationEnd(animation: Animation?) {
+            binding.animeImage.isVisible = false
+            binding.animeFirstWord.isVisible = false
+            binding.animeSecondWord.isVisible = false
+            binding.avatarCard.isVisible =false
+        }
+
+        override fun onAnimationRepeat(animation: Animation?) {
+
+        }
+
+    }
+
+    inner class alphaInAnimationListener : Animation.AnimationListener {
+        override fun onAnimationStart(animation: Animation?) {
+            binding.animeImage.isVisible = true
+            binding.animeFirstWord.isVisible = true
+            binding.animeSecondWord.isVisible = true
+            binding.avatarCard.isVisible = true
+        }
+
+        override fun onAnimationEnd(animation: Animation?) {
+
+        }
+
+        override fun onAnimationRepeat(animation: Animation?) {
+
+        }
+
     }
 
 

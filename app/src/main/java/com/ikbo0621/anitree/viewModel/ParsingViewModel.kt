@@ -51,10 +51,11 @@ class ParsingViewModel @Inject constructor(
     fun getAnimeWithTitle(
         animeTitle: String
     ) {
-        _guessedAnim.value = UiState.Loading
+
         searchExactJob?.cancel()
         searchExactJob = viewModelScope.launch {
             delay(ParserConstants.SEARCH_INPUT_DELAY) // to not ddos server with each input of letter
+            _guessedAnim.value = UiState.Loading
             repository.getAnimeWithName(
                 animeTitle = animeTitle.fitToExactRequest(),
             ) { _guessedAnim.value = it }
@@ -64,10 +65,11 @@ class ParsingViewModel @Inject constructor(
     fun guessAnime(
         animeTitle: String
     ) {
-        _guessedAnim.value = UiState.Loading
+
         searchGuessJob?.cancel()
         searchGuessJob = viewModelScope.launch {
             delay(ParserConstants.SEARCH_INPUT_DELAY) // to not ddos server with each input of letter
+            _guessedAnim.value = UiState.Loading
             repository.guessAnime(
                 animeTitle = animeTitle,
             ) { uiState, strings ->

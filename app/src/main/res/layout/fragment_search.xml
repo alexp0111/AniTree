@@ -87,6 +87,7 @@
             app:layout_constraintTop_toTopOf="@+id/search_frame" />
 
         <androidx.cardview.widget.CardView
+            android:transitionName="avatarCard"
             android:id="@+id/avatar_card"
             android:layout_width="60dp"
             android:layout_height="60dp"
@@ -103,6 +104,7 @@
             >
 
             <ImageView
+                android:transitionName="avatar"
                 android:id="@+id/avatar"
                 android:layout_width="60dp"
                 android:adjustViewBounds="true"

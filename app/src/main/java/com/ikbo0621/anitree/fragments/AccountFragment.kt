@@ -2,17 +2,17 @@ package com.ikbo0621.anitree.fragments
 
 import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.ikbo0621.anitree.R
 import com.ikbo0621.anitree.databinding.FragmentAccountBinding
 import com.ikbo0621.anitree.structure.TreeConverter
-import com.ikbo0621.anitree.testUI.CheckTreeFragment
 import com.ikbo0621.anitree.util.*
 import com.ikbo0621.anitree.viewModel.TreeViewModel
 import com.ikbo0621.anitree.viewModel.UserViewModel
@@ -117,7 +117,28 @@ class AccountFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentAccountBinding.inflate(layoutInflater, container, false)
+        animationsInit()
         return binding.root
+    }
+
+    private fun animationsInit() {
+        val avatarAnimator = AnimationUtils.loadAnimation(requireContext(), R.anim.account_fragment_avatar_anim)
+        val slideRightAnimator = AnimationUtils.loadAnimation(requireContext(), R.anim.slide_out_right)
+        val slideDownAnimator = AnimationUtils.loadAnimation(requireContext(), R.anim.slide_down)
+        val slideLeftAnimator = AnimationUtils.loadAnimation(requireContext(), R.anim.slide_out_left)
+
+        binding.apply {
+            binding.avatar.animation = avatarAnimator
+            binding.cardView.animation = avatarAnimator
+            binding.firstName.animation = slideDownAnimator
+            binding.secondName.animation = slideRightAnimator
+            binding.backButton.animation = slideRightAnimator
+            binding.logOutBtn.animation = slideLeftAnimator
+            binding.yourTreesTitle.animation = slideLeftAnimator
+            binding.myTreesRecyclerView.animation = slideLeftAnimator
+            binding.yourFavouritesTitle.animation = slideLeftAnimator
+            binding.myFavouritesRecyclerView.animation = slideLeftAnimator
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

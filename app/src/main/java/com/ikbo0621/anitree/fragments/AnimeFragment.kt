@@ -3,15 +3,18 @@ package com.ikbo0621.anitree.fragments
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.text.TextUtils
+import android.transition.TransitionInflater
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.ikbo0621.anitree.R
 import com.ikbo0621.anitree.databinding.FragmentAnimeBinding
 import com.ikbo0621.anitree.structure.Anime
 import com.ikbo0621.anitree.structure.Tree
@@ -75,12 +78,51 @@ class AnimeFragment : Fragment() {
         )
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        sharedElementEnterTransition = TransitionInflater.from(context).inflateTransition(android.R.transition.explode)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentAnimeBinding.inflate(layoutInflater, container, false)
+        animationsInit()
         return binding.root
+    }
+
+    private fun animationsInit() {
+        val alphaInAnimator = AnimationUtils.loadAnimation(requireContext(), R.anim.alpha_in)
+
+        val slideDownAnimator = AnimationUtils.loadAnimation(requireContext(),R.anim.slide_down)
+        val slideLeftAnimator = AnimationUtils.loadAnimation(requireContext(),R.anim.slide_out_left)
+        val slideLeftAnimatorWithOffset = AnimationUtils.loadAnimation(requireContext(),R.anim.slide_out_left)
+        slideLeftAnimatorWithOffset.startOffset = 200
+        val aboveFrameAnimator = AnimationUtils.loadAnimation(requireContext(),R.anim.anime_fragment_anime_frame_anim_above)
+        val underFrameAnimator = AnimationUtils.loadAnimation(requireContext(),R.anim.anime_fragment_anime_frame_anim_under)
+        binding.apply {
+            binding.backButton.animation = alphaInAnimator
+            binding.titleBackground.animation = slideDownAnimator
+            binding.animeImage.animation = slideLeftAnimator
+            binding.animeFrame1.animation = aboveFrameAnimator
+            binding.animeFrame2.animation = underFrameAnimator
+            binding.animeTitle.animation = slideLeftAnimator
+            binding.upperline.animation = slideLeftAnimator
+            binding.leftLine.animation = slideLeftAnimator
+            binding.createTreeBtn.animation = slideLeftAnimator
+            binding.createTreeBtnFrame.animation = slideLeftAnimator
+            binding.createTreeBtnText.animation = slideLeftAnimator
+            binding.animeDescriptionTitle.animation = slideLeftAnimatorWithOffset
+
+            binding.animeDescriptionStudio.animation = slideLeftAnimatorWithOffset
+
+            binding.animeDescriptionYears.animation = slideLeftAnimatorWithOffset
+
+            binding.animeDescription.animation = slideLeftAnimatorWithOffset
+            binding.rvTrees.animation = alphaInAnimator
+
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

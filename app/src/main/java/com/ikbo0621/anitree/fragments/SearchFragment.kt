@@ -7,12 +7,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
+import android.view.animation.Animation.AnimationListener
 import android.view.animation.AnimationSet
 import android.view.animation.AnimationUtils
+import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.ikbo0621.anitree.R
@@ -46,12 +49,23 @@ class SearchFragment : Fragment() , SearchListAdapter.Listener {
     ): View? {
         _binding = FragmentSearchBinding.inflate(layoutInflater , container , false)
 
-        //Animators init
+        animationsInit()
+
+        return binding.root
+    }
+
+    /**
+     * initializing start animations
+     * */
+    private fun animationsInit() {
+
         val slideLeftAnimator: Animation =
             AnimationUtils.loadAnimation(requireContext() , R.anim.slide_out_left)
+
         val alphaInAnimator = AnimationUtils.loadAnimation(requireContext() , R.anim.alpha_in)
 
-        val animeFrameAnimator = AnimationUtils.loadAnimation(requireContext(), R.anim.search_fragment_anime_frame_anim)
+        val animeFrameAnimator =
+            AnimationUtils.loadAnimation(requireContext() , R.anim.search_fragment_anime_frame_anim)
 
         val slideLeftAnimatorWithOffset =
             AnimationUtils.loadAnimation(requireContext() , R.anim.slide_out_left)
@@ -60,9 +74,11 @@ class SearchFragment : Fragment() , SearchListAdapter.Listener {
         val avatarFrameSlideLeftDownAnimator =
             AnimationUtils.loadAnimation(requireContext() , R.anim.search_fragment_round_frame_anim)
         avatarFrameSlideLeftDownAnimator.startOffset = 500
+
         val avatarAnimatorSet = AnimationSet(true)
         avatarAnimatorSet.addAnimation(slideLeftAnimator)
         avatarAnimatorSet.addAnimation(avatarFrameSlideLeftDownAnimator)
+
         val animeFrameAnimatorSet = AnimationSet(true)
         animeFrameAnimatorSet.addAnimation(animeFrameAnimator)
 
@@ -73,19 +89,13 @@ class SearchFragment : Fragment() , SearchListAdapter.Listener {
             binding.upperline.animation = slideLeftAnimator
             binding.underline.animation = slideLeftAnimator
             binding.avatarCard.animation = slideLeftAnimator
-
             binding.roundFrame.animation = avatarAnimatorSet
-
             binding.resultTopline.animation = alphaInAnimator
             binding.animeFirstWord.animation = slideLeftAnimator
             binding.animeSecondWord.animation = slideLeftAnimatorWithOffset
             binding.animeImage.animation = slideLeftAnimatorWithOffset
             binding.animeFrame.animation = animeFrameAnimatorSet
-
         }
-
-
-        return binding.root
     }
 
     override fun onViewCreated(view: View , savedInstanceState: Bundle?) {
@@ -102,7 +112,11 @@ class SearchFragment : Fragment() , SearchListAdapter.Listener {
 
         binding.avatar.setOnClickListener {
             val action = SearchFragmentDirections.actionSearchFragmentToAccountFragment()
-            Navigation.findNavController(requireView()).navigate(action)
+            val extras = FragmentNavigatorExtras(
+                binding.avatar to "avatar",
+                binding.avatarCard to "avatarCard"
+            )
+            Navigation.findNavController(requireView()).navigate(action,extras)
         }
 
         binding.animeImage.setOnClickListener {
@@ -113,11 +127,19 @@ class SearchFragment : Fragment() , SearchListAdapter.Listener {
                 val anime = (viewModel.guessedAnim.value as UiState.Success<Anime>).data
                 val action =
                     SearchFragmentDirections.actionSearchFragmentToAnimeFragment(anime = anime)
+                val slideLeftAnimator: Animation =
+                    AnimationUtils.loadAnimation(requireContext() , R.anim.slide_out_left)
+                val slideLeftAnimatorWithOffset =
+                    AnimationUtils.loadAnimation(requireContext() , R.anim.slide_out_left)
+                slideLeftAnimatorWithOffset.startOffset = 200
+
                 Navigation.findNavController(requireView()).navigate(action)
             }
         }
 
         binding.searchBar.addTextChangedListener {
+
+
             Log.d(TAG , "triggered")
             if (binding.searchBar.isFocused) {
                 if (validation()) {
@@ -187,7 +209,16 @@ class SearchFragment : Fragment() , SearchListAdapter.Listener {
     private fun observer() {
         viewModel.guessedAnim.observe(viewLifecycleOwner) { state ->
             when (state) {
-                is UiState.Loading -> binding.pb.show()
+                is UiState.Loading -> {
+                    val alphaOutAnimation = AnimationUtils.loadAnimation(requireContext(),R.anim.alpha_out)
+                    alphaOutAnimation.setAnimationListener(alphaOutAnimationListener())
+                    binding.apply {
+                        binding.animeImage.startAnimation(alphaOutAnimation)
+                        binding.animeFirstWord.startAnimation(alphaOutAnimation)
+                        binding.animeSecondWord.startAnimation(alphaOutAnimation)
+                    }
+                    binding.pb.show()
+                }
                 is UiState.Failure -> {
                     binding.pb.hide()
                     toast(state.error)
@@ -204,6 +235,11 @@ class SearchFragment : Fragment() , SearchListAdapter.Listener {
                             .load(state.data.imageURI)
                             .into(binding.animeImage)
                     }
+                    val alphaInAnimation = AnimationUtils.loadAnimation(requireContext(),R.anim.alpha_in)
+                    alphaInAnimation.setAnimationListener(alphaInAnimationListener())
+                    binding.animeImage.startAnimation(alphaInAnimation)
+                    binding.animeFirstWord.startAnimation(alphaInAnimation)
+                    binding.animeSecondWord.startAnimation(alphaInAnimation)
                 }
             }
         }
@@ -239,6 +275,38 @@ class SearchFragment : Fragment() , SearchListAdapter.Listener {
         viewModel.getAnimeWithTitle(animeTitle)
         binding.animeFirstWord.text = animeTitle.uppercase()
         binding.animeSecondWord.text = animeTitle.substring(animeTitle.indexOf(" ") + 1)
+    }
+    inner class alphaOutAnimationListener : AnimationListener{
+        override fun onAnimationStart(animation: Animation?) {
+
+        }
+
+        override fun onAnimationEnd(animation: Animation?) {
+            binding.animeImage.isVisible = false
+            binding.animeFirstWord.isVisible = false
+            binding.animeSecondWord.isVisible = false
+        }
+
+        override fun onAnimationRepeat(animation: Animation?) {
+
+        }
+
+    }
+    inner class alphaInAnimationListener : AnimationListener{
+        override fun onAnimationStart(animation: Animation?) {
+            binding.animeImage.isVisible = true
+            binding.animeFirstWord.isVisible = true
+            binding.animeSecondWord.isVisible = true
+        }
+
+        override fun onAnimationEnd(animation: Animation?) {
+
+        }
+
+        override fun onAnimationRepeat(animation: Animation?) {
+
+        }
+
     }
 
 
