@@ -6,6 +6,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationSet
+import android.view.animation.AnimationUtils
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -23,29 +26,70 @@ import com.ikbo0621.anitree.viewModel.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class SearchFragment : Fragment(), SearchListAdapter.Listener {
+class SearchFragment : Fragment() , SearchListAdapter.Listener {
 
     private val TAG: String = "SEARCH_FRAGMENT"
 
     private lateinit var titleGuessesArrayList: ArrayList<SearchListItem>
     private lateinit var titleList: Array<String>
 
-    private var _binding: FragmentSearchBinding ? = null
+
+    private var _binding: FragmentSearchBinding? = null
     private val binding get() = _binding!!
 
     val viewModel: ParsingViewModel by viewModels()
     val userViewModel: UserViewModel by viewModels()
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater , container: ViewGroup? ,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentSearchBinding.inflate(layoutInflater, container, false)
+        _binding = FragmentSearchBinding.inflate(layoutInflater , container , false)
+
+        //Animators init
+        val slideLeftAnimator: Animation =
+            AnimationUtils.loadAnimation(requireContext() , R.anim.slide_out_left)
+        val alphaInAnimator = AnimationUtils.loadAnimation(requireContext() , R.anim.alpha_in)
+
+        val animeFrameAnimator = AnimationUtils.loadAnimation(requireContext(), R.anim.search_fragment_anime_frame_anim)
+
+        val slideLeftAnimatorWithOffset =
+            AnimationUtils.loadAnimation(requireContext() , R.anim.slide_out_left)
+        slideLeftAnimatorWithOffset.startOffset = 200
+
+        val avatarFrameSlideLeftDownAnimator =
+            AnimationUtils.loadAnimation(requireContext() , R.anim.search_fragment_round_frame_anim)
+        avatarFrameSlideLeftDownAnimator.startOffset = 500
+        val avatarAnimatorSet = AnimationSet(true)
+        avatarAnimatorSet.addAnimation(slideLeftAnimator)
+        avatarAnimatorSet.addAnimation(avatarFrameSlideLeftDownAnimator)
+        val animeFrameAnimatorSet = AnimationSet(true)
+        animeFrameAnimatorSet.addAnimation(animeFrameAnimator)
+
+
+        binding.apply {
+            binding.searchBar.animation = slideLeftAnimatorWithOffset
+            binding.leftLine.animation = slideLeftAnimator
+            binding.upperline.animation = slideLeftAnimator
+            binding.underline.animation = slideLeftAnimator
+            binding.avatarCard.animation = slideLeftAnimator
+
+            binding.roundFrame.animation = avatarAnimatorSet
+
+            binding.resultTopline.animation = alphaInAnimator
+            binding.animeFirstWord.animation = slideLeftAnimator
+            binding.animeSecondWord.animation = slideLeftAnimatorWithOffset
+            binding.animeImage.animation = slideLeftAnimatorWithOffset
+            binding.animeFrame.animation = animeFrameAnimatorSet
+
+        }
+
+
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onViewCreated(view: View , savedInstanceState: Bundle?) {
+        super.onViewCreated(view , savedInstanceState)
         observer()
         binding.animeSecondWord.ellipsize = TextUtils.TruncateAt.MARQUEE
         binding.animeSecondWord.isSelected = true
@@ -67,13 +111,14 @@ class SearchFragment : Fragment(), SearchListAdapter.Listener {
                 && viewModel.guessedAnim.value is UiState.Success
             ) {
                 val anime = (viewModel.guessedAnim.value as UiState.Success<Anime>).data
-                val action = SearchFragmentDirections.actionSearchFragmentToAnimeFragment(anime = anime)
+                val action =
+                    SearchFragmentDirections.actionSearchFragmentToAnimeFragment(anime = anime)
                 Navigation.findNavController(requireView()).navigate(action)
             }
         }
 
         binding.searchBar.addTextChangedListener {
-            Log.d(TAG, "triggered")
+            Log.d(TAG , "triggered")
             if (binding.searchBar.isFocused) {
                 if (validation()) {
                     viewModel.guessAnime(
@@ -92,7 +137,7 @@ class SearchFragment : Fragment(), SearchListAdapter.Listener {
     }
 
     private fun fillRecyclerView(flag: Boolean) {
-        titleList = if(flag) arrayOf()
+        titleList = if (flag) arrayOf()
         else arrayOf("" , "" , "" , "" , "")
         binding.resultList.layoutManager = LinearLayoutManager(requireContext())
         binding.resultList.setHasFixedSize(true)
@@ -106,7 +151,7 @@ class SearchFragment : Fragment(), SearchListAdapter.Listener {
 
     private fun setUpAvatar() {
         userViewModel.getSession {
-            if (it != null){
+            if (it != null) {
                 var avatarList = ArrayList<Int>()
                 fillImageList(avatarList)
 
@@ -129,7 +174,7 @@ class SearchFragment : Fragment(), SearchListAdapter.Listener {
         }
         val animeTitle = (viewModel.guessedAnim.value as UiState.Success).data.title
         binding.animeFirstWord.text = animeTitle.uppercase()
-        binding.animeSecondWord.text = animeTitle.substring(animeTitle.indexOf(" ")+1)
+        binding.animeSecondWord.text = animeTitle.substring(animeTitle.indexOf(" ") + 1)
     }
 
     /**
@@ -150,7 +195,8 @@ class SearchFragment : Fragment(), SearchListAdapter.Listener {
                 is UiState.Success -> {
                     binding.pb.hide()
                     binding.animeFirstWord.text = state.data.title.uppercase()
-                    binding.animeSecondWord.text = state.data.title.substring(state.data.title.indexOf(" ")+1)
+                    binding.animeSecondWord.text =
+                        state.data.title.substring(state.data.title.indexOf(" ") + 1)
 
 
                     context?.let {
@@ -166,7 +212,7 @@ class SearchFragment : Fragment(), SearchListAdapter.Listener {
                 it.text = ""
             }
             fillRecyclerView(false)
-            arr.forEachIndexed { index, s ->
+            arr.forEachIndexed { index , s ->
                 if (index < titleGuessesArrayList.size)
                     titleGuessesArrayList[index].text = s
 
@@ -192,7 +238,7 @@ class SearchFragment : Fragment(), SearchListAdapter.Listener {
         val animeTitle = searchListItem.text.toString()
         viewModel.getAnimeWithTitle(animeTitle)
         binding.animeFirstWord.text = animeTitle.uppercase()
-        binding.animeSecondWord.text = animeTitle.substring(animeTitle.indexOf(" ")+1)
+        binding.animeSecondWord.text = animeTitle.substring(animeTitle.indexOf(" ") + 1)
     }
 
 

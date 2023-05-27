@@ -240,8 +240,8 @@ class AvatarFragment : Fragment() {
                 binding.secondName.text = "bop"
             }
             4 -> {
-                binding.firstName.text = "Berserk"
-                binding.secondName.text = ""
+                binding.firstName.text = "hz"
+                binding.secondName.text = "hz"
             }
             5 -> {
                 binding.firstName.text = "Da"
