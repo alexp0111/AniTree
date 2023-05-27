@@ -8,8 +8,8 @@
     <ImageView
 
         android:id="@+id/avatar_image"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
+        android:layout_width="@dimen/avatar_item_width"
+        android:layout_height="@dimen/avatar_item_height"
         android:scaleType="centerCrop"
         android:src="@drawable/l"
         android:background="@color/dark_grey"

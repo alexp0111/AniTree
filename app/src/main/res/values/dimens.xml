@@ -4,7 +4,52 @@
     When the application starts, they will be replaced with absolute values.
 -->
 <resources>
+    <dimen name="heading_text_size">24sp</dimen>
+    <dimen name="extra_large_text_size">40sp</dimen>
+    <dimen name="large_text_size">40sp</dimen>
+    <dimen name="background_text_size">200sp</dimen>
+    <dimen name="background_name_size">160sp</dimen>
+    <dimen name="first_anime_word_size">230sp</dimen>
+    <dimen name="small_text_size">18sp</dimen>
+
+    <dimen name="account_fragment_second_name_width">300dp</dimen>
+    <dimen name="account_fragment_first_name_width">370dp</dimen>
+    <dimen name="account_fragment_first_name_height">280dp</dimen>
+
+    <dimen name="btn_height">40dp</dimen>
+
+    <dimen name="tree_item_size">120dp</dimen>
+
+    <dimen name="avatar_item_width">260dp</dimen>
+    <dimen name="avatar_item_height">300dp</dimen>
+
+
+    <dimen name="icon_size">40dp</dimen>
+    <dimen name="avatar_account_image_size">180dp</dimen>
+
+    <dimen name="search_bar_width">360dp</dimen>
+    <dimen name="search_bar_height">260dp</dimen>
+    <dimen name="avatar_icon_size">60dp</dimen>
+    <dimen name="search_bar_left_line_height">330dp</dimen>
+
+    <dimen name="anime_image_width">160dp</dimen>
+    <dimen name="anime_image_height">240dp</dimen>
+
+    <dimen name="account_upper_rect_height">280dp</dimen>
+
+    <dimen name="anime_upper_rect_height">450dp</dimen>
+    <dimen name="anime_lower_rect_height">280dp</dimen>
+
+    <dimen name="search_upper_rect_height">440dp</dimen>
+    <dimen name="search_lower_rect_height">360dp</dimen>
+
+    <dimen name="item_tree_width">180dp</dimen>
+    <dimen name="item_tree_img_size">150dp</dimen>
+
+    <dimen name="anime_first_word_height">270dp</dimen>
+
+
     <dimen name="text_size">358.8px</dimen>
-    <dimen name="small_text_size">179.4px</dimen>
+
     <dimen name="line_width">17.94px</dimen>
 </resources>

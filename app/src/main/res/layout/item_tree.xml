@@ -3,18 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/item_layout"
-    android:layout_width="180dp"
+    android:layout_width="@dimen/item_tree_width"
     android:background="@color/DARK_GREY"
 
     android:layout_marginStart="20dp"
     android:layout_marginEnd="20dp"
 
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <ImageView
         android:id="@+id/firstChildImageView"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
+        android:layout_width="@dimen/item_tree_img_size"
+        android:layout_height="@dimen/item_tree_img_size"
         android:layout_marginTop="20dp"
         android:adjustViewBounds="true"
         android:scaleType="centerCrop"
@@ -25,7 +25,7 @@
 
     <TextView
         android:id="@+id/authorName"
-        android:layout_width="150dp"
+        android:layout_width="@dimen/item_tree_img_size"
         android:gravity="left"
         android:ellipsize="marquee"
         android:marqueeRepeatLimit="marquee_forever"

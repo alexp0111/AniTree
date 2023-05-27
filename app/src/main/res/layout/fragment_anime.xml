@@ -19,7 +19,7 @@
         <View
             android:id="@+id/upper_rectangle"
             android:layout_width="match_parent"
-            android:layout_height="450dp"
+            android:layout_height="@dimen/anime_upper_rect_height"
             android:background="@color/dark_grey"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
@@ -42,14 +42,14 @@
 
 
             android:textColor="@color/DARK_GREY"
-            android:textSize="200sp"
+            android:textSize="@dimen/background_text_size"
             app:layout_constraintBottom_toBottomOf="@id/upper_rectangle"
             app:layout_constraintStart_toStartOf="parent" />
 
         <View
             android:id="@+id/anime_frame_2"
-            android:layout_width="160dp"
-            android:layout_height="240dp"
+            android:layout_width="@dimen/anime_image_width"
+            android:layout_height="@dimen/anime_image_height"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_marginTop="-15dp"
@@ -59,8 +59,8 @@
             app:layout_constraintTop_toTopOf="@id/anime_image" />
         <ImageView
             android:id="@+id/anime_image"
-            android:layout_width="160dp"
-            android:layout_height="240dp"
+            android:layout_width="@dimen/anime_image_width"
+            android:layout_height="@dimen/anime_image_height"
             android:layout_marginTop="60dp"
             android:layout_marginEnd="20dp"
             android:src="@color/crimson"
@@ -69,8 +69,8 @@
 
         <View
             android:id="@+id/anime_frame_1"
-            android:layout_width="160dp"
-            android:layout_height="240dp"
+            android:layout_width="@dimen/anime_image_width"
+            android:layout_height="@dimen/anime_image_height"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_marginTop="15dp"
@@ -114,7 +114,7 @@
             android:layout_marginEnd="10dp"
             android:fontFamily="@font/firasans_semibold"
             android:text="TextView"
-            android:textSize="24sp"
+            android:textSize="@dimen/heading_text_size"
             android:textColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/left_line"
@@ -128,7 +128,7 @@
             android:layout_marginEnd="10dp"
             android:fontFamily="@font/firasans_semibold"
             android:text="TextView"
-            android:textSize="24sp"
+            android:textSize="@dimen/heading_text_size"
             android:textColor="@color/light_grey"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/left_line"
@@ -142,7 +142,7 @@
             android:layout_marginEnd="10dp"
             android:fontFamily="@font/firasans_semibold"
             android:text="TextView"
-            android:textSize="18sp"
+            android:textSize="@dimen/small_text_size"
             android:textColor="@color/light_grey"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/left_line"
@@ -156,7 +156,7 @@
             android:layout_marginEnd="10dp"
             android:fontFamily="@font/firasans_semibold"
             android:text="TextView"
-            android:textSize="18sp"
+            android:textSize="@dimen/small_text_size"
             android:textColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/left_line"
@@ -165,7 +165,7 @@
         <View
             android:id="@+id/tree_rectangle"
             android:layout_width="match_parent"
-            android:layout_height="350dp"
+            android:layout_height="@dimen/anime_lower_rect_height"
             android:layout_marginTop="20dp"
             android:background="@color/dark_grey"
             app:layout_constraintEnd_toEndOf="parent"
@@ -181,19 +181,19 @@
             android:fontFamily="@font/firasans_semibold"
             android:text="@string/trees_title"
             android:textColor="@color/white"
-            android:textSize="24sp"
+            android:textSize="@dimen/heading_text_size"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/tree_rectangle" />
 
         <TextView
             android:id="@+id/anime_title"
-            android:layout_width="160dp"
+            android:layout_width="@dimen/anime_image_width"
 
             android:singleLine="true"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:textColor="@color/white"
-            android:textSize="24sp"
+            android:textSize="@dimen/heading_text_size"
             android:fontFamily="@font/firasans_semibold"
             android:text="@string/anime_first_word"
 
@@ -209,8 +209,8 @@
 
         <View
             android:id="@+id/create_tree_btn"
-            android:layout_width="160dp"
-            android:layout_height="40dp"
+            android:layout_width="@dimen/anime_image_width"
+            android:layout_height="@dimen/btn_height"
             android:layout_marginTop="20dp"
 
 
@@ -220,8 +220,8 @@
             app:layout_constraintTop_toBottomOf="@id/anime_title" />
         <View
             android:id="@+id/create_tree_btn_frame"
-            android:layout_width="160dp"
-            android:layout_height="40dp"
+            android:layout_width="@dimen/anime_image_width"
+            android:layout_height="@dimen/btn_height"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_marginTop="-5dp"
@@ -236,7 +236,7 @@
             android:layout_height="wrap_content"
             android:text="Create Tree"
             android:fontFamily="@font/firasans_semibold"
-            android:textSize="24sp"
+            android:textSize="@dimen/heading_text_size"
             android:textColor="@color/DARK_GREY"
             app:layout_constraintEnd_toEndOf="@+id/create_tree_btn"
             app:layout_constraintStart_toStartOf="@+id/create_tree_btn"
@@ -267,10 +267,10 @@
 
         <ImageView
             android:id="@+id/back_button"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="@dimen/icon_size"
+            android:layout_height="@dimen/icon_size"
             android:layout_marginStart="30dp"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="40dp"
             android:src="@drawable/back_arrow"
 
             app:layout_constraintStart_toStartOf="parent"

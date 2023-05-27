@@ -17,8 +17,8 @@
     <View
         android:id="@+id/upper_rectangle"
         android:layout_width="match_parent"
-        android:layout_height="280dp"
-        android:layout_alignParentLeft="true"
+        android:layout_height="@dimen/account_upper_rect_height"
+        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:background="@color/dark_grey"
         app:layout_constraintEnd_toEndOf="parent"
@@ -27,9 +27,9 @@
 
     <TextView
         android:id="@+id/first_name"
-        android:layout_width="368dp"
-        android:layout_height="280dp"
-        android:layout_alignParentLeft="true"
+        android:layout_width="@dimen/account_fragment_first_name_width"
+        android:layout_height="@dimen/account_fragment_first_name_height"
+        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginTop="-40dp"
         android:layout_marginEnd="-100dp"
@@ -38,23 +38,25 @@
         android:text="@string/anime_first_word"
         android:ellipsize="none"
         android:textColor="@color/DARK_GREY"
-        android:textSize="160sp"
+        android:textSize="@dimen/background_name_size"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/second_name"
-        android:layout_width="320dp"
-        android:layout_height="180dp"
+        android:layout_width="@dimen/account_fragment_second_name_width"
+        android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:layout_marginTop="100dp"
+
 
         android:layout_marginEnd="100dp"
         android:fontFamily="@font/tiltwarp_regular_variable"
         android:text="@string/anime_first_word"
         android:textColor="@color/DARK_GREY"
-        android:textSize="160sp"
+        android:textSize="@dimen/background_name_size"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -62,10 +64,10 @@
         android:transitionName="avatarCard"
 
         android:id="@+id/cardView"
-        android:layout_width="180dp"
-        android:layout_height="180dp"
+        android:layout_width="@dimen/avatar_account_image_size"
+        android:layout_height="@dimen/avatar_account_image_size"
         android:layout_marginTop="80dp"
-        app:cardCornerRadius="90dp"
+        app:cardCornerRadius="@dimen/avatar_account_image_size"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -73,8 +75,8 @@
         <ImageView
             android:transitionName="avatar"
             android:id="@+id/avatar"
-            android:layout_width="180dp"
-            android:layout_height="180dp"
+            android:layout_width="@dimen/avatar_account_image_size"
+            android:layout_height="@dimen/avatar_account_image_size"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
             android:src="@color/crimson" />
@@ -82,8 +84,8 @@
 
     <ImageView
         android:id="@+id/back_button"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="@dimen/icon_size"
+        android:layout_height="@dimen/icon_size"
         android:layout_marginStart="30dp"
         android:layout_marginTop="40dp"
         android:src="@drawable/back_arrow"
@@ -91,8 +93,8 @@
         app:layout_constraintTop_toTopOf="parent" />
     <ImageView
         android:id="@+id/logOutBtn"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="@dimen/icon_size"
+        android:layout_height="@dimen/icon_size"
         android:layout_marginTop="40dp"
         android:layout_marginEnd="40dp"
         android:src="@drawable/log_out"
@@ -108,7 +110,7 @@
         android:layout_marginStart="30dp"
         android:layout_marginTop="20dp"
         android:text="Your trees"
-        android:textSize="24sp"
+        android:textSize="@dimen/heading_text_size"
         android:fontFamily="@font/firasans_semibold"
         android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="parent"
@@ -130,7 +132,7 @@
         android:layout_marginStart="30dp"
         android:layout_marginTop="20dp"
         android:text="Your Favourites"
-        android:textSize="24sp"
+        android:textSize="@dimen/heading_text_size"
         android:fontFamily="@font/firasans_semibold"
         android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="parent"

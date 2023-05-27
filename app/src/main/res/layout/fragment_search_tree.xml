@@ -16,7 +16,7 @@
         <View
             android:id="@+id/search_background"
             android:layout_width="match_parent"
-            android:layout_height="440dp"
+            android:layout_height="@dimen/search_upper_rect_height"
 
             android:background="@color/dark_grey"
             app:layout_constraintEnd_toEndOf="parent"
@@ -28,7 +28,7 @@
         <View
             android:id="@+id/search_frame"
             android:layout_width="match_parent"
-            android:layout_height="330dp"
+            android:layout_height="@dimen/search_bar_left_line_height"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_marginStart="20dp"
@@ -44,8 +44,8 @@
 
         <EditText
             android:id="@+id/search_bar"
-            android:layout_width="360dp"
-            android:layout_height="260dp"
+            android:layout_width="@dimen/search_bar_width"
+            android:layout_height="@dimen/search_bar_height"
             android:layout_marginStart="20dp"
             android:layout_marginTop="40dp"
             android:layout_marginEnd="10dp"
@@ -57,7 +57,7 @@
             android:textColor="@color/white"
             android:textColorHint="@color/white"
             android:fontFamily="@font/firasans_semibold"
-            android:textSize="40sp"
+            android:textSize="@dimen/large_text_size"
             android:hint="Enter Anime you are looking for"
             android:gravity="top"/>
 
@@ -94,7 +94,7 @@
         <View
             android:id="@+id/left_line"
             android:layout_width="2dp"
-            android:layout_height="330dp"
+            android:layout_height="@dimen/search_bar_left_line_height"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:background="@drawable/vertical_line"
@@ -105,7 +105,7 @@
         <View
             android:id="@+id/result_background"
             android:layout_width="match_parent"
-            android:layout_height="360dp"
+            android:layout_height="@dimen/search_lower_rect_height"
             android:layout_marginBottom="40dp"
             android:layout_marginTop="100dp"
             android:background="@color/dark_grey"
@@ -136,7 +136,7 @@
             android:gravity="top"
             android:text="@string/anime_second_word"
             android:textColor="@color/DARK_GREY"
-            android:textSize="40sp"
+            android:textSize="@dimen/large_text_size"
 
 
             android:ellipsize="marquee"
@@ -151,12 +151,13 @@
 
         <TextView
             android:id="@+id/anime_first_word"
-            android:layout_width="1000dp"
-            android:layout_height="270dp"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/anime_first_word_height"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_marginStart="30dp"
             android:ellipsize="none"
+            android:singleLine="true"
             android:scrollbars="horizontal|vertical"
             android:layout_marginTop="-40dp"
             android:fontFamily="@font/tiltwarp_regular_variable"
@@ -164,7 +165,7 @@
             android:text="@string/anime_first_word"
             android:textColor="@color/DARK_GREY"
 
-            android:textSize="230sp"
+            android:textSize="@dimen/first_anime_word_size"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/result_background" />
 
@@ -192,8 +193,8 @@
             app:layout_constraintTop_toTopOf="@+id/search_background" />
         <androidx.cardview.widget.CardView
             android:id="@+id/avatar_card"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
+            android:layout_width="@dimen/tree_item_size"
+            android:layout_height="@dimen/tree_item_size"
             android:layout_alignParentStart="true"
 
             android:layout_alignParentTop="true"
@@ -207,18 +208,19 @@
 
             <ImageView
                 android:id="@+id/anime_image"
-                android:layout_width="120dp"
+                android:layout_width="@dimen/tree_item_size"
+                android:layout_height="@dimen/tree_item_size"
                 android:adjustViewBounds="true"
                 android:scaleType="centerCrop"
-                android:layout_height="120dp"
+
                 android:src="@color/crimson" />
         </androidx.cardview.widget.CardView>
 
         <View
 
             android:id="@+id/round_frame"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
+            android:layout_width="@dimen/tree_item_size"
+            android:layout_height="@dimen/tree_item_size"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_marginEnd="40dp"

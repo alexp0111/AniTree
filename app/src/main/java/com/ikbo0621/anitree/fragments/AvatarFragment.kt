@@ -75,8 +75,8 @@ class AvatarFragment : Fragment() {
                         binding.secondName.text = "bop"
                     }
                     4 -> {
-                        binding.firstName.text = "Berserk"
-                        binding.secondName.text = ""
+                        binding.firstName.text = "GU"
+                        binding.secondName.text = "UTS"
                     }
                     5 -> {
                         binding.firstName.text = "Da"
@@ -100,16 +100,16 @@ class AvatarFragment : Fragment() {
                         binding.secondName.text = "Jo"
                     }
                     10 -> {
-                        binding.firstName.text = "hz"
-                        binding.secondName.text = "hz"
+                        binding.firstName.text = "hisoka"
+                        binding.secondName.text = "oka"
                     }
                     11 -> {
-                        binding.firstName.text = "hz"
-                        binding.secondName.text = "hz"
+                        binding.firstName.text = "itad"
+                        binding.secondName.text = "ori"
                     }
                     12 -> {
-                        binding.firstName.text = "hz"
-                        binding.secondName.text = "hz"
+                        binding.firstName.text = "izu"
+                        binding.secondName.text = "uku"
                     }
                     13 -> {
                         binding.firstName.text = "KUJo"
@@ -240,8 +240,8 @@ class AvatarFragment : Fragment() {
                 binding.secondName.text = "bop"
             }
             4 -> {
-                binding.firstName.text = "hz"
-                binding.secondName.text = "hz"
+                binding.firstName.text = "GU"
+                binding.secondName.text = "UTS"
             }
             5 -> {
                 binding.firstName.text = "Da"
@@ -265,16 +265,16 @@ class AvatarFragment : Fragment() {
                 binding.secondName.text = "Jo"
             }
             10 -> {
-                binding.firstName.text = "hz"
-                binding.secondName.text = "hz"
+                binding.firstName.text = "hisoka"
+                binding.secondName.text = "oka"
             }
             11 -> {
-                binding.firstName.text = "hz"
-                binding.secondName.text = "hz"
+                binding.firstName.text = "itad"
+                binding.secondName.text = "ori"
             }
             12 -> {
-                binding.firstName.text = "hz"
-                binding.secondName.text = "hz"
+                binding.firstName.text = "izu"
+                binding.secondName.text = "uku"
             }
             13 -> {
                 binding.firstName.text = "KUJo"
