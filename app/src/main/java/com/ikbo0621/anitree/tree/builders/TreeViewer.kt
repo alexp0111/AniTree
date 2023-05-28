@@ -212,6 +212,36 @@ open class TreeViewer(
         treeView.addElement(subNameTexts[index]!!)
     }
 
+    private fun cutMainStudioText(text: String) : String {
+        if (text.length <= 6)
+            return text;
+
+        val minGapSize = 4
+        val maxTextSize = 10
+        val textParts = text.split(Regex("\\s"))
+        var result = "${textParts[0]} "
+
+        for (i in 1 until textParts.size) {
+            val nextPart = textParts[i]
+
+            if ((result.length + minGapSize + 1) <= maxTextSize) {
+                result += "$nextPart "
+                continue
+            }
+
+            if (nextPart.length < minGapSize)
+                break
+
+            result += nextPart.slice(0 until minGapSize)
+            break
+        }
+
+        if (text.length > maxTextSize)
+            result += "..."
+
+        return result
+    }
+
     private fun addMainNameText(context: Context, text: String, color: Int) {
         if (mainNameText == null) {
             val font = ResourcesCompat.getFont(context, R.font.tilt_warp)
@@ -224,7 +254,7 @@ open class TreeViewer(
                 90f
             )
         }
-        mainNameText!!.text = text.uppercase()
+        mainNameText!!.text = cutMainStudioText(text.uppercase())
 
         treeView.addElement(mainNameText!!)
     }

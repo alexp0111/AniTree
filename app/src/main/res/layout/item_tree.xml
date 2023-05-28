@@ -46,7 +46,7 @@
         android:layout_marginEnd="10dp"
         app:layout_constraintEnd_toStartOf="@+id/likeNumber"
         app:layout_constraintTop_toBottomOf="@+id/authorName"
-        app:srcCompat="@drawable/like" />
+        app:srcCompat="@drawable/like_activated" />
 
     <TextView
         android:id="@+id/likeNumber"

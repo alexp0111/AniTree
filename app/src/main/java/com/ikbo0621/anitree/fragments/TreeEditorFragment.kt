@@ -71,9 +71,8 @@ class TreeEditorFragment : Fragment() {
     ): View {
         _binding = FragmentTreeEditorBinding.inflate(inflater, container, false)
 
-        observer()
-
         val treeEditor = TreeEditor(binding.editorTree, requireActivity(), initialTree!!)
+        observer(treeEditor)
         if (currentTreeElementIndex != null)
             treeEditor.toAnotherLayer(currentTreeElementIndex!!)
         treeEditor.setBottomIcon(
@@ -194,7 +193,7 @@ class TreeEditorFragment : Fragment() {
         return null
     }
 
-    private fun observer() {
+    private fun observer(treeEditor: TreeEditor) {
         treeViewModel.tree.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is UiState.Loading -> {}
@@ -209,6 +208,7 @@ class TreeEditorFragment : Fragment() {
                         }
                     }
                     treeId = state.data.id
+                    treeEditor.switchBottomButton()
                     toast("Tree is uploaded")
                 }
             }
