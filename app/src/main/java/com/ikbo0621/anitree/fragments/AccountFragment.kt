@@ -68,7 +68,7 @@ class AccountFragment : Fragment() {
                         }
                     }
                 }
-            }
+            }, true
         )
     }
 
@@ -108,7 +108,7 @@ class AccountFragment : Fragment() {
                         }
                     }
                 }
-            }
+            }, true
         )
     }
 

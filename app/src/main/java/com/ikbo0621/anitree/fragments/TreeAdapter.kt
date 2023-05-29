@@ -9,8 +9,10 @@ import com.bumptech.glide.Glide
 import com.ikbo0621.anitree.databinding.ItemTreeBinding
 import com.ikbo0621.anitree.structure.Tree
 
-class TreeAdapter(val context: Context,
-    val onItemClicked: (Int, Tree) -> Unit
+class TreeAdapter(
+    val context: Context,
+    val onItemClicked: (Int, Tree) -> Unit,
+    val isProfile: Boolean
 ) : RecyclerView.Adapter<TreeAdapter.MyViewHolder>() {
 
     private var list: List<Tree> = arrayListOf()
@@ -20,7 +22,7 @@ class TreeAdapter(val context: Context,
         return MyViewHolder(itemView)
     }
 
-    override fun onBindViewHolder(holder: MyViewHolder , position: Int) {
+    override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val item = list[position]
         holder.bind(item)
     }
@@ -36,10 +38,17 @@ class TreeAdapter(val context: Context,
 
     inner class MyViewHolder(val binding: ItemTreeBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(tree: Tree) {
-            binding.authorName.text = tree.children[1]
-            Glide.with(context)
-                .load(tree.urls[1])
-                .into(binding.firstChildImageView)
+            if (isProfile) {
+                binding.authorName.text = tree.children[0]
+                Glide.with(context)
+                    .load(tree.urls[0])
+                    .into(binding.firstChildImageView)
+            } else {
+                binding.authorName.text = tree.children[1]
+                Glide.with(context)
+                    .load(tree.urls[1])
+                    .into(binding.firstChildImageView)
+            }
             binding.likeNumber.text = tree.likers.size.toString()
             binding.authorName.isSelected = true
             binding.authorName.ellipsize = TextUtils.TruncateAt.MARQUEE

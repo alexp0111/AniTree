@@ -74,7 +74,7 @@ class AnimeFragment : Fragment() {
                         }
                     }
                 }
-            }
+            }, false
         )
     }
 

@@ -38,7 +38,7 @@
     <dimen name="account_upper_rect_height">280dp</dimen>
 
     <dimen name="anime_upper_rect_height">450dp</dimen>
-    <dimen name="anime_lower_rect_height">280dp</dimen>
+    <dimen name="anime_lower_rect_height">300dp</dimen>
 
     <dimen name="search_upper_rect_height">440dp</dimen>
     <dimen name="search_lower_rect_height">360dp</dimen>
