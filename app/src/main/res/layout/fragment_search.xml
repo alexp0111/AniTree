@@ -251,10 +251,10 @@
             android:visibility="invisible"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@+id/anime_image"
+            app:layout_constraintBottom_toBottomOf="@id/left_line"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/search_background" />
+            app:layout_constraintTop_toTopOf="@id/left_line" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
