@@ -10,7 +10,7 @@
     <View
         android:id="@+id/upperline"
         android:layout_width="match_parent"
-        android:layout_height="2dp"
+        android:layout_height="@dimen/width_of_line"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginStart="20dp"
@@ -22,7 +22,7 @@
 
     <View
         android:id="@+id/left_line"
-        android:layout_width="2dp"
+        android:layout_width="@dimen/width_of_line"
         android:layout_height="match_parent"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"

@@ -65,7 +65,7 @@
         <View
             android:id="@+id/underline"
             android:layout_width="match_parent"
-            android:layout_height="2dp"
+            android:layout_height="@dimen/width_of_line"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_marginStart="20dp"
@@ -77,7 +77,7 @@
         <View
             android:id="@+id/upperline"
             android:layout_width="match_parent"
-            android:layout_height="2dp"
+            android:layout_height="@dimen/width_of_line"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_marginStart="20dp"
@@ -132,7 +132,7 @@
 
         <View
             android:id="@+id/left_line"
-            android:layout_width="2dp"
+            android:layout_width="@dimen/width_of_line"
             android:layout_height="@dimen/search_bar_left_line_height"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
@@ -155,7 +155,7 @@
         <View
             android:id="@+id/result_topline"
             android:layout_width="match_parent"
-            android:layout_height="2dp"
+            android:layout_height="@dimen/width_of_line"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:background="@drawable/horizontal_line"
