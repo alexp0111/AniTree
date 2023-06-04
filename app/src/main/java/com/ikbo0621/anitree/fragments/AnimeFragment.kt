@@ -41,6 +41,7 @@ class AnimeFragment : Fragment() {
     val adapter by lazy {
         TreeAdapter(requireContext(),
             onItemClicked = { pos, item ->
+                binding.rvTrees.disable()
                 CoroutineScope(Dispatchers.Main).launch {
                     val converted = withContext(Dispatchers.IO) {
                         TreeConverter.convert(item)
@@ -89,6 +90,7 @@ class AnimeFragment : Fragment() {
     ): View? {
         _binding = FragmentAnimeBinding.inflate(layoutInflater, container, false)
         animationsInit()
+        binding.rvTrees.enabled()
         return binding.root
     }
 
@@ -145,9 +147,9 @@ class AnimeFragment : Fragment() {
                 .into(binding.animeImage)
         }
 
-        binding.animeDescription.text = anime?.description
-        binding.animeDescriptionStudio.text = anime?.studio
-        binding.animeDescriptionYears.text = anime?.releaseDate
+        binding.animeDescription.text = if (anime?.description != "-1") anime?.description else "No info"
+        binding.animeDescriptionStudio.text = if (anime?.studio != "-1") anime?.studio else "No info"
+        binding.animeDescriptionYears.text =   if (anime?.releaseDate != "-1") anime?.releaseDate else "No info"
         binding.animeDescriptionTitle.text = anime?.title
 
 
@@ -206,8 +208,6 @@ class AnimeFragment : Fragment() {
                 }
                 is UiState.Success -> {
                     binding.pb.hide()
-                    // temporary test solution
-                    toast(state.data.id)
                 }
             }
         }
@@ -221,97 +221,10 @@ class AnimeFragment : Fragment() {
                 }
                 is UiState.Success -> {
                     binding.pb.hide()
-                    toast("Success")
                     // setting up an recyclerView
                     adapter.updateList(state.data)
-                    // binding.tvTrees.text = state.data.toString()
                 }
             }
         }
     }
-
-
-    private fun getTestTree(id: String): Tree {
-        val children =
-            arrayListOf(
-                //root
-                "Naruto Shippuden",
-
-                // first layer
-                "Black Clover",
-                "My Hero Academia",
-                null, // *
-
-                // layer 1.1
-                "Hunter x Hunter (2011)",
-                "Dragon Ball",
-                "One Piece",
-
-                // layer 1.2
-                "Bleach",
-                null,
-                null,
-
-                // layer 1.2 (* == null -> 1.2 == null, null, null)
-                null,
-                null,
-                null,
-            )
-
-        val urls = arrayListOf(
-            //root
-            "https://cdn.anime-planet.com/anime/primary/naruto-shippuden-1-190x285.jpg?t=1625885757",
-
-            // first layer
-            "https://cdn.anime-planet.com/anime/primary/black-clover-1-285x399.jpg?t=1630356468",
-            "https://cdn.anime-planet.com/anime/primary/my-hero-academia-1-190x285.jpg?t=1625897284",
-            null, // *
-
-            // layer 1.1
-            "https://cdn.anime-planet.com/anime/primary/hunter-x-hunter-2011-1-190x285.jpg?t=1625896160",
-            "https://cdn.anime-planet.com/anime/primary/dragon-ball-1-190x255.jpg?t=1625885364",
-            "https://cdn.anime-planet.com/anime/primary/one-piece-1-190x260.jpg?t=1625885349",
-
-            // layer 1.2
-            "https://cdn.anime-planet.com/anime/primary/bleach-1-190x291.jpg?t=1625885618",
-            null,
-            null,
-
-            // layer 1.2 (* == null -> 1.2 == null, null, null)
-            null,
-            null,
-            null,
-        )
-
-        val studios = arrayListOf(
-            //root
-            "Pierrot",
-
-            // first layer
-            "Pierrot",
-            "Bones",
-            null, // *
-
-            // layer 1.1
-            "MADHOUSE",
-            "Toei Animation",
-            "Toei Animation",
-
-            // layer 1.2
-            "Pierrot",
-            null,
-            null,
-
-            // layer 1.2 (* == null -> 1.2 == null, null, null)
-            null,
-            null,
-            null,
-        )
-
-        // we do not pass id & likers at the creation
-        val tree = Tree(children = children, urls = urls, studios = studios, authorID = id)
-
-        return tree
-    }
-
 }
