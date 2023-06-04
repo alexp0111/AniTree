@@ -212,32 +212,38 @@ open class TreeViewer(
         treeView.addElement(subNameTexts[index]!!)
     }
 
+    /**
+     * It is guaranteed that the size of the resulting text will be less than or
+     * equal to the maxTextSize.
+     * The text is truncated so that the truncated part of the word is larger than the minGapSize.
+     */
     private fun cutMainStudioText(text: String) : String {
-        if (text.length <= 6)
-            return text;
-
-        val minGapSize = 4
-        val maxTextSize = 10
+        val minGapSize = 3
+        val maxTextSize = 13
+        val endCharacters = "..."
         val textParts = text.split(Regex("\\s"))
-        var result = "${textParts[0]} "
+        var result = ""
 
-        for (i in 1 until textParts.size) {
-            val nextPart = textParts[i]
+        for (part in textParts) {
+            if (result.length + part.length + endCharacters.length > maxTextSize) {
+                // Cut
 
-            if ((result.length + minGapSize + 1) <= maxTextSize) {
-                result += "$nextPart "
-                continue
+                return if (part.length >= minGapSize) {
+                    val gapSize = maxTextSize - (result.length + endCharacters.length)
+                    val croppedPart = part.slice(0 until gapSize)
+                    if (
+                        gapSize >= minGapSize &&
+                        result.length + croppedPart.length + endCharacters.length <= maxTextSize
+                    )
+                        result + "${croppedPart}${endCharacters}"
+                    else
+                        result + endCharacters
+                } else {
+                    result + endCharacters
+                }
             }
-
-            if (nextPart.length < minGapSize)
-                break
-
-            result += nextPart.slice(0 until minGapSize)
-            break
+            result += "$part "
         }
-
-        if (text.length > maxTextSize)
-            result += "..."
 
         return result
     }
