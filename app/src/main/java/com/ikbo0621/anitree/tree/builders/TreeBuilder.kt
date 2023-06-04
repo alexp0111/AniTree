@@ -1,12 +1,13 @@
 package com.ikbo0621.anitree.tree.builders
 
 import android.content.Context
-import android.graphics.Bitmap
+import android.graphics.*
 import com.ikbo0621.anitree.tree.TreeView
 import com.ikbo0621.anitree.tree.elements.*
 import com.ikbo0621.anitree.tree.positioning.RPosition
 import com.ikbo0621.anitree.tree.structures.TreeLayout
 import java.lang.ref.WeakReference
+
 
 open class TreeBuilder(
     protected val treeView: TreeView,
@@ -22,7 +23,7 @@ open class TreeBuilder(
         mainIcon = Icon(
             layout.mainIconPos,
             layout.mainIconRadius,
-            bitmap,
+            getDarkenBitmap(bitmap),
         )
         mainIcon!!.index = index
     }
@@ -35,7 +36,10 @@ open class TreeBuilder(
             return
 
         subIcons.add(
-            Icon(layout.subIconsPositions[subIcons.size], layout.subIconRadius, bitmap)
+            Icon(layout.subIconsPositions[subIcons.size],
+                layout.subIconRadius,
+                getDarkenBitmap(bitmap)
+            )
         )
         subIcons.last().index = index
     }
@@ -49,6 +53,20 @@ open class TreeBuilder(
         }
         treeView.addElement(mainIcon!!)
         mainIconIndex = treeView.elements.lastIndex
+    }
+
+    protected fun getDarkenBitmap(bitmap: Bitmap): Bitmap {
+        val result = bitmap.copy(bitmap.config, true)
+        val multiply = 179
+        val canvas = Canvas(result)
+        val paint = Paint()
+        // Just dividing each color component
+        val filter = LightingColorFilter(
+            Color.rgb(multiply, multiply, multiply), 0
+        )
+        paint.colorFilter = filter
+        canvas.drawBitmap(result, 0f, 0f, paint)
+        return result
     }
 
     fun invalidate() {

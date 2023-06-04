@@ -50,7 +50,11 @@ open class TreeViewer(
     }
 
     fun setAuthor(bitmap: Bitmap, name: String) {
-        authorIcon = Icon(layout.authorIconPosition, layout.authorIconRadius, bitmap).apply {
+        authorIcon = Icon(
+            layout.authorIconPosition,
+            layout.authorIconRadius,
+            getDarkenBitmap(bitmap)
+        ).apply {
             selectable = false
         }
         authorName = name
