@@ -106,6 +106,6 @@
     </fragment>
     <fragment
         android:id="@+id/searchTreeFragment"
-        android:name="com.ikbo0621.anitree.testUI.SearchTreeFragment"
+        android:name="com.ikbo0621.anitree.fragments.SearchTreeFragment"
         android:label="SearchTreeFragment" />
 </navigation>
