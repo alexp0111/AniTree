@@ -14,6 +14,16 @@
 >5. Создание аккаунта для сохранения созданных деревьев.
 >6. Персонализация профиля при помощи заготовленного набора стилизованных иконок.
 
+## Скриншоты
+<img src="https://github.com/alexp0111/AniTree/assets/62151474/7ad74fc1-a806-4516-ae2d-118c19105ff5" width="250"/>
+<img src="https://github.com/alexp0111/AniTree/assets/62151474/becd49d4-33c0-452f-83b0-ce5620534e9c" width="250"/>
+<img src="https://github.com/alexp0111/AniTree/assets/62151474/15e260a2-9c74-4345-b026-2b04ff2e6d1e" width="250"/>
+<img src="https://github.com/alexp0111/AniTree/assets/62151474/3e94a745-da40-4ec0-b4da-60f015f3ee64" width="250"/>
+<img src="https://github.com/alexp0111/AniTree/assets/62151474/e07c4f92-3545-45ff-a8e2-d561d1edb3e1" width="250"/>
+<img src="https://github.com/alexp0111/AniTree/assets/62151474/7f4be2e7-85dc-4ae3-af83-76b923609be3" width="250"/>
+
+
+
 + ### Аппаратные требования
 >1. Минимальная SDK: 28.
 >2. Возможность выхода в интернет.
